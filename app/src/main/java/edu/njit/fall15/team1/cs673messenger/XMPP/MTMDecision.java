@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 //package de.duenndns.ssl;
-package edu.njit.fall15.team1.cs673messenger;
+package edu.njit.fall15.team1.cs673messenger.XMPP;
 
 class MTMDecision {
 	public final static int DECISION_INVALID	= 0;

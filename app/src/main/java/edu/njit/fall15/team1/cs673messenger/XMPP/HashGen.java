@@ -1,4 +1,4 @@
-package edu.njit.fall15.team1.cs673messenger;
+package edu.njit.fall15.team1.cs673messenger.XMPP;
 
 import android.app.Application;
 import android.content.pm.PackageInfo;
@@ -10,6 +10,8 @@ import android.util.Log;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import edu.njit.fall15.team1.cs673messenger.XMPP.XMPP;
+
 /**
  * Created by Akhmetov on 9/21/2015.
  */
@@ -19,7 +21,7 @@ public class HashGen extends Application {
         super.onCreate();
         PrintHashKey();
         Log.d("DENIS", "START");
-        XMPP test = new XMPP("chat.facebook.com","!!!TypeUsernameHere!!!","TypePasswordHere!!!");
+        XMPP test = new XMPP("chat.facebook.com","FBUsername","FBPassword");
         test.XMPPconnect();
 
 

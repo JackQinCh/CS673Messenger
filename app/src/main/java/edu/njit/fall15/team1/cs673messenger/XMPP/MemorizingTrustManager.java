@@ -25,7 +25,7 @@
  * THE SOFTWARE.
  */
 //package de.duenndns.ssl;
-package edu.njit.fall15.team1.cs673messenger;
+package edu.njit.fall15.team1.cs673messenger.XMPP;
 
 import android.app.Activity;
 import android.app.Application;
@@ -61,6 +61,8 @@ import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
+
+import edu.njit.fall15.team1.cs673messenger.R;
 
 /**
  * A X509 trust manager implementation which asks the user about invalid

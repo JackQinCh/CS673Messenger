@@ -22,7 +22,7 @@
  * THE SOFTWARE.
  */
 //package de.duenndns.ssl;
-package edu.njit.fall15.team1.cs673messenger;
+package edu.njit.fall15.team1.cs673messenger.XMPP;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -33,6 +33,8 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.*;
 import android.content.Intent;
 import android.os.Bundle;
+
+import edu.njit.fall15.team1.cs673messenger.R;
 
 public class MemorizingActivity extends Activity
 		implements OnClickListener,OnCancelListener {

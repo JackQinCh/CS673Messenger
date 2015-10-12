@@ -1,4 +1,4 @@
-package edu.njit.fall15.team1.cs673messenger;
+package edu.njit.fall15.team1.cs673messenger.XMPP;
 
 import android.os.AsyncTask;
 import android.os.Build;
