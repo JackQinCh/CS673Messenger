@@ -8,7 +8,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -45,7 +44,7 @@ public class MainActivity extends AppCompatActivity{
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new ChattingListFragment(), getString(R.string.chatlist));
-        adapter.addFragment(new FriendListFragment(), getString(R.string.friend));
+        adapter.addFragment(new FriendsListFragment(), getString(R.string.friend));
         adapter.addFragment(new GroupChatFragment(), getString(R.string.groupchat));
         adapter.addFragment(new SettingFragment(), getString(R.string.setting));
         viewPager.setAdapter(adapter);
