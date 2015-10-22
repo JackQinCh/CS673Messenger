@@ -5,11 +5,15 @@ import android.os.Build;
 import android.util.Log;
 
 import org.jivesoftware.smack.ConnectionConfiguration;
+import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.Roster;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.filter.MessageTypeFilter;
 import org.jivesoftware.smack.packet.Message;
+import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
+import org.jivesoftware.smack.util.StringUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -20,7 +24,7 @@ import edu.njit.fall15.team1.cs673messenger.models.Friend;
  * Singleton of Facebook Server
  * Created by jack on 10/21/15.
  */
-public class FacebookServer {
+public class FacebookServer implements PacketListener{
 
     /**
      * Instance holder
@@ -61,7 +65,10 @@ public class FacebookServer {
      * @param serverAddress
      */
     public void connect(String serverAddress){
-
+        if (connection == null){
+            connection = new XMPPConnection(setConnectConfig(serverAddress));
+            connection.addPacketListener(this, new MessageTypeFilter(Message.Type.chat));
+        }
 
         final AsyncTask<String, Void, Boolean> asyncTask = new AsyncTask<String, Void, Boolean>() {
 
@@ -69,7 +76,7 @@ public class FacebookServer {
             protected Boolean doInBackground(String... params) {
                 String serverAddress = params[0];
                 try {
-                    connection = new XMPPConnection(setConnectConfig(serverAddress));
+//                    connection = new XMPPConnection(setConnectConfig(serverAddress));
                     connection.connect();
                 } catch (XMPPException e) {
                     e.printStackTrace();
@@ -247,6 +254,23 @@ public class FacebookServer {
             config.setTruststorePath(path);
         }
         return config;
+    }
+
+    /**
+     * PacketListener method
+     * @param packet
+     */
+    @Override
+    public void processPacket(Packet packet) {
+        String from;
+        String message;
+        Message msg = (Message) packet;
+        if (msg.getBody() != null){
+            from = StringUtils.parseBareAddress(msg.getFrom());
+            message = msg.getBody();
+
+            Log.d("Jack",from+":"+message);
+        }
     }
 
 }
