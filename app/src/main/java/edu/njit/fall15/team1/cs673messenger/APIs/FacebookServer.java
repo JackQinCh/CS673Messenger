@@ -85,6 +85,9 @@ public class FacebookServer {
         asyncTask.execute(serverAddress);
     }
 
+    /**
+     * Set DisConnect
+     */
     public void disConnect(){
         connection.disconnect();
     }

@@ -12,6 +12,7 @@ import edu.njit.fall15.team1.cs673messenger.APIs.FacebookServerListener;
 import edu.njit.fall15.team1.cs673messenger.R;
 
 public class LoginActivity extends AppCompatActivity implements FacebookServerListener{
+    final String hostAddress = "chat.facebook.com";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,7 +20,7 @@ public class LoginActivity extends AppCompatActivity implements FacebookServerLi
         setContentView(R.layout.login_interface);
 
         FacebookServer.getInstance().setConnectionListener(this);
-        FacebookServer.getInstance().connect("chat.facebook.com");
+        FacebookServer.getInstance().connect(hostAddress);
 
 //        XMPP login = new XMPP("chat.facebook.com", userName, password);
 //        login.XMPPconnect();
@@ -32,6 +33,9 @@ public class LoginActivity extends AppCompatActivity implements FacebookServerLi
     public void login(View v){
         String userName = getETString(R.id.fbUsername);
         String password = getETString(R.id.fbPassword);
+        if (!FacebookServer.getInstance().isConnected()){
+            FacebookServer.getInstance().connect(hostAddress);
+        }
 
         FacebookServer.getInstance().login(userName, password);
 

@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.njit.fall15.team1.cs673messenger.APIs.FacebookServer;
 import edu.njit.fall15.team1.cs673messenger.R;
 
 /**
@@ -100,6 +101,7 @@ public class MainActivity extends AppCompatActivity{
                 Intent intent = new Intent();
                 intent.setClass(MainActivity.this, LoginActivity.class);
                 startActivity(intent);
+                FacebookServer.getInstance().disConnect();
                 this.finish();
                 return true;
             default:
