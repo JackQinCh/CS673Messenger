@@ -61,6 +61,9 @@ public class LoginActivity extends AppCompatActivity implements FacebookServerLi
             startActivity(intent);
 
             this.finish();
+        }else {
+            FacebookServer.getInstance().disConnect();
+            FacebookServer.getInstance().connect("chat.facebook.com");
         }
     }
 }

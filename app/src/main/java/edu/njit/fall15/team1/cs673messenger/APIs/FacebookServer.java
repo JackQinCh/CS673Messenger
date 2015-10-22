@@ -85,6 +85,10 @@ public class FacebookServer {
         asyncTask.execute(serverAddress);
     }
 
+    public void disConnect(){
+        connection.disconnect();
+    }
+
     /**
      * Facebook server Login
      * @param username
