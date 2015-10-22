@@ -5,6 +5,7 @@ import android.os.Build;
 import android.util.Log;
 
 import org.jivesoftware.smack.ConnectionConfiguration;
+import org.jivesoftware.smack.Roster;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Presence;
@@ -169,6 +170,16 @@ public class FacebookServer {
         return connection.isSendPresence();
     }
 
+    /**
+     * Get Roster
+     * @return
+     */
+    public Roster getRoster(){
+        if (connection.isConnected() && connection.isAuthenticated()){
+            return connection.getRoster();
+        }
+        return null;
+    }
 
 
     /**
