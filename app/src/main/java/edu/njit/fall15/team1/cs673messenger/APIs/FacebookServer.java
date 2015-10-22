@@ -8,10 +8,13 @@ import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.Roster;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Presence;
 
 import java.io.File;
 import java.util.ArrayList;
+
+import edu.njit.fall15.team1.cs673messenger.models.Friend;
 
 /**
  * Singleton of Facebook Server
@@ -89,7 +92,25 @@ public class FacebookServer {
      * Set DisConnect
      */
     public void disConnect(){
-        connection.disconnect();
+        if (connection != null)
+            connection.disconnect();
+    }
+
+    public void sendMessage(Friend to, String message){
+        if (connection != null){
+            AsyncTask<String, Void, Boolean> asyncTask = new AsyncTask<String, Void, Boolean>() {
+                @Override
+                protected Boolean doInBackground(String... params) {
+                    String to = params[0];
+                    String message = params[1];
+                    Message msg = new Message(to, Message.Type.chat);
+                    msg.setBody(message);
+                    connection.sendPacket(msg);
+                    return true;
+                }
+            };
+            asyncTask.execute(to.getUser(), message);
+        }
     }
 
     /**

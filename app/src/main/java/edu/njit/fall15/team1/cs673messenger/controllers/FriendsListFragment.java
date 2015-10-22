@@ -8,11 +8,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.LinkedList;
 import java.util.List;
 
+import edu.njit.fall15.team1.cs673messenger.APIs.FacebookServer;
 import edu.njit.fall15.team1.cs673messenger.R;
 import edu.njit.fall15.team1.cs673messenger.models.Friend;
 import edu.njit.fall15.team1.cs673messenger.models.Friends;
@@ -47,6 +49,7 @@ public class FriendsListFragment extends ListFragment {
         setListAdapter(new ArrayAdapter<String>(getActivity(),
                 android.R.layout.simple_list_item_activated_1,
                 getFriendsData()));
+        getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
     }
 
     @Override
@@ -75,7 +78,6 @@ public class FriendsListFragment extends ListFragment {
         }
     }
 
-
     /**
      * ListView Adapter get data Method
      * @return List<String> ListView Datas
@@ -89,5 +91,17 @@ public class FriendsListFragment extends ListFragment {
         }
 
         return data;
+    }
+
+    /**
+     * List view touch event
+     * @param l
+     * @param v
+     * @param position
+     * @param id
+     */
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        FacebookServer.getInstance().sendMessage(friends.get(position),"Hello! I'm sending this message for test.");
     }
 }
