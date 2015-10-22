@@ -6,4 +6,5 @@ package edu.njit.fall15.team1.cs673messenger.APIs;
 public interface FacebookServerListener {
     void facebookConnected(Boolean isConnected);
     void facebookLogined(Boolean isLogin);
+    void facebookReceivedMessage(String from, String message);
 }

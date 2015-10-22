@@ -16,7 +16,6 @@ import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.util.StringUtils;
 
 import java.io.File;
-import java.util.ArrayList;
 
 import edu.njit.fall15.team1.cs673messenger.models.Friend;
 
@@ -49,16 +48,12 @@ public class FacebookServer implements PacketListener{
     /**
      * Contains all information and methods about the management of the connection.
      */
-    public XMPPConnection connection;
+    private XMPPConnection connection;
+    /**
+     * LinkedList of FacebookServerListener
+     */
+    private FBListeners fbListeners = new FBListeners();
 
-    /**
-     * Messages
-     */
-    private ArrayList<String> messages = new ArrayList();
-    /**
-     * Delegate Pattern
-     */
-    FacebookServerListener connectionListener = null;
 
     /**
      * Facebook server Connect
@@ -88,8 +83,7 @@ public class FacebookServer implements PacketListener{
             @Override
             protected void onPostExecute(Boolean result) {
                 Log.d("Jack","Facebook connect:"+connection.isConnected());
-                if (connectionListener != null)
-                    connectionListener.facebookConnected(connection.isConnected());
+                fbListeners.facebookConnected(connection.isConnected());
             }
         };
         asyncTask.execute(serverAddress);
@@ -144,8 +138,8 @@ public class FacebookServer implements PacketListener{
 
             @Override
             protected void onPostExecute(Boolean result) {
-                if (connectionListener != null && connection != null && connection.isConnected())
-                    connectionListener.facebookLogined(connection.isAuthenticated());
+                if (connection != null && connection.isConnected())
+                    fbListeners.facebookLogined(connection.isAuthenticated());
             }
         };
         asyncTask.execute(username, password);
@@ -216,14 +210,6 @@ public class FacebookServer implements PacketListener{
         return null;
     }
 
-
-    /**
-     * Set ConnectionListener
-     * @param listener
-     */
-    public void setConnectionListener(FacebookServerListener listener){
-        this.connectionListener = listener;
-    }
     /**
      * Set Connect Configration
      * @param host
@@ -269,8 +255,15 @@ public class FacebookServer implements PacketListener{
             from = StringUtils.parseBareAddress(msg.getFrom());
             message = msg.getBody();
 
-            Log.d("Jack",from+":"+message);
+            Log.d("Jack", from + ":" + message);
         }
+    }
+
+    public void addListeners(FacebookServerListener listener){
+        fbListeners.add(listener);
+    }
+    public void removeListeners(FacebookServerListener listener){
+        fbListeners.remove(listener);
     }
 
 }
