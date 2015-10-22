@@ -101,7 +101,6 @@ public class FacebookServer {
                         e.printStackTrace();
                         return false;
                     }
-
                 }
                 return true;
             }
