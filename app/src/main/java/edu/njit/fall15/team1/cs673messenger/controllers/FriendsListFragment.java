@@ -30,35 +30,14 @@ public class FriendsListFragment extends ListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        friends = friendsFactory.getFriends();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.friendlistfragment, container, false);
         return view;
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        friends = friendsFactory.getFriends();
-
-        int size = friends.size();
-        TextView textView = (TextView) getView().findViewById(R.id.textview);
-        if (size == 0){
-            textView.setText("No Friends");
-            textView.setEnabled(true);
-        }else{
-            textView.setEnabled(false);
-            ((ArrayAdapter<String>)getListAdapter()).notifyDataSetChanged();
-        }
-
-        for (Friend friend:friends) {
-            Log.d("Jack", friend.getProfileName() + "," +
-                    friend.getUser() + "," +
-                    friend.getStatus() + "," +
-                    friend.getType() + ".");
-        }
     }
 
     @Override
@@ -70,9 +49,40 @@ public class FriendsListFragment extends ListFragment {
                 getFriendsData()));
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.d("Jack","Display FriendListFragment");
+
+        friends.clear();
+        friends = friendsFactory.getFriends();
+
+        TextView textView = (TextView) getActivity().findViewById(R.id.textview);
+        if (friends.size() == 0){
+            textView.setText("No Friends");
+            textView.setEnabled(true);
+        }else{
+            textView.setEnabled(false);
+            ((ArrayAdapter<String>)getListAdapter()).notifyDataSetChanged();
+        }
+
+        //Jack test
+        for (Friend friend:friends) {
+            Log.d("Jack", friend.getProfileName() + "," +
+                    friend.getUser() + "," +
+                    friend.getStatus() + "," +
+                    friend.getType() + ".");
+        }
+    }
+
+
+    /**
+     * ListView Adapter get data Method
+     * @return List<String> ListView Datas
+     */
     private List<String> getFriendsData() {
         List<String> data = new LinkedList<>();
-        if (friends != null){
+        if (friends != null && friends.size() != 0){
             for (Friend friend:friends) {
                 data.add(friend.getProfileName());
             }
