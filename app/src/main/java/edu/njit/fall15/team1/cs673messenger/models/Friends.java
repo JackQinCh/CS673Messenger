@@ -21,7 +21,7 @@ public class Friends {
         Roster roster = FacebookServer.getInstance().getRoster();
 
         Collection<RosterEntry> entries = roster.getEntries();
-        Log.d("Jack", "Your Friend List detected: " + "\n\n" + entries.size() + " Friends :");
+        Log.d("Jack", "Your Friend List detected: " + entries.size() + " Friends :");
 
         for (RosterEntry entry : entries) {
             friends.add(new Friend(

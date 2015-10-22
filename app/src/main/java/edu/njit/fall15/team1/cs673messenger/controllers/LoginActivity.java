@@ -1,5 +1,6 @@
 package edu.njit.fall15.team1.cs673messenger.controllers;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -55,11 +56,11 @@ public class LoginActivity extends AppCompatActivity implements FacebookServerLi
     public void facebookLogined(Boolean isLogin) {
         Log.d("Jack","Login :"+isLogin);
         if (isLogin){
-//            Intent intent = new Intent();
-//            intent.setClass(LoginActivity.this, MainActivity.class);
-//            startActivity(intent);
-//
-//            this.finish();
+            Intent intent = new Intent();
+            intent.setClass(LoginActivity.this, MainActivity.class);
+            startActivity(intent);
+
+            this.finish();
         }
     }
 }
