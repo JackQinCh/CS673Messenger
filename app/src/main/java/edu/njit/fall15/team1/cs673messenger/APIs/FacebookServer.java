@@ -7,6 +7,7 @@ import android.util.Log;
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.XMPPConnection;
 import org.jivesoftware.smack.XMPPException;
+import org.jivesoftware.smack.packet.Presence;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -113,6 +114,59 @@ public class FacebookServer {
         };
         asyncTask.execute(username, password);
 
+    }
+
+    /**
+     * Set Facebook login status
+     * @param status
+     */
+    public void setActiveStatus(boolean status){
+        AsyncTask<Boolean, Void, Boolean> asyncTask = new AsyncTask<Boolean, Void, Boolean>() {
+            @Override
+            protected Boolean doInBackground(Boolean... params) {
+                Boolean status = params[0];
+                Presence presence;
+                if (status){
+                    presence = new Presence(Presence.Type.available);
+                }else {
+                    presence = new Presence(Presence.Type.unavailable);
+                }
+                try{
+                    connection.sendPacket(presence);
+                }catch (IllegalStateException e){
+                    return false;
+                }catch (NullPointerException e){
+                    return false;
+                }
+                return true;
+            }
+        };
+        asyncTask.execute(status);
+    }
+
+
+    /**
+     * Get connnection status;
+     * @return
+     */
+    public boolean isConnected(){
+        return connection.isConnected();
+    }
+
+    /**
+     * Get login status;
+     * @return
+     */
+    public boolean isLogin(){
+        return connection.isAuthenticated();
+    }
+
+    /**
+     * Get status;
+     * @return
+     */
+    public boolean getStatus(){
+        return connection.isSendPresence();
     }
 
 

@@ -2,6 +2,7 @@ package edu.njit.fall15.team1.cs673messenger.controllers;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
@@ -52,6 +53,7 @@ public class LoginActivity extends AppCompatActivity implements FacebookServerLi
 
     @Override
     public void facebookLogined(Boolean isLogin) {
+        Log.d("Jack","Login :"+isLogin);
         if (isLogin){
 //            Intent intent = new Intent();
 //            intent.setClass(LoginActivity.this, MainActivity.class);
