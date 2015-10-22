@@ -40,7 +40,7 @@ public class FacebookServer {
     /**
      * Contains all information and methods about the management of the connection.
      */
-    public XMPPConnection connection = null;
+    public XMPPConnection connection;
 
     /**
      * Messages
@@ -56,13 +56,15 @@ public class FacebookServer {
      * @param serverAddress
      */
     public void connect(String serverAddress){
-        connection = new XMPPConnection(setConnectConfig(serverAddress));
 
-        final AsyncTask<Void, Void, Boolean> asyncTask = new AsyncTask<Void, Void, Boolean>() {
+
+        final AsyncTask<String, Void, Boolean> asyncTask = new AsyncTask<String, Void, Boolean>() {
 
             @Override
-            protected Boolean doInBackground(Void... params) {
+            protected Boolean doInBackground(String... params) {
+                String serverAddress = params[0];
                 try {
+                    connection = new XMPPConnection(setConnectConfig(serverAddress));
                     connection.connect();
                 } catch (XMPPException e) {
                     e.printStackTrace();
@@ -73,13 +75,12 @@ public class FacebookServer {
 
             @Override
             protected void onPostExecute(Boolean result) {
-            //isConnectSuccess
-                Log.d("Jack","Facebook connect:"+result);
+                Log.d("Jack","Facebook connect:"+connection.isConnected());
                 if (connectionListener != null)
-                    connectionListener.facebookConnected(result);
+                    connectionListener.facebookConnected(connection.isConnected());
             }
         };
-        asyncTask.execute();
+        asyncTask.execute(serverAddress);
     }
 
     /**
@@ -107,8 +108,8 @@ public class FacebookServer {
 
             @Override
             protected void onPostExecute(Boolean result) {
-                if (connectionListener != null)
-                    connectionListener.facebookLogined(result);
+                if (connectionListener != null && connection != null && connection.isConnected())
+                    connectionListener.facebookLogined(connection.isAuthenticated());
             }
         };
         asyncTask.execute(username, password);
