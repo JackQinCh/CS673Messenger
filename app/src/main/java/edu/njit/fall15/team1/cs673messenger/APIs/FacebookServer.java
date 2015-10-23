@@ -4,7 +4,9 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.util.Log;
 
+import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.ConnectionConfiguration;
+import org.jivesoftware.smack.ConnectionCreationListener;
 import org.jivesoftware.smack.PacketListener;
 import org.jivesoftware.smack.Roster;
 import org.jivesoftware.smack.XMPPConnection;
@@ -23,7 +25,15 @@ import edu.njit.fall15.team1.cs673messenger.models.Friend;
  * Singleton of Facebook Server
  * Created by jack on 10/21/15.
  */
-public class FacebookServer implements PacketListener{
+public class FacebookServer implements PacketListener, ConnectionCreationListener{
+
+    @Override
+    public void connectionCreated(Connection connection) {
+        if (this.connection == connection){
+            Log.d("Jack","connectionCreated");
+            fbListeners.facebookConnected(true);
+        }
+    }
 
     /**
      * Instance holder
@@ -60,33 +70,31 @@ public class FacebookServer implements PacketListener{
      * @param serverAddress
      */
     public void connect(String serverAddress){
-        if (connection == null){
-            connection = new XMPPConnection(setConnectConfig(serverAddress));
-            connection.addPacketListener(this, new MessageTypeFilter(Message.Type.chat));
-        }
+        final String host = serverAddress;
 
-        final AsyncTask<String, Void, Boolean> asyncTask = new AsyncTask<String, Void, Boolean>() {
+        final AsyncTask<FacebookServer, Void, Void> asyncTask = new AsyncTask<FacebookServer, Void, Void>() {
 
             @Override
-            protected Boolean doInBackground(String... params) {
-                String serverAddress = params[0];
+            protected Void doInBackground(FacebookServer... params) {
+                PacketListener packetListener = params[0];
+                ConnectionCreationListener connectionCreationListener = params[0];
+                if (connection == null){
+                    connection = new XMPPConnection(setConnectConfig(host));
+                    connection.addPacketListener(packetListener, new MessageTypeFilter(Message.Type.chat));
+                    XMPPConnection.addConnectionCreationListener(connectionCreationListener);
+                }
                 try {
-//                    connection = new XMPPConnection(setConnectConfig(serverAddress));
                     connection.connect();
                 } catch (XMPPException e) {
                     e.printStackTrace();
-                    return false;
+                } catch (Exception e){
+                    e.printStackTrace();
                 }
-                return true;
+                return null;
             }
 
-            @Override
-            protected void onPostExecute(Boolean result) {
-                Log.d("Jack","Facebook connect:"+connection.isConnected());
-                fbListeners.facebookConnected(connection.isConnected());
-            }
         };
-        asyncTask.execute(serverAddress);
+        asyncTask.execute(this);
     }
 
     /**
@@ -99,15 +107,15 @@ public class FacebookServer implements PacketListener{
 
     public void sendMessage(Friend to, String message){
         if (connection != null){
-            AsyncTask<String, Void, Boolean> asyncTask = new AsyncTask<String, Void, Boolean>() {
+            AsyncTask<String, Void, Void> asyncTask = new AsyncTask<String, Void, Void>() {
                 @Override
-                protected Boolean doInBackground(String... params) {
+                protected Void doInBackground(String... params) {
                     String to = params[0];
                     String message = params[1];
                     Message msg = new Message(to, Message.Type.chat);
                     msg.setBody(message);
                     connection.sendPacket(msg);
-                    return true;
+                    return null;
                 }
             };
             asyncTask.execute(to.getUser(), message);
@@ -131,15 +139,19 @@ public class FacebookServer implements PacketListener{
                     } catch (XMPPException e) {
                         e.printStackTrace();
                         return false;
+                    } catch (Exception e){
+                        e.printStackTrace();
+                        return false;
                     }
+                }else {
+                    return false;
                 }
                 return true;
             }
 
             @Override
             protected void onPostExecute(Boolean result) {
-                if (connection != null && connection.isConnected())
-                    fbListeners.facebookLogined(connection.isAuthenticated());
+                fbListeners.facebookLogined(result);
             }
         };
         asyncTask.execute(username, password);

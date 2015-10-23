@@ -1,8 +1,8 @@
 package edu.njit.fall15.team1.cs673messenger.controllers;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -11,7 +11,7 @@ import edu.njit.fall15.team1.cs673messenger.APIs.FacebookServer;
 import edu.njit.fall15.team1.cs673messenger.APIs.FacebookServerListener;
 import edu.njit.fall15.team1.cs673messenger.R;
 
-public class LoginActivity extends AppCompatActivity implements FacebookServerListener{
+public class LoginActivity extends Activity implements FacebookServerListener{
     final String hostAddress = "chat.facebook.com";
 
     @Override
@@ -19,11 +19,16 @@ public class LoginActivity extends AppCompatActivity implements FacebookServerLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_interface);
 
-        FacebookServer.getInstance().setConnectionListener(this);
-        FacebookServer.getInstance().connect(hostAddress);
 
-//        XMPP login = new XMPP("chat.facebook.com", userName, password);
+        FacebookServer.getInstance().addListeners(this);
+        FacebookServer.getInstance().connect(hostAddress);
+//        XMPP login = new XMPP(hostAddress, userName, password);
 //        login.XMPPconnect();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
     }
 
     /**
@@ -31,14 +36,16 @@ public class LoginActivity extends AppCompatActivity implements FacebookServerLi
      * @param v
      */
     public void login(View v){
+        Log.d("Jack","Login button.");
         String userName = getETString(R.id.fbUsername);
         String password = getETString(R.id.fbPassword);
         if (!FacebookServer.getInstance().isConnected()){
             FacebookServer.getInstance().connect(hostAddress);
+            Log.d("Jack", "Login button: is not connected.");
+        }else {
+            FacebookServer.getInstance().login(userName, password);
+            Log.d("Jack", "Login button: login.");
         }
-
-        FacebookServer.getInstance().login(userName, password);
-
     }
 
     /**
@@ -53,7 +60,7 @@ public class LoginActivity extends AppCompatActivity implements FacebookServerLi
 
     @Override
     public void facebookConnected(Boolean isConnected) {
-
+        Log.d("Jack","Connection :"+isConnected);
     }
 
     @Override
@@ -69,5 +76,15 @@ public class LoginActivity extends AppCompatActivity implements FacebookServerLi
             FacebookServer.getInstance().disConnect();
             FacebookServer.getInstance().connect("chat.facebook.com");
         }
+    }
+
+    /**
+     * Receive message method
+     * @param from
+     * @param message
+     */
+    @Override
+    public void facebookReceivedMessage(String from, String message) {
+
     }
 }
