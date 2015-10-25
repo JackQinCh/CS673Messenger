@@ -43,7 +43,7 @@ public class ChattingWindowActivity extends Activity{
     private void initMessages() {
         messages.add(new ChatMessage(ChatMessage.MESSAGE_FROM, "I'm Zhonghua. You can call me Jack."));
         messages.add(new ChatMessage(ChatMessage.MESSAGE_TO, "hello"));
-        messages.add(new ChatMessage(ChatMessage.MESSAGE_FROM, "welcome me blog:http://blog.csdn.net/feiyangxiaomi"));
+        messages.add(new ChatMessage(ChatMessage.MESSAGE_FROM, "welcome me blog:http://jakeq.github.io/"));
         messages.add(new ChatMessage(ChatMessage.MESSAGE_TO, "hello"));
         messages.add(new ChatMessage(ChatMessage.MESSAGE_FROM, "hello"));
         messages.add(new ChatMessage(ChatMessage.MESSAGE_TO, "hello"));
