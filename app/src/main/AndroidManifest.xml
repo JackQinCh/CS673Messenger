@@ -25,6 +25,13 @@
             android:screenOrientation="portrait">
             <!-- Launcher Intent filter -->
         </activity>
+
+        <activity
+            android:name=".controllers.ChattingWindowActivity"
+            android:screenOrientation="portrait">
+            <!-- Launcher Intent filter -->
+        </activity>
+
     </application>
 
 </manifest>

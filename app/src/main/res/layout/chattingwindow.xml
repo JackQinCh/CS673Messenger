@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/chat_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusable="false"
+    android:focusableInTouchMode="false"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <ListView
+        android:id="@+id/chatting_history_lv"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1.0"
+        android:background="@null"
+        android:cacheColorHint="#00000000"
+        android:divider="@null"
+        android:scrollbars="vertical"
+        android:transcriptMode="alwaysScroll" >
+    </ListView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingRight="7dp" >
+
+        <EditText
+            android:id="@+id/text_editor"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginBottom="5.0dip"
+            android:layout_marginLeft="7.0dip"
+            android:layout_marginRight="7dp"
+            android:layout_marginTop="5.0dip"
+            android:layout_weight="1.0"
+            android:autoText="true"
+            android:capitalize="sentences"
+            android:focusable="true"
+            android:hint="Type something"
+            android:imeOptions="actionSend|flagNoEnterAction"
+            android:inputType="textCapSentences|textAutoCorrect|textMultiLine|textShortMessage"
+            android:maxLength="2000"
+            android:maxLines="8"
+            android:minHeight="34.0dip"
+            android:nextFocusRight="@+id/send_button"/>
+
+        <Button
+            android:gravity="center"
+            android:layout_gravity="center_vertical"
+            android:id="@+id/send_button"
+            android:paddingLeft="11.0dip"
+            android:paddingRight="11.0dip"
+            android:nextFocusLeft="@id/text_editor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Send" />
+    </LinearLayout>
+</LinearLayout>

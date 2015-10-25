@@ -1,6 +1,7 @@
 package edu.njit.fall15.team1.cs673messenger.controllers;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.util.Log;
@@ -14,7 +15,6 @@ import android.widget.TextView;
 import java.util.LinkedList;
 import java.util.List;
 
-import edu.njit.fall15.team1.cs673messenger.APIs.FacebookServer;
 import edu.njit.fall15.team1.cs673messenger.R;
 import edu.njit.fall15.team1.cs673messenger.models.Friend;
 import edu.njit.fall15.team1.cs673messenger.models.Friends;
@@ -102,6 +102,9 @@ public class FriendsListFragment extends ListFragment {
      */
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        FacebookServer.getInstance().sendMessage(friends.get(position),"Hello! I'm sending this message for test.");
+//        FacebookServer.getInstance().sendMessage(friends.get(position),"Hello! I'm sending this message for test.");
+        Intent intent = new Intent();
+        intent.setClass(FriendsListFragment.this.getActivity(), ChattingWindowActivity.class);
+        startActivity(intent);
     }
 }
