@@ -108,7 +108,7 @@ public class FriendsListFragment extends ListFragment {
 
         Intent intent = new Intent();
         intent.putExtra("FriendUser",friend.getUser());
-        intent.setClass(FriendsListFragment.this.getActivity(), ChattingWindowActivity.class);
+        intent.setClass(this.getActivity(), ChattingWindowActivity.class);
         startActivity(intent);
     }
 }

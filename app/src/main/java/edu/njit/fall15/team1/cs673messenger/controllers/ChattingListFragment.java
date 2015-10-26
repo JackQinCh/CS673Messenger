@@ -1,5 +1,6 @@
 package edu.njit.fall15.team1.cs673messenger.controllers;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
@@ -12,6 +13,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import edu.njit.fall15.team1.cs673messenger.R;
+import edu.njit.fall15.team1.cs673messenger.models.Friend;
 import edu.njit.fall15.team1.cs673messenger.models.MessageModel;
 import edu.njit.fall15.team1.cs673messenger.models.MessageModels;
 import edu.njit.fall15.team1.cs673messenger.models.RecentChatsListener;
@@ -74,5 +76,18 @@ public class ChattingListFragment extends ListFragment implements RecentChatsLis
     @Override
     public void receivedMessage(MessageModel messageModel) {
         ((ArrayAdapter<String>)getListAdapter()).notifyDataSetChanged();
+    }
+
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        Friend friend;
+        if (RecentChatsManager.getInstance().getRecentChats().size() != 0){
+            friend = RecentChatsManager.getInstance().getRecentChats().get(position).getWithWho();
+
+            Intent intent = new Intent();
+            intent.putExtra("FriendUser",friend.getUser());
+            intent.setClass(this.getActivity(), ChattingWindowActivity.class);
+            startActivity(intent);
+        }
     }
 }
