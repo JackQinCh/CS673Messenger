@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -29,29 +30,33 @@ public class ChattingWindowActivity extends Activity implements RecentChatsListe
     private ListView chatHistoryLv;
     private EditText textEditor;
     private ChattingAdapter chatHistoryAdapter;
-    private List<ChatMessage> messages = new LinkedList<>();
+    private List<ChatMessage> messages = new ArrayList<>();
     private Friend friend;
-    private MessageModels messageModels;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.chattingwindow);
 
+        Intent intent = getIntent();
+        String friendUser = intent.getStringExtra("FriendUser");
+
+        friend = findFriend(friendUser);
+        RecentChatsManager.getInstance().addListener(this);
+
+        Log.d("Jack", "Chatting with " + friend.getProfileName());
+
         chatHistoryLv = (ListView) findViewById(R.id.chatting_history_lv);
         setAdapterForThis();
 
         textEditor = (EditText) findViewById(R.id.text_editor);
 
-        Intent intent = getIntent();
-        String friendUser = intent.getStringExtra("FriendUser");
+    }
 
-        friend = findFriend(friendUser);
-        messageModels = RecentChatsManager.getInstance().getMessageModels(friend);
-        RecentChatsManager.getInstance().setListener(this);
-
-        Log.d("Jack","Chatting with "+friend.getProfileName());
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        RecentChatsManager.getInstance().removeListener(this);
     }
 
     /**
@@ -83,10 +88,8 @@ public class ChattingWindowActivity extends Activity implements RecentChatsListe
 
     // Initial message list data.
     private void initMessages() {
-//        messages.add(new ChatMessage(ChatMessage.MESSAGE_FROM, "I'm Zhonghua. You can call me Jack."));
-//        messages.add(new ChatMessage(ChatMessage.MESSAGE_TO, "hello"));
-//        messages.add(new ChatMessage(ChatMessage.MESSAGE_FROM, "welcome me blog:http://jakeq.github.io/"));
-
+        messages.clear();
+        messages.addAll(getData());
     }
 
     public void sendMessage(View v){
@@ -96,21 +99,43 @@ public class ChattingWindowActivity extends Activity implements RecentChatsListe
                 friend, new Date(), message);
         RecentChatsManager.getInstance().sendMessage(messageModel);
         //Display message.
-        messages.add(new ChatMessage(ChatMessage.MESSAGE_TO, message));
-        ((ChattingAdapter)chatHistoryLv.getAdapter()).notifyDataSetChanged();
+        initMessages();
+        chatHistoryAdapter.notifyDataSetChanged();
         //Clear input text view.
         textEditor.setText("");
 
     }
 
+    /**
+     * Received a message
+     * @param messageModel
+     */
     @Override
     public void receivedMessage(MessageModel messageModel) {
         Friend friend = messageModel.getFriend();
         String message = messageModel.getMessage();
         if (friend.equals(this.friend)){
-            Log.d("Jack", "Chatting window received a message from "+friend.getProfileName()+":"+message);
-            messages.add(new ChatMessage(ChatMessage.MESSAGE_FROM, message));
-            ((ChattingAdapter)chatHistoryLv.getAdapter()).notifyDataSetChanged();
+            Log.d("Jack", "Chatting window received a message from " + friend.getProfileName() + ":" + message);
+            initMessages();
+            chatHistoryAdapter.notifyDataSetChanged();
         }
     }
+
+    /**
+     * Get data for listView
+     * @return
+     */
+    private List<ChatMessage> getData(){
+        List<ChatMessage> list = new LinkedList<>();
+
+        MessageModels messageModels = RecentChatsManager.getInstance().getMessageModels(friend);
+
+        if (messageModels.getMessages().size() != 0){
+            for(MessageModel model:messageModels.getMessages()){
+                list.add(new ChatMessage(model.getType().value(), model.getMessage()));
+            }
+        }
+        return list;
+    }
+
 }

@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity{
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
 
-        FacebookServer.getInstance().addListeners(RecentChatsManager.getInstance());
+
 
     }
 

@@ -3,6 +3,7 @@ package edu.njit.fall15.team1.cs673messenger.models;
 import java.util.Date;
 import java.util.LinkedList;
 
+import edu.njit.fall15.team1.cs673messenger.APIs.FacebookServer;
 import edu.njit.fall15.team1.cs673messenger.APIs.FacebookServerListener;
 
 /**
@@ -11,10 +12,21 @@ import edu.njit.fall15.team1.cs673messenger.APIs.FacebookServerListener;
  */
 public class RecentChatsManager implements FacebookServerListener{
     private LinkedList<MessageModels> recentChats = new LinkedList<>();
-    private RecentChatsListener listener;
+    private LinkedList<RecentChatsListener> listeners = new LinkedList<>();
 
-    public void setListener(RecentChatsListener listener) {
-        this.listener = listener;
+    public LinkedList<MessageModels> getRecentChats() {
+        return recentChats;
+    }
+
+    public void addListener(RecentChatsListener listener) {
+        if (!listeners.contains(listener)){
+            listeners.add(listener);
+        }
+    }
+    public void removeListener(RecentChatsListener listener){
+        if (listeners.contains(listener)){
+            listeners.remove(listener);
+        }
     }
 
     @Override
@@ -33,7 +45,7 @@ public class RecentChatsManager implements FacebookServerListener{
     }
 
     private RecentChatsManager() {
-
+        FacebookServer.getInstance().addListeners(this);
     }
 
     public static RecentChatsManager getInstance(){
@@ -65,22 +77,21 @@ public class RecentChatsManager implements FacebookServerListener{
 
     @Override
     public void facebookReceivedMessage(String from, String message, Date time) {
-        if (recentChats.size() != 0){
-            for(MessageModels models:recentChats){
-                if(models.getWithWho().getUser().equals(from)){
+        if (recentChats.size() != 0) {
+            for (MessageModels models : recentChats) {
+                if (models.getWithWho().getUser().equals(from)) {
                     MessageModel model = new MessageModel(
                             MessageModel.MessageType.From,
                             models.getWithWho(),
                             time,
                             message);
                     models.addMessage(model);
-                    if (listener != null){
-                        listener.receivedMessage(model);
+                    if (listeners.size() != 0) {
+                        for (RecentChatsListener listener : listeners)
+                            listener.receivedMessage(model);
                     }
                 }
             }
         }
     }
-
-
 }

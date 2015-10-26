@@ -10,6 +10,10 @@ import edu.njit.fall15.team1.cs673messenger.APIs.FacebookServer;
  * Created by jack on 10/25/15.
  */
 public class MessageModels {
+    public LinkedList<MessageModel> getMessages() {
+        return messages;
+    }
+
     private LinkedList<MessageModel> messages = new LinkedList<>();
     private Friend withWho;
 

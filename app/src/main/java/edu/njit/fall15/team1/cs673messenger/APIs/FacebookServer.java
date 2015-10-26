@@ -19,6 +19,7 @@ import org.jivesoftware.smack.util.StringUtils;
 
 import java.io.File;
 import java.util.Date;
+import java.util.LinkedList;
 
 import edu.njit.fall15.team1.cs673messenger.models.Friend;
 
@@ -31,8 +32,11 @@ public class FacebookServer implements PacketListener, ConnectionCreationListene
     @Override
     public void connectionCreated(Connection connection) {
         if (this.connection == connection){
-            Log.d("Jack","connectionCreated");
-            fbListeners.facebookConnected(true);
+            Log.d("Jack", "connectionCreated");
+            if (listeners.size() != 0){
+                for (FacebookServerListener listener:listeners)
+                    listener.facebookConnected(true);
+            }
         }
     }
 
@@ -63,8 +67,19 @@ public class FacebookServer implements PacketListener, ConnectionCreationListene
     /**
      * LinkedList of FacebookServerListener
      */
-    private FBListeners fbListeners = new FBListeners();
+    private LinkedList<FacebookServerListener> listeners = new LinkedList<>();
 
+    public void addListeners(FacebookServerListener listener){
+        if (!listeners.contains(listener)){
+            listeners.add(listener);
+        }
+
+    }
+    public void removeListeners(FacebookServerListener listener){
+        if (listeners.contains(listener)){
+            listeners.remove(listener);
+        }
+    }
 
     /**
      * Facebook server Connect
@@ -152,7 +167,10 @@ public class FacebookServer implements PacketListener, ConnectionCreationListene
 
             @Override
             protected void onPostExecute(Boolean result) {
-                fbListeners.facebookLogined(result);
+                if (listeners.size() != 0){
+                    for (FacebookServerListener listener:listeners)
+                        listener.facebookLogined(result);
+                }
             }
         };
         asyncTask.execute(username, password);
@@ -267,17 +285,13 @@ public class FacebookServer implements PacketListener, ConnectionCreationListene
         if (msg.getBody() != null){
             from = StringUtils.parseBareAddress(msg.getFrom());
             message = msg.getBody();
-            fbListeners.facebookReceivedMessage(from, message, new Date());
+            if (listeners.size() != 0){
+                for (FacebookServerListener listener:listeners)
+                    listener.facebookReceivedMessage(from, message, new Date());
+            }
         }
     }
 
-    public void addListeners(FacebookServerListener listener){
-        if(!fbListeners.contains(listener))
-            fbListeners.add(listener);
-    }
-    public void removeListeners(FacebookServerListener listener){
-        if(fbListeners.contains(listener))
-            fbListeners.remove(listener);
-    }
+
 
 }

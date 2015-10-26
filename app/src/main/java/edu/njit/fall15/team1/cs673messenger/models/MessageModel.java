@@ -12,8 +12,17 @@ public class MessageModel {
     private String message;
 
     public enum MessageType{
-        From,
-        To
+        From(0), To(1);
+
+        private int _value;
+
+        private MessageType(int value){
+            _value = value;
+        }
+
+        public int value(){
+            return _value;
+        }
     }
 
     public MessageModel(MessageType type, Friend friend, Date time, String message) {

@@ -29,8 +29,9 @@ public class LoginActivity extends Activity implements FacebookServerListener{
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
+    protected void onDestroy() {
+        super.onDestroy();
+        FacebookServer.getInstance().removeListeners(this);
     }
 
     /**
