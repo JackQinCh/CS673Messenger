@@ -1,4 +1,4 @@
-package edu.njit.fall15.team1.cs673messenger.controllers;
+package edu.njit.fall15.team1.cs673messenger.models;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -10,7 +10,6 @@ import android.widget.TextView;
 import java.util.List;
 
 import edu.njit.fall15.team1.cs673messenger.R;
-import edu.njit.fall15.team1.cs673messenger.models.ChatMessage;
 
 /**
  * Created by jack on 10/25/15.
@@ -52,8 +51,8 @@ public class ChattingAdapter extends BaseAdapter {
             holder = new ViewHolder();
             if (message.getDirection() == ChatMessage.MESSAGE_FROM) {
                 holder.flag = ChatMessage.MESSAGE_FROM;
-
                 convertView = LayoutInflater.from(context).inflate(R.layout.chatting_item_from, null);
+
             } else {
                 holder.flag = ChatMessage.MESSAGE_TO;
                 convertView = LayoutInflater.from(context).inflate(R.layout.chatting_item_to, null);

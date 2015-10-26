@@ -1,5 +1,6 @@
 package edu.njit.fall15.team1.cs673messenger.APIs;
 
+import java.util.Date;
 import java.util.LinkedList;
 
 /**
@@ -7,10 +8,10 @@ import java.util.LinkedList;
  * Created by jack on 10/22/15.
  */
 public class FBListeners extends LinkedList<FacebookServerListener> {
-    void facebookReceivedMessage(String from, String message){
+    void facebookReceivedMessage(String from, String message, Date time){
         if (this.size() != 0){
             for (FacebookServerListener listener:this){
-                listener.facebookReceivedMessage(from, message);
+                listener.facebookReceivedMessage(from, message, time);
             }
         }
     }

@@ -103,7 +103,11 @@ public class FriendsListFragment extends ListFragment {
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
 //        FacebookServer.getInstance().sendMessage(friends.get(position),"Hello! I'm sending this message for test.");
+        Friend friend = friends.get(position);
+
+
         Intent intent = new Intent();
+        intent.putExtra("FriendUser",friend.getUser());
         intent.setClass(FriendsListFragment.this.getActivity(), ChattingWindowActivity.class);
         startActivity(intent);
     }

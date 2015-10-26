@@ -16,6 +16,7 @@ import java.util.List;
 
 import edu.njit.fall15.team1.cs673messenger.APIs.FacebookServer;
 import edu.njit.fall15.team1.cs673messenger.R;
+import edu.njit.fall15.team1.cs673messenger.models.RecentChatsManager;
 
 /**
  * Created by jack on 10/5/15.
@@ -39,6 +40,8 @@ public class MainActivity extends AppCompatActivity{
 
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
+
+        FacebookServer.getInstance().addListeners(RecentChatsManager.getInstance());
 
     }
 

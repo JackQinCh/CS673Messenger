@@ -5,7 +5,7 @@ import org.jivesoftware.smack.packet.RosterPacket;
 /**
  * Created by jack on 10/22/15.
  */
-public class Friend {
+public class Friend{
     private String user;
     private String profileName;
     private RosterPacket.ItemType type;
@@ -32,5 +32,14 @@ public class Friend {
 
     public RosterPacket.ItemStatus getStatus() {
         return status;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        Friend friend = (Friend) o;
+        if (friend.getUser().equals(this.user)){
+            return true;
+        }
+        return false;
     }
 }

@@ -18,6 +18,7 @@ import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.util.StringUtils;
 
 import java.io.File;
+import java.util.Date;
 
 import edu.njit.fall15.team1.cs673messenger.models.Friend;
 
@@ -266,16 +267,17 @@ public class FacebookServer implements PacketListener, ConnectionCreationListene
         if (msg.getBody() != null){
             from = StringUtils.parseBareAddress(msg.getFrom());
             message = msg.getBody();
-
-            Log.d("Jack", from + ":" + message);
+            fbListeners.facebookReceivedMessage(from, message, new Date());
         }
     }
 
     public void addListeners(FacebookServerListener listener){
-        fbListeners.add(listener);
+        if(!fbListeners.contains(listener))
+            fbListeners.add(listener);
     }
     public void removeListeners(FacebookServerListener listener){
-        fbListeners.remove(listener);
+        if(fbListeners.contains(listener))
+            fbListeners.remove(listener);
     }
 
 }

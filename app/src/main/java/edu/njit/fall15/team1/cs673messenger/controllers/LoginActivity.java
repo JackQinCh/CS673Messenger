@@ -7,6 +7,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 
+import java.util.Date;
+
 import edu.njit.fall15.team1.cs673messenger.APIs.FacebookServer;
 import edu.njit.fall15.team1.cs673messenger.APIs.FacebookServerListener;
 import edu.njit.fall15.team1.cs673messenger.R;
@@ -78,13 +80,9 @@ public class LoginActivity extends Activity implements FacebookServerListener{
         }
     }
 
-    /**
-     * Receive message method
-     * @param from
-     * @param message
-     */
     @Override
-    public void facebookReceivedMessage(String from, String message) {
+    public void facebookReceivedMessage(String from, String message, Date time) {
 
     }
+
 }

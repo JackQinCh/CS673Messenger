@@ -15,9 +15,9 @@ import edu.njit.fall15.team1.cs673messenger.APIs.FacebookServer;
  */
 public class Friends {
 
-    private LinkedList<Friend> friends = new LinkedList<Friend>();
+    public LinkedList<Friend> initFriends(){
+        LinkedList<Friend> friends = new LinkedList<Friend>();
 
-    public void initFriends(){
         Roster roster = FacebookServer.getInstance().getRoster();
 
         Collection<RosterEntry> entries = roster.getEntries();
@@ -30,10 +30,10 @@ public class Friends {
                     entry.getName(),
                     entry.getType()));
         }
+        return friends;
     }
 
     public LinkedList<Friend> getFriends() {
-        initFriends();
-        return friends;
+        return initFriends();
     }
 }
