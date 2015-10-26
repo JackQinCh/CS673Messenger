@@ -15,7 +15,6 @@ import edu.njit.fall15.team1.cs673messenger.R;
  */
 public class SettingFragment extends Fragment {
     public SettingFragment(){
-
     }
 
     @Override
@@ -28,4 +27,5 @@ public class SettingFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.settingfragment, container, false);
     }
+
 }

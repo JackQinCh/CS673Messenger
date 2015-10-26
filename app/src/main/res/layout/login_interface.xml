@@ -51,6 +51,7 @@
         android:layout_marginTop="44dp"
         android:minHeight="120dp"
         android:minWidth="120dp"
-        android:background="@android:color/darker_gray" />
+        android:background="@android:color/darker_gray"
+        android:layout_alignParentEnd="false" />
 
 </RelativeLayout>
