@@ -49,6 +49,7 @@ public class FriendListItemAdapter extends ArrayAdapter<Friend> {
 
         // 4. Set the text for textView
         profileName.setText(friends.get(position).getProfileName());
+        activeStatus.setText(friends.get(position).getType().toString());
         if (friends.get(position).getStatus() == RosterPacket.ItemStatus.SUBSCRIPTION_PENDING){
             activeStatus.setText(getContext().getText(R.string.status_active));
         }
