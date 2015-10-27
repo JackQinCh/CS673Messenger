@@ -1,4 +1,6 @@
-package edu.njit.fall15.team1.cs673messenger.models;
+package edu.njit.fall15.team1.cs673messenger.APIs;
+
+import edu.njit.fall15.team1.cs673messenger.models.MessageModel;
 
 /**
  * Notify interface view to change text.

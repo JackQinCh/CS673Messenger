@@ -1,4 +1,4 @@
-package edu.njit.fall15.team1.cs673messenger.controllers;
+package edu.njit.fall15.team1.cs673messenger.controllers.Activities;
 
 import android.app.Activity;
 import android.content.Intent;

@@ -1,4 +1,4 @@
-package edu.njit.fall15.team1.cs673messenger.controllers;
+package edu.njit.fall15.team1.cs673messenger.controllers.Activities;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -15,13 +15,13 @@ import java.util.List;
 
 import edu.njit.fall15.team1.cs673messenger.R;
 import edu.njit.fall15.team1.cs673messenger.models.ChatMessage;
-import edu.njit.fall15.team1.cs673messenger.models.ChattingAdapter;
+import edu.njit.fall15.team1.cs673messenger.controllers.Adapters.ChattingAdapter;
 import edu.njit.fall15.team1.cs673messenger.models.Friend;
 import edu.njit.fall15.team1.cs673messenger.models.Friends;
 import edu.njit.fall15.team1.cs673messenger.models.MessageModel;
 import edu.njit.fall15.team1.cs673messenger.models.MessageModels;
-import edu.njit.fall15.team1.cs673messenger.models.RecentChatsListener;
-import edu.njit.fall15.team1.cs673messenger.models.RecentChatsManager;
+import edu.njit.fall15.team1.cs673messenger.APIs.RecentChatsListener;
+import edu.njit.fall15.team1.cs673messenger.APIs.RecentChatsManager;
 
 /**
  * Created by jack on 10/25/15.

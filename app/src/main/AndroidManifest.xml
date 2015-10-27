@@ -11,7 +11,7 @@
         android:theme="@style/MyMaterialTheme">
 
         <activity
-            android:name=".controllers.LoginActivity"
+            android:name=".controllers.Activities.LoginActivity"
             android:logo="@mipmap/ic_launcher"
             android:screenOrientation="portrait">
             <intent-filter>
@@ -21,13 +21,13 @@
         </activity>
 
         <activity
-            android:name=".controllers.MainActivity"
+            android:name=".controllers.Activities.MainActivity"
             android:screenOrientation="portrait">
             <!-- Launcher Intent filter -->
         </activity>
 
         <activity
-            android:name=".controllers.ChattingWindowActivity"
+            android:name=".controllers.Activities.ChattingWindowActivity"
             android:screenOrientation="portrait">
             <!-- Launcher Intent filter -->
         </activity>

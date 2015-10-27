@@ -1,4 +1,4 @@
-package edu.njit.fall15.team1.cs673messenger.controllers;
+package edu.njit.fall15.team1.cs673messenger.controllers.Fragments;
 
 
 import android.content.Intent;
@@ -15,6 +15,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import edu.njit.fall15.team1.cs673messenger.R;
+import edu.njit.fall15.team1.cs673messenger.controllers.Activities.ChattingWindowActivity;
+import edu.njit.fall15.team1.cs673messenger.controllers.Adapters.FriendListItemAdapter;
 import edu.njit.fall15.team1.cs673messenger.models.Friend;
 import edu.njit.fall15.team1.cs673messenger.models.Friends;
 

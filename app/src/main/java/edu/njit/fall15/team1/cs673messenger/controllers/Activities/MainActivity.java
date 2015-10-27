@@ -1,4 +1,4 @@
-package edu.njit.fall15.team1.cs673messenger.controllers;
+package edu.njit.fall15.team1.cs673messenger.controllers.Activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,7 +16,10 @@ import java.util.List;
 
 import edu.njit.fall15.team1.cs673messenger.APIs.FacebookServer;
 import edu.njit.fall15.team1.cs673messenger.R;
-import edu.njit.fall15.team1.cs673messenger.models.RecentChatsManager;
+import edu.njit.fall15.team1.cs673messenger.controllers.Fragments.ChattingListFragment;
+import edu.njit.fall15.team1.cs673messenger.controllers.Fragments.GroupChatFragment;
+import edu.njit.fall15.team1.cs673messenger.controllers.Fragments.FriendsListFragment;
+import edu.njit.fall15.team1.cs673messenger.controllers.Fragments.SettingFragment;
 
 /**
  * Created by jack on 10/5/15.
