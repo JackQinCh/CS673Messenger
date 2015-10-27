@@ -8,7 +8,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -46,9 +45,8 @@ public class FriendsListFragment extends ListFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        setListAdapter(new ArrayAdapter<String>(getActivity(),
-                android.R.layout.simple_list_item_activated_1,
-                getFriendsData()));
+        FriendListItemAdapter adapter = new FriendListItemAdapter(this.getContext(), getFriendsData());
+        setListAdapter(adapter);
         getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
     }
 
@@ -57,8 +55,6 @@ public class FriendsListFragment extends ListFragment {
         super.onStart();
         Log.d("Jack","Display FriendListFragment");
 
-        friends.clear();
-        friends = friendsFactory.getFriends();
 
         TextView textView = (TextView) getActivity().findViewById(R.id.textview);
         if (friends.size() == 0){
@@ -66,7 +62,7 @@ public class FriendsListFragment extends ListFragment {
             textView.setEnabled(true);
         }else{
             textView.setEnabled(false);
-            ((ArrayAdapter<String>)getListAdapter()).notifyDataSetChanged();
+            ((FriendListItemAdapter)getListAdapter()).notifyDataSetChanged();
         }
 
         //Jack test
@@ -82,15 +78,8 @@ public class FriendsListFragment extends ListFragment {
      * ListView Adapter get data Method
      * @return List<String> ListView Datas
      */
-    private List<String> getFriendsData() {
-        List<String> data = new LinkedList<>();
-        if (friends != null && friends.size() != 0){
-            for (Friend friend:friends) {
-                data.add(friend.getProfileName());
-            }
-        }
-
-        return data;
+    private List<Friend> getFriendsData() {
+        return friendsFactory.getFriends();
     }
 
     /**

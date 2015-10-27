@@ -16,7 +16,7 @@ import edu.njit.fall15.team1.cs673messenger.APIs.FacebookServer;
 public class Friends {
 
     public LinkedList<Friend> initFriends(){
-        LinkedList<Friend> friends = new LinkedList<Friend>();
+        LinkedList<Friend> friends = new LinkedList<>();
 
         Roster roster = FacebookServer.getInstance().getRoster();
 
