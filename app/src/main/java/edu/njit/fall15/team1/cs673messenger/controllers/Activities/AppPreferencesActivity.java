@@ -1,4 +1,4 @@
-package edu.njit.fall15.team1.cs673messenger.XMPP;
+package edu.njit.fall15.team1.cs673messenger.controllers.Activities;
 
 import android.os.Bundle;
 import android.preference.PreferenceActivity;

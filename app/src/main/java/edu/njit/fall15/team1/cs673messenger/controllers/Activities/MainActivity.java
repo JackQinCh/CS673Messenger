@@ -16,7 +16,6 @@ import java.util.List;
 
 import edu.njit.fall15.team1.cs673messenger.APIs.FacebookServer;
 import edu.njit.fall15.team1.cs673messenger.R;
-import edu.njit.fall15.team1.cs673messenger.XMPP.AppPreferencesActivity;
 import edu.njit.fall15.team1.cs673messenger.controllers.Fragments.ChattingListFragment;
 import edu.njit.fall15.team1.cs673messenger.controllers.Fragments.FriendsListFragment;
 import edu.njit.fall15.team1.cs673messenger.controllers.Fragments.GroupChatFragment;

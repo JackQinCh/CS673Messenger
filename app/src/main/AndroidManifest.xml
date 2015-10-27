@@ -37,7 +37,7 @@
         </activity>
 
         <activity
-            android:name=".XMPP.AppPreferencesActivity"
+            android:name=".controllers.Activities.AppPreferencesActivity"
             android:screenOrientation="portrait">
             <!-- Launcher Intent filter -->
         </activity>
