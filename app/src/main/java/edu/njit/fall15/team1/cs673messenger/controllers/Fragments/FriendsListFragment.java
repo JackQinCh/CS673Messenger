@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.List;
 
@@ -58,6 +59,8 @@ public class FriendsListFragment extends ListFragment {
      * Refresh friends data
      */
     private void refreshFriends(){
+        TextView numOfFriend = (TextView)getActivity().findViewById(R.id.numberOfFriendLabel);
+        numOfFriend.setText("You friends("+friendsFactory.getFriends().size()+")");
         ((FriendListItemAdapter)getListAdapter()).notifyDataSetChanged();
         friends = getFriendsData();
     }
@@ -67,6 +70,7 @@ public class FriendsListFragment extends ListFragment {
      * @return List<String> ListView Datas
      */
     private List<Friend> getFriendsData() {
+
         return friendsFactory.getFriends();
     }
 

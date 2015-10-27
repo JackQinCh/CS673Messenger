@@ -4,24 +4,20 @@
         android:title="User Name "
         android:summary="Account Information"
         android:selectable="false"
-        android:key="username4settings" />
-  <!--  <EditTextPreference android:title="Your Name"
-        android:key="username"
-        android:summary="Please provide your username"></EditTextPreference> -->
+        android:key="usernameDisplay" />
+
     <CheckBoxPreference
         android:title="Notify Me"
         android:defaultValue="true"
         android:summary="This option if selected will allow the application to notify you about new messages."
         android:key="notifyMe" />
-    <ListPreference
+
+    <SwitchPreference
         android:title="My Status"
-        android:summary="%s"
-        android:key="downloadType"
-        android:defaultValue="1"
-        android:entries="@array/listArray"
-        android:entryValues="@array/listValues" />
-    <!--  <SwitchPreference android:title="My Status"
-          android:summary="Select you are online or offline"
-          android:defaultValue="true"
-          android:key="myStatus" /> -->
+        android:key="changeStatusSetting"
+        android:summaryOn="I am online."
+        android:summaryOff="I am offline."
+        android:defaultValue="true"
+        />
+
 </PreferenceScreen>

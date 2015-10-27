@@ -9,7 +9,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@android:id/list"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/numberOfFriendLabel" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="You friends(0)"
+        android:id="@+id/numberOfFriendLabel"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_alignParentStart="true"
+        android:paddingTop="3dp"
+        android:paddingLeft="3dp" />
 
 </RelativeLayout>
