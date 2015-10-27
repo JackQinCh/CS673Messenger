@@ -1,4 +1,4 @@
-package edu.njit.fall15.team1.cs673messenger.models;
+package edu.njit.fall15.team1.cs673messenger.controllers.Adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -10,6 +10,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import edu.njit.fall15.team1.cs673messenger.R;
+import edu.njit.fall15.team1.cs673messenger.models.ChatMessage;
 
 /**
  * Created by jack on 10/25/15.

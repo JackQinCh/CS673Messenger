@@ -1,4 +1,4 @@
-package edu.njit.fall15.team1.cs673messenger.controllers;
+package edu.njit.fall15.team1.cs673messenger.controllers.Activities;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import java.util.Date;
 
@@ -14,15 +15,13 @@ import edu.njit.fall15.team1.cs673messenger.APIs.FacebookServerListener;
 import edu.njit.fall15.team1.cs673messenger.R;
 
 public class LoginActivity extends Activity implements FacebookServerListener{
-    final String hostAddress = "chat.facebook.com";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_interface);
 
         FacebookServer.getInstance().addListeners(this);
-        FacebookServer.getInstance().connect(hostAddress);
+//        FacebookServer.getInstance().connect(hostAddress);
 
     }
 
@@ -37,15 +36,15 @@ public class LoginActivity extends Activity implements FacebookServerListener{
      * @param v
      */
     public void login(View v){
-        Log.d("Jack","Login button.");
+        Log.d(this.getClass().getSimpleName(),"Login button.");
         String userName = getETString(R.id.fbUsername);
         String password = getETString(R.id.fbPassword);
         if (!FacebookServer.getInstance().isConnected()){
-            FacebookServer.getInstance().connect(hostAddress);
-            Log.d("Jack", "Login button: is not connected.");
+            FacebookServer.getInstance().connect(getString(R.string.facebook_server));
+            Log.d(this.getClass().getSimpleName(), "Login button: is not connected.");
         }else {
             FacebookServer.getInstance().login(userName, password);
-            Log.d("Jack", "Login button: login.");
+            Log.d(this.getClass().getSimpleName(), "Login button: login.");
         }
     }
 
@@ -61,6 +60,7 @@ public class LoginActivity extends Activity implements FacebookServerListener{
 
     @Override
     public void facebookConnected(Boolean isConnected) {
+
         Log.d("Jack","Connection :"+isConnected);
     }
 
@@ -75,7 +75,8 @@ public class LoginActivity extends Activity implements FacebookServerListener{
             this.finish();
         }else {
             FacebookServer.getInstance().disConnect();
-            FacebookServer.getInstance().connect("chat.facebook.com");
+            FacebookServer.getInstance().connect(getString(R.string.facebook_server));
+            Toast.makeText(this, "Please try again.", Toast.LENGTH_SHORT).show();
         }
     }
 

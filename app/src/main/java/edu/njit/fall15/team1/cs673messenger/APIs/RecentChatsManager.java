@@ -1,10 +1,11 @@
-package edu.njit.fall15.team1.cs673messenger.models;
+package edu.njit.fall15.team1.cs673messenger.APIs;
 
 import java.util.Date;
 import java.util.LinkedList;
 
-import edu.njit.fall15.team1.cs673messenger.APIs.FacebookServer;
-import edu.njit.fall15.team1.cs673messenger.APIs.FacebookServerListener;
+import edu.njit.fall15.team1.cs673messenger.models.Friend;
+import edu.njit.fall15.team1.cs673messenger.models.MessageModel;
+import edu.njit.fall15.team1.cs673messenger.models.MessageModels;
 
 /**
  * RecentChatsManager is a Singleton, manages recent chat lists.
