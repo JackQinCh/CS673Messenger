@@ -130,7 +130,10 @@ public class XMPP {
                         for (RosterEntry entry : entries) {
                             String user = entry.getUser();
                             String name = entry.getName();
-                            Log.i("DENIS", "Friend's username is " + name + " [" + entry.getStatus() + "] " + user + " Type: " + entry.getType());
+                            //gives the availability of user.
+                            Presence friendPresence = connection.getRoster().getPresence(user);
+                            //friendPresence.getType();
+                            Log.i("DENIS", "Friend's username is " + name + " [" + friendPresence.getType() + "] " + user + " Type: " + entry.getType());
                         }
 
                         Log.i("DENIS", "Message List Starts");
