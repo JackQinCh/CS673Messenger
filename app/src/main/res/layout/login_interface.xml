@@ -42,16 +42,4 @@
         android:clickable="true"
         android:onClick="login" />
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/imageView"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="44dp"
-        android:minHeight="120dp"
-        android:minWidth="120dp"
-        android:background="@android:color/darker_gray"
-        android:layout_alignParentEnd="false" />
-
 </RelativeLayout>

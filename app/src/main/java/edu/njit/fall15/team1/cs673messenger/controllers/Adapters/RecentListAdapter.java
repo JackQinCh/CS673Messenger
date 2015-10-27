@@ -1,7 +1,6 @@
 package edu.njit.fall15.team1.cs673messenger.controllers.Adapters;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,6 +53,7 @@ public class RecentListAdapter extends ArrayAdapter<MessageModels> {
 
         name.setText(modelses.get(position).getWithWho().getProfileName());
         if (modelses.get(position).getMessages().size() != 0){
+            //Set content
             MessageModel messageModel = modelses.get(position).getMessages().getLast();
             if (messageModel.getType() == MessageModel.MessageType.From){
                 String contentString = ":" + messageModel.getMessage();
@@ -62,16 +62,10 @@ public class RecentListAdapter extends ArrayAdapter<MessageModels> {
                 String contentString = "You:" + messageModel.getMessage();
                 content.setText(contentString);
             }
-
+            //Set Time
             SimpleDateFormat sF = new SimpleDateFormat("yyyy MMM d");
-
             String currentDate = sF.format(new Date());
-            Log.d("Jack","currentDate:"+currentDate);
-
-
             String messageDate = sF.format(messageModel.getTime());
-
-            Log.d("Jack","messageDate:"+messageDate);
 
             if (!currentDate.equals(messageDate)){
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MMM d");
@@ -80,7 +74,6 @@ public class RecentListAdapter extends ArrayAdapter<MessageModels> {
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
                 time.setText(simpleDateFormat.format(messageModel.getTime()));
             }
-
         }else {
             content.setText("");
             time.setText("");

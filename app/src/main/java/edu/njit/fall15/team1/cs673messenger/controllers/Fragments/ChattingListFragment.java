@@ -25,7 +25,6 @@ import edu.njit.fall15.team1.cs673messenger.models.MessageModels;
 public class ChattingListFragment extends ListFragment implements RecentChatsListener{
 
     public ChattingListFragment(){
-
     }
     @Override
     public void onCreate(Bundle savedInstanceState) {

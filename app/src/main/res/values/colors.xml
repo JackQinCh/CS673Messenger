@@ -6,8 +6,12 @@
     <color name="windowBackground">#FFFFFF</color>
     <color name="navigationBarColor">#000000</color>
     <color name="colorAccent">#c8e8ff</color>
-    <color name="red">#FF0000</color>
-    <color name="green">#00FF00</color>
-    <color name="lightBlue">#ADD7D2</color>
+    <color name="red">#F30000</color>
+    <color name="green">#7c840a</color>
+    <color name="blue">#71b4e1</color>
+    <color name="darkPink">#58354b</color>
     <color name="orange">#E38700</color>
+    <color name="sfGreen">#30671E</color>
+    <color name="flotsam">#68a57b</color>
+    <color name="strikingMidnight">#2a213e</color>
 </resources>
