@@ -7,8 +7,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import org.jivesoftware.smack.packet.RosterPacket;
-
 import java.util.List;
 
 import edu.njit.fall15.team1.cs673messenger.R;
@@ -49,13 +47,7 @@ public class FriendListItemAdapter extends ArrayAdapter<Friend> {
 
         // 4. Set the text for textView
         profileName.setText(friends.get(position).getProfileName());
-        activeStatus.setText(friends.get(position).getType().toString());
-        if (friends.get(position).getStatus() == RosterPacket.ItemStatus.SUBSCRIPTION_PENDING){
-            activeStatus.setText(getContext().getText(R.string.status_active));
-        }
-        else if(friends.get(position).getStatus() == RosterPacket.ItemStatus.UNSUBSCRIPTION_PENDING){
-            activeStatus.setText(getContext().getText(R.string.status_inactive));
-        }
+        activeStatus.setText(friends.get(position).getStatus().toString());
 
         // 5. retrn rowView
         return rowView;

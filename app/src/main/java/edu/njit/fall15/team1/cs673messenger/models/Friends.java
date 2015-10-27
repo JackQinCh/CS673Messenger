@@ -4,6 +4,7 @@ import android.util.Log;
 
 import org.jivesoftware.smack.Roster;
 import org.jivesoftware.smack.RosterEntry;
+import org.jivesoftware.smack.packet.Presence;
 
 import java.util.LinkedList;
 
@@ -29,7 +30,7 @@ public class Friends {
      */
     private LinkedList<Friend> initFriends(){
         LinkedList<Friend> friends = new LinkedList<>();
-        Roster roster = FacebookServer.getInstance().getRoster();;
+        Roster roster = FacebookServer.getInstance().getRoster();
 
         //Log
         try{
@@ -40,13 +41,14 @@ public class Friends {
             }else{
                 Log.i(Friends.class.getSimpleName(), "There are " + num + " friends have been detected.");
                 for (RosterEntry entry : roster.getEntries()) {
+                    Presence friendPresence = roster.getPresence(entry.getUser());
                     friends.add(new Friend(
-                            entry.getStatus(),
+                            friendPresence.getType(),
                             entry.getUser(),
                             entry.getName(),
                             entry.getType()));
                     Log.i(Friends.class.getSimpleName(),
-                            entry.getName() + "," + entry.getUser() + "," + entry.getType() + "," + entry.getStatus());
+                            entry.getName() + "," + entry.getUser() + "," + entry.getType() + "," + friendPresence.getType());
                 }
             }
         }catch (NullPointerException e){

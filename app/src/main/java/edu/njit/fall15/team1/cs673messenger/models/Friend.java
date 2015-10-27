@@ -1,5 +1,6 @@
 package edu.njit.fall15.team1.cs673messenger.models;
 
+import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.packet.RosterPacket;
 
 /**
@@ -9,9 +10,9 @@ public class Friend{
     private String user;
     private String profileName;
     private RosterPacket.ItemType type;
-    private RosterPacket.ItemStatus status;
+    private Presence.Type status;
 
-    public Friend(RosterPacket.ItemStatus status, String user, String profileName, RosterPacket.ItemType type) {
+    public Friend(Presence.Type status, String user, String profileName, RosterPacket.ItemType type) {
         this.status = status;
         this.user = user;
         this.profileName = profileName;
@@ -30,7 +31,7 @@ public class Friend{
         return type;
     }
 
-    public RosterPacket.ItemStatus getStatus() {
+    public Presence.Type getStatus() {
         return status;
     }
 
