@@ -5,9 +5,7 @@
         android:summary="Account Information"
         android:selectable="false"
         android:key="usernameDisplay" />
-    <!--  <EditTextPreference android:title="Your Name"
-          android:key="username"
-          android:summary="Please provide your username"></EditTextPreference> -->
+
     <CheckBoxPreference
         android:title="Notify Me"
         android:defaultValue="true"

@@ -23,10 +23,8 @@ public class AppPreferencesActivity extends PreferenceActivity{
     }
 
     public static class MyPreferenceFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener{
-        SharedPreferences sp;
         @Override
-        public void onCreate(final Bundle savedInstanceState)
-        {
+        public void onCreate(final Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.preferences);
 
@@ -49,6 +47,7 @@ public class AppPreferencesActivity extends PreferenceActivity{
         @Override
         public void onDestroy() {
             super.onDestroy();
+            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
             sp.unregisterOnSharedPreferenceChangeListener(this);
         }
 
