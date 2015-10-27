@@ -1,17 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <Preference android:title="User Name "
+    <Preference
+        android:title="User Name "
         android:summary="Account Information"
         android:selectable="false"
         android:key="username4settings" />
   <!--  <EditTextPreference android:title="Your Name"
         android:key="username"
         android:summary="Please provide your username"></EditTextPreference> -->
-    <CheckBoxPreference android:title="Notify Me"
+    <CheckBoxPreference
+        android:title="Notify Me"
         android:defaultValue="true"
         android:summary="This option if selected will allow the application to notify you about new messages."
         android:key="notifyMe" />
-    <ListPreference     android:title="My Status"
+    <ListPreference
+        android:title="My Status"
         android:summary="%s"
         android:key="downloadType"
         android:defaultValue="1"

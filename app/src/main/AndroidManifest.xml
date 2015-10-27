@@ -32,6 +32,12 @@
             <!-- Launcher Intent filter -->
         </activity>
 
+        <activity
+            android:name=".XMPP.AppPreferencesActivity"
+            android:screenOrientation="portrait">
+            <!-- Launcher Intent filter -->
+        </activity>
+
     </application>
 
 </manifest>

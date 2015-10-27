@@ -16,7 +16,7 @@ import java.util.List;
 
 import edu.njit.fall15.team1.cs673messenger.APIs.FacebookServer;
 import edu.njit.fall15.team1.cs673messenger.R;
-import edu.njit.fall15.team1.cs673messenger.models.RecentChatsManager;
+import edu.njit.fall15.team1.cs673messenger.XMPP.AppPreferencesActivity;
 
 /**
  * Created by jack on 10/5/15.
@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity{
         adapter.addFragment(new ChattingListFragment(), getString(R.string.chatlist));
         adapter.addFragment(new FriendsListFragment(), getString(R.string.friend));
         adapter.addFragment(new GroupChatFragment(), getString(R.string.groupchat));
-        adapter.addFragment(new SettingFragment(), getString(R.string.setting));
+//        adapter.addFragment((Fragment)(new SettingFragment()), getString(R.string.setting));
         viewPager.setAdapter(adapter);
     }
     //ViewPagerAdapter Class
@@ -101,11 +101,16 @@ public class MainActivity extends AppCompatActivity{
 
         switch (id){
             case R.id.action_signout:
-                Intent intent = new Intent();
-                intent.setClass(MainActivity.this, LoginActivity.class);
-                startActivity(intent);
+                Intent intentSignout = new Intent();
+                intentSignout.setClass(MainActivity.this, LoginActivity.class);
+                startActivity(intentSignout);
                 FacebookServer.getInstance().disConnect();
                 this.finish();
+                return true;
+            case R.id.action_setting:
+                Intent intentSetting = new Intent();
+                intentSetting.setClass(MainActivity.this, AppPreferencesActivity.class);
+                startActivity(intentSetting);
                 return true;
             default:
                 break;

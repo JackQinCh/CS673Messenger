@@ -50,7 +50,6 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="44dp"
         android:minHeight="120dp"
-        android:minWidth="120dp"
-        android:background="@drawable/fblogo" />
+        android:minWidth="120dp" />
 
 </RelativeLayout>
