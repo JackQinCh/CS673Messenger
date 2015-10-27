@@ -21,11 +21,9 @@ public class LoginActivity extends Activity implements FacebookServerListener{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_interface);
 
-
         FacebookServer.getInstance().addListeners(this);
         FacebookServer.getInstance().connect(hostAddress);
-//        XMPP login = new XMPP(hostAddress, userName, password);
-//        login.XMPPconnect();
+
     }
 
     @Override
