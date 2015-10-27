@@ -174,7 +174,6 @@ public class FacebookServer implements PacketListener, ConnectionCreationListene
             }
         };
         asyncTask.execute(username, password);
-
     }
 
     /**
@@ -189,8 +188,10 @@ public class FacebookServer implements PacketListener, ConnectionCreationListene
                 Presence presence;
                 if (status){
                     presence = new Presence(Presence.Type.available);
+                    Log.i(this.getClass().getSimpleName(),"Setting active status.");
                 }else {
                     presence = new Presence(Presence.Type.unavailable);
+                    Log.i(this.getClass().getSimpleName(),"Setting inactive status.");
                 }
                 try{
                     connection.sendPacket(presence);
@@ -292,6 +293,16 @@ public class FacebookServer implements PacketListener, ConnectionCreationListene
         }
     }
 
+    /**
+     * Get User Name
+     * @return
+     */
+    public String getUserName(){
+        if (connection != null && connection.isConnected())
+            return connection.getUser();//Not true Username.
+        else
+            return null;
+    }
 
 
 }
