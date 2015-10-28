@@ -1,11 +1,14 @@
 package edu.njit.fall15.team1.cs673messenger.controllers.Adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+
+import org.jivesoftware.smack.packet.Presence;
 
 import java.util.List;
 
@@ -47,7 +50,13 @@ public class FriendListItemAdapter extends ArrayAdapter<Friend> {
 
         // 4. Set the text for textView
         profileName.setText(friends.get(position).getProfileName());
-        activeStatus.setText(friends.get(position).getStatus().toString());
+        Presence.Type friendStatus = friends.get(position).getStatus();
+        if (friendStatus.equals(Presence.Type.unavailable)){
+            activeStatus.setTextColor(Color.RED);
+        }else if (friendStatus.equals(Presence.Type.available)){
+            activeStatus.setTextColor(Color.GREEN);
+        }
+        activeStatus.setText(friendStatus.toString());
 
         // 5. retrn rowView
         return rowView;
