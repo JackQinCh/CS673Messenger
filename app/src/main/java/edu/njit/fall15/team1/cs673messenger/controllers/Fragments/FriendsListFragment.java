@@ -60,7 +60,7 @@ public class FriendsListFragment extends ListFragment {
      */
     private void refreshFriends(){
         TextView numOfFriend = (TextView)getActivity().findViewById(R.id.numberOfFriendLabel);
-        numOfFriend.setText("You friends("+friendsFactory.getFriends().size()+")");
+        numOfFriend.setText("Your friends("+friendsFactory.getFriends().size()+")");
         ((FriendListItemAdapter)getListAdapter()).notifyDataSetChanged();
         friends = getFriendsData();
     }
