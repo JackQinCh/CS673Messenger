@@ -7,5 +7,5 @@ import edu.njit.fall15.team1.cs673messenger.models.MessageModel;
  * Created by jack on 10/25/15.
  */
 public interface RecentChatsListener {
-    public void receivedMessage(MessageModel messageModel);
+    void receivedMessage(MessageModel messageModel);
 }

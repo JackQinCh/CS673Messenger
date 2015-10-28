@@ -1,8 +1,17 @@
 package edu.njit.fall15.team1.cs673messenger.controllers.Fragments;
 
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.support.v4.app.NotificationManagerCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,6 +75,43 @@ public class ChattingListFragment extends ListFragment implements RecentChatsLis
     @Override
     public void receivedMessage(MessageModel messageModel) {
         ((RecentListAdapter)getListAdapter()).notifyDataSetChanged();
+        //Ring
+        try{
+            Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            Ringtone ringtone = RingtoneManager.getRingtone(getContext(), notification);
+            ringtone.play();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        //Other notifications
+        //Intent notificationIntent = new Intent(context, MainActivity.class);
+        Intent notificationIntent = new Intent();
+        PendingIntent contentIntent = PendingIntent.getActivity(getContext(),
+                0, notificationIntent,PendingIntent.FLAG_CANCEL_CURRENT);
+        Resources res = getContext().getResources();
+        Notification.Builder builder = new Notification.Builder(getContext());
+        //Notification.Builder builder = new NotificationCompat.Builder(context);
+        builder.setContentIntent(contentIntent)
+                .setSmallIcon(R.drawable.stat_sys_download)
+                .setLargeIcon(BitmapFactory.decodeResource(res, R.drawable.facebook_icon))
+                .setContentTitle("CS673 App: You have new message!")
+                .setContentText(messageModel.getMessage()); // Text from message
+
+        Notification notification = builder.build();
+
+        //Add Clolor Lights
+        notification.ledARGB = Color.BLUE;
+        notification.ledOffMS = 0;
+        notification.ledOnMS = 1;
+        notification.flags = notification.flags | Notification.FLAG_SHOW_LIGHTS;
+
+        //Add vibrations
+        long[] vibrate = new long[] { 1000, 1000};
+        notification.vibrate = vibrate;
+
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getContext());
+        notificationManager.notify(673, notification);
     }
 
     @Override
