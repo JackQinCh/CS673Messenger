@@ -1,8 +1,13 @@
 package edu.njit.fall15.team1.cs673messenger.XMPP;
 
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.util.Log;
+
+import com.google.gson.Gson;
 
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.PacketListener;
@@ -113,7 +118,8 @@ public class XMPP {
                     try {
                         SASLAuthentication.supportSASLMechanism("PLAIN");
                         connection.login(loginUser, passwordUser);
-                        Log.d("DENIS", "Connected as user  " + connection.getUser());
+                        Log.d("DENIS", "Connected as user  " + connection.getUser() + " " + connection.getChatManager());
+
                         // Set the status to available
                         Presence presence = new Presence(Presence.Type.available);
                         // Set the status to unavailable
@@ -157,6 +163,13 @@ public class XMPP {
                                 public void processPacket(Packet packet) {
                                     Message message = (Message) packet;
                                     if (message.getBody() != null) {
+                                        try {
+                                            Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                                            //Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
+                                            //r.play();
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
                                         String fromName = StringUtils.parseBareAddress(message.getFrom());
                                         Log.e("DENIS", "Got text [" + message.getBody()
                                                 + "] from [" + fromName + "]");
@@ -294,4 +307,5 @@ public class XMPP {
 		public void reconnectionSuccessful(){}
 	}
 */
+
 }
