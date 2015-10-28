@@ -1,10 +1,19 @@
 package edu.njit.fall15.team1.cs673messenger.XMPP;
 
+import android.app.Notification;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.support.v4.app.NotificationManagerCompat;
+import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 
 
@@ -25,6 +34,9 @@ import org.jivesoftware.smack.util.StringUtils;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
+
+import edu.njit.fall15.team1.cs673messenger.R;
+import edu.njit.fall15.team1.cs673messenger.controllers.Activities.MainActivity;
 
 /**
  * Responsible for establishing a connection between a client and an XMPP server.
@@ -161,16 +173,46 @@ public class XMPP {
                             PacketListener pListener = new PacketListener() {
                                 public void processPacket(Packet packet) {
                                     Message message = (Message) packet;
-
+                                    Context context = BackendTEST.getContext();
                                     if (message.getBody() != null) {
                                         Log.wtf("DENIS", "Ringtones code starts");
                                         try {
                                             Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                                            Ringtone ringtone = RingtoneManager.getRingtone(BackendTEST.getContext(), notification);
+                                            Ringtone ringtone = RingtoneManager.getRingtone(context, notification);
                                             ringtone.play();
                                         } catch (Exception e) {
                                             e.printStackTrace();
                                         }
+                                        //Other notifications
+                                        //Intent notificationIntent = new Intent(context, MainActivity.class);
+                                        Intent notificationIntent = new Intent();
+                                        PendingIntent contentIntent = PendingIntent.getActivity(context,
+                                                0, notificationIntent,PendingIntent.FLAG_CANCEL_CURRENT);
+                                        Resources res = context.getResources();
+                                        Notification.Builder builder = new Notification.Builder(context);
+                                        //Notification.Builder builder = new NotificationCompat.Builder(context);
+                                        builder.setContentIntent(contentIntent)
+                                                .setSmallIcon(R.drawable.stat_sys_download)
+                                                .setLargeIcon(BitmapFactory.decodeResource(res, R.drawable.facebook_icon))
+                                                .setContentTitle("CS673 App: You have new message!")
+                                                .setContentText(message.getBody()); // Text from message
+
+                                        Notification notification = builder.build();
+
+                                        //Add Clolor Lights
+                                        notification.ledARGB = Color.BLUE;
+                                        notification.ledOffMS = 0;
+                                        notification.ledOnMS = 1;
+                                        notification.flags = notification.flags | Notification.FLAG_SHOW_LIGHTS;
+
+                                        //Add vibrations
+                                        long[] vibrate = new long[] { 1000, 1000};
+                                        notification.vibrate = vibrate;
+
+                                        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+                                        notificationManager.notify(673, notification);
+                                        //
+
                                         String fromName = StringUtils.parseBareAddress(message.getFrom());
                                         Log.e("DENIS", "Got text [" + message.getBody()
                                                 + "] from [" + fromName + "]");
