@@ -7,7 +7,6 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.util.Log;
 
-import com.google.gson.Gson;
 
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.PacketListener;
@@ -162,11 +161,13 @@ public class XMPP {
                             PacketListener pListener = new PacketListener() {
                                 public void processPacket(Packet packet) {
                                     Message message = (Message) packet;
+
                                     if (message.getBody() != null) {
+                                        Log.wtf("DENIS", "Ringtones code starts");
                                         try {
                                             Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                                            //Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
-                                            //r.play();
+                                            Ringtone ringtone = RingtoneManager.getRingtone(BackendTEST.getContext(), notification);
+                                            ringtone.play();
                                         } catch (Exception e) {
                                             e.printStackTrace();
                                         }
