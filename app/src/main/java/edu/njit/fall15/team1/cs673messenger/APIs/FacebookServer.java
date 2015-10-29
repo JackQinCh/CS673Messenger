@@ -300,8 +300,10 @@ public class FacebookServer implements PacketListener, ConnectionCreationListene
      * @return
      */
     public String getUserName(){
-        if (connection != null && connection.isConnected())
-            return connection.getUser();//Not true Username.
+        if (connection != null && connection.isConnected()){
+            Log.d(getClass().getSimpleName(),connection.getUser());
+            return connection.getUser().replaceAll("@chat.facebook.com/Smack","");//Not true Username.
+        }
         else
             return null;
     }
