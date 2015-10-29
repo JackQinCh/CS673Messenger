@@ -21,7 +21,6 @@ public class LoginActivity extends Activity implements FacebookServerListener{
         setContentView(R.layout.login_interface);
 
         FacebookServer.getInstance().addListeners(this);
-//        FacebookServer.getInstance().connect(hostAddress);
 
     }
 
@@ -60,13 +59,13 @@ public class LoginActivity extends Activity implements FacebookServerListener{
 
     @Override
     public void facebookConnected(Boolean isConnected) {
-
-        Log.d("Jack","Connection :"+isConnected);
+        Log.d(getClass().getSimpleName(),"Connection :"+isConnected);
     }
 
     @Override
     public void facebookLogined(Boolean isLogin) {
-        Log.d("Jack","Login :"+isLogin);
+        Log.d(getClass().getSimpleName(),"Login :"+isLogin);
+
         if (isLogin){
             Intent intent = new Intent();
             intent.setClass(LoginActivity.this, MainActivity.class);

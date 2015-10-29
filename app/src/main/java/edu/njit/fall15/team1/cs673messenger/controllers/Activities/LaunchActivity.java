@@ -24,6 +24,7 @@ public class LaunchActivity extends Activity implements FacebookServerListener{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d(getClass().getSimpleName(),"onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.launchinterface);
 
@@ -43,7 +44,13 @@ public class LaunchActivity extends Activity implements FacebookServerListener{
             }
         }, 1000);
 
+    }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        FacebookServer.getInstance().removeListeners(this);
+        Log.d(getClass().getSimpleName(),"onDestroy");
     }
 
     private void init() {

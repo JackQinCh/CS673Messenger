@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import edu.njit.fall15.team1.cs673messenger.APIs.RecentChatsListener;
@@ -36,8 +37,9 @@ import edu.njit.fall15.team1.cs673messenger.models.MessageModels;
  */
 public class ChattingListFragment extends ListFragment implements RecentChatsListener{
 
-    private RecentListAdapter adapter;
+    private RecentListAdapter adapter = null;
     protected boolean isCreated = false;
+    List<MessageModels> messageModelses = new LinkedList<>();
 
     public ChattingListFragment(){
     }
@@ -62,7 +64,7 @@ public class ChattingListFragment extends ListFragment implements RecentChatsLis
         super.onActivityCreated(savedInstanceState);
 
         if (adapter == null){
-            adapter = new RecentListAdapter(this.getContext(), getData());
+            adapter = new RecentListAdapter(this.getContext(), messageModelses);
             setListAdapter(adapter);
             getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         }
@@ -70,7 +72,7 @@ public class ChattingListFragment extends ListFragment implements RecentChatsLis
 
     @Override
     public void onStart() {
-        Log.d(getClass().getSimpleName(),"onStart");
+        Log.d(getClass().getSimpleName(), "onStart");
         super.onStart();
     }
 
@@ -78,9 +80,7 @@ public class ChattingListFragment extends ListFragment implements RecentChatsLis
     public void onResume() {
         Log.d(getClass().getSimpleName(), "onResume");
         super.onResume();
-        if (getListAdapter() != null)
-            ((RecentListAdapter)getListAdapter()).notifyDataSetChanged();
-
+        updateData();
     }
 
     @Override
@@ -125,8 +125,7 @@ public class ChattingListFragment extends ListFragment implements RecentChatsLis
      */
     private void pageStart() {
         Log.d(getClass().getSimpleName(), "pageStart");
-        if (getListAdapter() != null)
-            ((RecentListAdapter)getListAdapter()).notifyDataSetChanged();
+        updateData();
     }
 
     /**
@@ -141,8 +140,13 @@ public class ChattingListFragment extends ListFragment implements RecentChatsLis
      * Get listview data
      * @return list of MessageModels
      */
-    private List<MessageModels> getData(){
-        return RecentChatsManager.getInstance().getRecentChats();
+    private void updateData(){
+        messageModelses.clear();
+        messageModelses.addAll(RecentChatsManager.getInstance().getRecentChats());
+        if (adapter != null){
+            adapter.notifyDataSetChanged();
+        }
+        Log.d(getClass().getSimpleName(), "getData for list view");
     }
 
     /**
@@ -151,12 +155,13 @@ public class ChattingListFragment extends ListFragment implements RecentChatsLis
      */
     @Override
     public void receivedMessage(MessageModel messageModel) {
-        Log.d(getClass().getSimpleName(), "receivedMessage: "+messageModel.getMessage());
-        ((RecentListAdapter)getListAdapter()).notifyDataSetChanged();
+        Log.d(getClass().getSimpleName(), "receivedMessage: " + messageModel.getMessage());
+        updateData();
         //Check setting notify.
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         boolean notifySetting = sp.getBoolean("notifyMe", true);
         Log.d(getClass().getSimpleName(), String.valueOf(notifySetting));
+
         notify(notifySetting, messageModel.getMessage());
     }
 

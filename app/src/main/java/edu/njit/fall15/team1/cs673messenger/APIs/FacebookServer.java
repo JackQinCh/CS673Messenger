@@ -32,7 +32,7 @@ public class FacebookServer implements PacketListener, ConnectionCreationListene
     @Override
     public void connectionCreated(Connection connection) {
         if (this.connection == connection){
-            Log.d("Jack", "connectionCreated");
+            Log.d(getClass().getSimpleName(), "connectionCreated");
             if (listeners.size() != 0){
                 for (FacebookServerListener listener:listeners)
                     listener.facebookConnected(true);
