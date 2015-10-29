@@ -42,9 +42,6 @@ public class MainActivity extends AppCompatActivity{
 
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
-
-
-
     }
 
     private void setupViewPager(ViewPager viewPager) {
@@ -52,10 +49,12 @@ public class MainActivity extends AppCompatActivity{
         adapter.addFragment(new ChattingListFragment(), getString(R.string.chatlist));
         adapter.addFragment(new FriendsListFragment(), getString(R.string.friend));
         adapter.addFragment(new GroupChatFragment(), getString(R.string.groupchat));
-//        adapter.addFragment((Fragment)(new SettingFragment()), getString(R.string.setting));
         viewPager.setAdapter(adapter);
     }
-    //ViewPagerAdapter Class
+
+    /**
+     * ViewPagerAdapter Class
+     */
     class ViewPagerAdapter extends FragmentPagerAdapter{
         private final List<Fragment> mFragmentList = new ArrayList<>();
         private final List<String> mFragmentTitleList = new ArrayList<>();
@@ -85,13 +84,23 @@ public class MainActivity extends AppCompatActivity{
         }
     }
 
-    //Menu
+    /**
+     * Create menu
+     * @param menu
+     * @return
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
+
+    /**
+     * Menu select action
+     * @param item
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will

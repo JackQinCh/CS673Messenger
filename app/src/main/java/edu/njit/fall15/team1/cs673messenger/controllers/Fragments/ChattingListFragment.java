@@ -37,6 +37,7 @@ import edu.njit.fall15.team1.cs673messenger.models.MessageModels;
 public class ChattingListFragment extends ListFragment implements RecentChatsListener{
 
     private RecentListAdapter adapter;
+    protected boolean isCreated = false;
 
     public ChattingListFragment(){
     }
@@ -44,7 +45,9 @@ public class ChattingListFragment extends ListFragment implements RecentChatsLis
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         RecentChatsManager.getInstance().addListener(this);
-        Log.d(getClass().getSimpleName(),"onCreate");
+        Log.d(getClass().getSimpleName(), "onCreate");
+
+        isCreated = true;
     }
 
     @Override
@@ -73,14 +76,14 @@ public class ChattingListFragment extends ListFragment implements RecentChatsLis
 
     @Override
     public void onResume() {
-        Log.d(getClass().getSimpleName(),"onResume");
+        Log.d(getClass().getSimpleName(), "onResume");
         super.onResume();
-        ((RecentListAdapter)getListAdapter()).notifyDataSetChanged();
+
     }
 
     @Override
     public void onPause() {
-        Log.d(getClass().getSimpleName(),"onPause");
+        Log.d(getClass().getSimpleName(), "onPause");
         super.onPause();
     }
 
@@ -96,6 +99,41 @@ public class ChattingListFragment extends ListFragment implements RecentChatsLis
         super.onDestroy();
         RecentChatsManager.getInstance().removeListener(this);
     }
+
+    /**
+     * Detect page visibility
+     * @param isVisibleToUser
+     */
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (!isCreated) {
+            return;
+        }
+
+        if (isVisibleToUser) {
+            pageStart();
+        }else {
+            pageEnd();
+        }
+    }
+
+    /**
+     * pageStart
+     */
+    private void pageStart() {
+        Log.d(getClass().getSimpleName(), "pageStart");
+        if (getListAdapter() != null)
+            ((RecentListAdapter)getListAdapter()).notifyDataSetChanged();
+    }
+
+    /**
+     * pageEnd
+     */
+    private void pageEnd() {
+        Log.d(getClass().getSimpleName(), "pageEnd");
+    }
+
 
     /**
      * Get listview data
