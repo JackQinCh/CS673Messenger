@@ -23,6 +23,15 @@ public class Friends {
         return initFriends();
     }
 
+    public Friend checkFriend(String userid){
+        for(Friend friend:getFriends()){
+            if (friend.getUser().equals(userid)){
+                return friend;
+            }
+        }
+        return null;
+    }
+
     /**
      * Get friends data from FacebookServer.getInstance().getRoster()
      * Convert Roster to Friend

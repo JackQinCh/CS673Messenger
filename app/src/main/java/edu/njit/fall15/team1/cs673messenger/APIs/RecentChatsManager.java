@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.LinkedList;
 
 import edu.njit.fall15.team1.cs673messenger.models.Friend;
+import edu.njit.fall15.team1.cs673messenger.models.Friends;
 import edu.njit.fall15.team1.cs673messenger.models.MessageModel;
 import edu.njit.fall15.team1.cs673messenger.models.MessageModels;
 
@@ -78,7 +79,7 @@ public class RecentChatsManager implements FacebookServerListener{
 
     @Override
     public void facebookReceivedMessage(String from, String message, Date time) {
-        if (recentChats.size() != 0) {
+        if (recentChats.size() != 0) {//If the list is not empty, find the friend and add the message.
             for (MessageModels models : recentChats) {
                 if (models.getWithWho().getUser().equals(from)) {
                     MessageModel model = new MessageModel(
@@ -91,6 +92,23 @@ public class RecentChatsManager implements FacebookServerListener{
                         for (RecentChatsListener listener : listeners)
                             listener.receivedMessage(model);
                     }
+                }
+            }
+        }else{//If list is empty, create a new chat history list.
+            Friends friends = new Friends();
+            Friend friend = friends.checkFriend(from);
+            if (friend != null){
+                MessageModel model = new MessageModel(
+                        MessageModel.MessageType.From,
+                        friend,
+                        time,
+                        message);
+                MessageModels models = new MessageModels(friend);
+                models.addMessage(model);
+                recentChats.add(models);
+                if (listeners.size() != 0) {
+                    for (RecentChatsListener listener : listeners)
+                        listener.receivedMessage(model);
                 }
             }
         }

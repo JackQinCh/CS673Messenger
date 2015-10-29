@@ -36,59 +36,103 @@ import edu.njit.fall15.team1.cs673messenger.models.MessageModels;
  */
 public class ChattingListFragment extends ListFragment implements RecentChatsListener{
 
+    private RecentListAdapter adapter;
+
     public ChattingListFragment(){
     }
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         RecentChatsManager.getInstance().addListener(this);
+        Log.d(getClass().getSimpleName(),"onCreate");
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Log.d(getClass().getSimpleName(),"onCreateView");
         return inflater.inflate(R.layout.chatlistfragment, container, false);
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
+        Log.d(getClass().getSimpleName(), "onActivityCreated");
         super.onActivityCreated(savedInstanceState);
 
-        RecentListAdapter adapter = new RecentListAdapter(this.getContext(), getData());
-        setListAdapter(adapter);
-        getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        if (adapter == null){
+            adapter = new RecentListAdapter(this.getContext(), getData());
+            setListAdapter(adapter);
+            getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        }
+    }
+
+    @Override
+    public void onStart() {
+        Log.d(getClass().getSimpleName(),"onStart");
+        super.onStart();
     }
 
     @Override
     public void onResume() {
+        Log.d(getClass().getSimpleName(),"onResume");
         super.onResume();
         ((RecentListAdapter)getListAdapter()).notifyDataSetChanged();
     }
 
+    @Override
+    public void onPause() {
+        Log.d(getClass().getSimpleName(),"onPause");
+        super.onPause();
+    }
+
+    @Override
+    public void onStop() {
+        Log.d(getClass().getSimpleName(), "onStop");
+        super.onStop();
+    }
 
     @Override
     public void onDestroy() {
+        Log.d(getClass().getSimpleName(), "onDestroy");
         super.onDestroy();
         RecentChatsManager.getInstance().removeListener(this);
     }
 
+    /**
+     * Get listview data
+     * @return list of MessageModels
+     */
     private List<MessageModels> getData(){
         return RecentChatsManager.getInstance().getRecentChats();
     }
 
+    /**
+     * Receive message feedback
+     * @param messageModel
+     */
     @Override
     public void receivedMessage(MessageModel messageModel) {
+        Log.d(getClass().getSimpleName(), "receivedMessage: "+messageModel.getMessage());
         ((RecentListAdapter)getListAdapter()).notifyDataSetChanged();
-        //Check
+        //Check setting notify.
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         boolean notifySetting = sp.getBoolean("notifyMe", true);
         Log.d(getClass().getSimpleName(), String.valueOf(notifySetting));
-        if (notifySetting){
+        notify(notifySetting, messageModel.getMessage());
+    }
+
+    /**
+     * Notify receive message
+     * @param notifySetting
+     * @param notifyMessage
+     */
+    private void notify(boolean notifySetting, String notifyMessage){
+        if (notifySetting) {
             //Ring
-            try{
+            try {
                 Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
                 Ringtone ringtone = RingtoneManager.getRingtone(getContext(), notification);
                 ringtone.play();
-            }catch (Exception e){
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
@@ -96,7 +140,7 @@ public class ChattingListFragment extends ListFragment implements RecentChatsLis
             //Intent notificationIntent = new Intent(context, MainActivity.class);
             Intent notificationIntent = new Intent();
             PendingIntent contentIntent = PendingIntent.getActivity(getContext(),
-                    0, notificationIntent,PendingIntent.FLAG_CANCEL_CURRENT);
+                    0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
             Resources res = getContext().getResources();
             Notification.Builder builder = new Notification.Builder(getContext());
             //Notification.Builder builder = new NotificationCompat.Builder(context);
@@ -104,7 +148,7 @@ public class ChattingListFragment extends ListFragment implements RecentChatsLis
                     .setSmallIcon(R.drawable.stat_sys_download)
                     .setLargeIcon(BitmapFactory.decodeResource(res, R.drawable.facebook_icon))
                     .setContentTitle("CS673 App: You have new message!")
-                    .setContentText(messageModel.getMessage()); // Text from message
+                    .setContentText(notifyMessage); // Text from message
 
             Notification notification = builder.build();
 
@@ -115,15 +159,21 @@ public class ChattingListFragment extends ListFragment implements RecentChatsLis
             notification.flags = notification.flags | Notification.FLAG_SHOW_LIGHTS;
 
             //Add vibrations
-            long[] vibrate = new long[] { 1000, 1000};
+            long[] vibrate = new long[]{1000, 1000};
             notification.vibrate = vibrate;
 
             NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getContext());
             notificationManager.notify(673, notification);
         }
-
     }
 
+    /**
+     * List view select action
+     * @param l
+     * @param v
+     * @param position
+     * @param id
+     */
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         Friend friend;

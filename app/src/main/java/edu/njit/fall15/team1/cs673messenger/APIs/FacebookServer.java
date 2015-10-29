@@ -286,7 +286,9 @@ public class FacebookServer implements PacketListener, ConnectionCreationListene
         if (msg.getBody() != null){
             from = StringUtils.parseBareAddress(msg.getFrom());
             message = msg.getBody();
+            Log.d(getClass().getSimpleName(), "Receive a mesage:"+message);
             if (listeners.size() != 0){
+                Log.d(getClass().getSimpleName(), "Notify the message:"+message);
                 for (FacebookServerListener listener:listeners)
                     listener.facebookReceivedMessage(from, message, new Date());
             }
