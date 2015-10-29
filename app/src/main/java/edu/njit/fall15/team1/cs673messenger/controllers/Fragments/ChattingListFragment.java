@@ -144,7 +144,7 @@ public class ChattingListFragment extends ListFragment implements RecentChatsLis
         messageModelses.clear();
         messageModelses.addAll(RecentChatsManager.getInstance().getRecentChats());
         if (adapter != null){
-            adapter.notifyDataSetChanged();
+            ((RecentListAdapter)getListAdapter()).notifyDataSetChanged();
         }
         Log.d(getClass().getSimpleName(), "getData for list view");
     }

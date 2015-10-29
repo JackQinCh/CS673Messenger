@@ -5,7 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
+import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
@@ -19,7 +19,7 @@ import edu.njit.fall15.team1.cs673messenger.models.MessageModels;
 /**
  * Created by jack on 10/26/15.
  */
-public class RecentListAdapter extends BaseAdapter {
+public class RecentListAdapter extends ArrayAdapter<MessageModels> {
     private Context context = null;
     private List<MessageModels> modelses = null;
     /**
@@ -29,54 +29,11 @@ public class RecentListAdapter extends BaseAdapter {
      * @param modelses  The objects to represent in the ListView.
      */
     public RecentListAdapter(Context context, List<MessageModels> modelses) {
+        super(context,0,modelses);
         this.context = context;
         this.modelses = modelses;
     }
 
-
-
-
-    /**
-     * How many items are in the data set represented by this Adapter.
-     *
-     * @return Count of items.
-     */
-    @Override
-    public int getCount() {
-        int count = 0;
-        if (null != modelses){
-            count = modelses.size();
-        }
-        return count;
-    }
-
-    /**
-     * Get the data item associated with the specified position in the data set.
-     *
-     * @param position Position of the item whose data we want within the adapter's
-     *                 data set.
-     * @return The data at the specified position.
-     */
-    @Override
-    public MessageModels getItem(int position) {
-        MessageModels item = null;
-        if (null != modelses){
-            item = modelses.get(position);
-        }
-
-        return item;
-    }
-
-    /**
-     * Get the row id associated with the specified position in the list.
-     *
-     * @param position The position of the item within the adapter's data set whose row id we want.
-     * @return The id of the item at the specified position.
-     */
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
 
     /**
      * ViewHolder
