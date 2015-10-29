@@ -78,6 +78,8 @@ public class ChattingListFragment extends ListFragment implements RecentChatsLis
     public void onResume() {
         Log.d(getClass().getSimpleName(), "onResume");
         super.onResume();
+        if (getListAdapter() != null)
+            ((RecentListAdapter)getListAdapter()).notifyDataSetChanged();
 
     }
 
