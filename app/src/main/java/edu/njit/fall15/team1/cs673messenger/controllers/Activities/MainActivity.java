@@ -3,19 +3,14 @@ package edu.njit.fall15.team1.cs673messenger.controllers.Activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import edu.njit.fall15.team1.cs673messenger.APIs.FacebookServer;
 import edu.njit.fall15.team1.cs673messenger.R;
+import edu.njit.fall15.team1.cs673messenger.controllers.Adapters.ViewPagerAdapter;
 import edu.njit.fall15.team1.cs673messenger.controllers.Fragments.ChattingListFragment;
 import edu.njit.fall15.team1.cs673messenger.controllers.Fragments.FriendsListFragment;
 import edu.njit.fall15.team1.cs673messenger.controllers.Fragments.GroupChatFragment;
@@ -24,7 +19,6 @@ import edu.njit.fall15.team1.cs673messenger.controllers.Fragments.GroupChatFragm
  * Created by jack on 10/5/15.
  */
 public class MainActivity extends AppCompatActivity{
-//    private Toolbar toolbar;
     private TabLayout tabLayout;
     private ViewPager viewPager;
 
@@ -32,10 +26,6 @@ public class MainActivity extends AppCompatActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_interface);
-
-//        toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         viewPager.setOffscreenPageLimit(3);//Avoid destroying fragment in viewpager.
@@ -51,38 +41,6 @@ public class MainActivity extends AppCompatActivity{
         adapter.addFragment(new FriendsListFragment(), getString(R.string.friend));
         adapter.addFragment(new GroupChatFragment(), getString(R.string.groupchat));
         viewPager.setAdapter(adapter);
-    }
-
-    /**
-     * ViewPagerAdapter Class
-     */
-    class ViewPagerAdapter extends FragmentPagerAdapter{
-        private final List<Fragment> mFragmentList = new ArrayList<>();
-        private final List<String> mFragmentTitleList = new ArrayList<>();
-
-        public ViewPagerAdapter(FragmentManager manager) {
-            super(manager);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            return mFragmentList.get(position);
-        }
-
-        @Override
-        public int getCount() {
-            return mFragmentList.size();
-        }
-
-        public void addFragment(Fragment fragment, String title) {
-            mFragmentList.add(fragment);
-            mFragmentTitleList.add(title);
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return mFragmentTitleList.get(position);
-        }
     }
 
     /**
@@ -104,13 +62,7 @@ public class MainActivity extends AppCompatActivity{
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-
         switch (id){
             case R.id.action_signout:
                 FacebookServer.getInstance().disConnect();
