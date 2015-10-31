@@ -1,5 +1,6 @@
 package edu.njit.fall15.team1.cs673messenger.controllers.Activities;
 
+import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -11,41 +12,39 @@ import android.view.MenuItem;
 import edu.njit.fall15.team1.cs673messenger.APIs.FacebookServer;
 import edu.njit.fall15.team1.cs673messenger.R;
 import edu.njit.fall15.team1.cs673messenger.controllers.Adapters.ViewPagerAdapter;
-import edu.njit.fall15.team1.cs673messenger.controllers.Fragments.ChattingListFragment;
-import edu.njit.fall15.team1.cs673messenger.controllers.Fragments.FriendsListFragment;
-import edu.njit.fall15.team1.cs673messenger.controllers.Fragments.GroupChatFragment;
 
 /**
  * Created by jack on 10/5/15.
  */
-public class MainActivity extends AppCompatActivity{
-//    private Toolbar toolbar;
-    private TabLayout tabLayout;
+public class MainActivity extends AppCompatActivity implements FragmentListener{
     private ViewPager viewPager;
+    private ViewPagerAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_interface);
 
-//        toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+        // Get the ViewPager and set it's PagerAdapter so that it can display items
         viewPager = (ViewPager) findViewById(R.id.viewpager);
-        viewPager.setOffscreenPageLimit(3);//Avoid destroying fragment in viewpager.
-        setupViewPager(viewPager);
-
-        tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(viewPager);
-    }
-
-    private void setupViewPager(ViewPager viewPager) {
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new ChattingListFragment(), getString(R.string.chatlist));
-        adapter.addFragment(new FriendsListFragment(), getString(R.string.friend));
-        adapter.addFragment(new GroupChatFragment(), getString(R.string.groupchat));
+//        viewPager.setOffscreenPageLimit(ViewPagerAdapter.PAGE_COUNT);
+        adapter = new ViewPagerAdapter(getSupportFragmentManager(),
+                MainActivity.this, this);
         viewPager.setAdapter(adapter);
+        viewPager.getAdapter().notifyDataSetChanged();
+
+        // Give the TabLayout the ViewPager
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
+        tabLayout.setupWithViewPager(viewPager);
+
+
+        final ActionBar actionBar = getActionBar();
+
+
+
+
+
+
     }
 
     /**
@@ -92,5 +91,11 @@ public class MainActivity extends AppCompatActivity{
                 break;
         }
         return false;
+    }
+
+    @Override
+    public void updateFragments(int position) {
+        adapter.update(position);
+        adapter.notifyDataSetChanged();
     }
 }
