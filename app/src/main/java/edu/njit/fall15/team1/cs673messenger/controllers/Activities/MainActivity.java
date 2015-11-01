@@ -1,6 +1,5 @@
 package edu.njit.fall15.team1.cs673messenger.controllers.Activities;
 
-import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -16,7 +15,7 @@ import edu.njit.fall15.team1.cs673messenger.controllers.Adapters.ViewPagerAdapte
 /**
  * Created by jack on 10/5/15.
  */
-public class MainActivity extends AppCompatActivity implements FragmentListener{
+public class MainActivity extends AppCompatActivity{
     private ViewPager viewPager;
     private ViewPagerAdapter adapter;
 
@@ -25,25 +24,18 @@ public class MainActivity extends AppCompatActivity implements FragmentListener{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_interface);
 
-        // Get the ViewPager and set it's PagerAdapter so that it can display items
+//        Toolbar toolbar = (Toolbar) findViewById(R.id.sliding_tabs);
+//        setSupportActionBar(toolbar);
+
+        adapter = new ViewPagerAdapter(getSupportFragmentManager());
+
         viewPager = (ViewPager) findViewById(R.id.viewpager);
-//        viewPager.setOffscreenPageLimit(ViewPagerAdapter.PAGE_COUNT);
-        adapter = new ViewPagerAdapter(getSupportFragmentManager(),
-                MainActivity.this, this);
+        viewPager.setOffscreenPageLimit(2);
         viewPager.setAdapter(adapter);
-        viewPager.getAdapter().notifyDataSetChanged();
 
         // Give the TabLayout the ViewPager
         TabLayout tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
         tabLayout.setupWithViewPager(viewPager);
-
-
-        final ActionBar actionBar = getActionBar();
-
-
-
-
-
 
     }
 
@@ -93,9 +85,4 @@ public class MainActivity extends AppCompatActivity implements FragmentListener{
         return false;
     }
 
-    @Override
-    public void updateFragments(int position) {
-        adapter.update(position);
-        adapter.notifyDataSetChanged();
-    }
 }

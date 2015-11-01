@@ -28,7 +28,6 @@ import edu.njit.fall15.team1.cs673messenger.APIs.RecentChatsListener;
 import edu.njit.fall15.team1.cs673messenger.APIs.RecentChatsManager;
 import edu.njit.fall15.team1.cs673messenger.R;
 import edu.njit.fall15.team1.cs673messenger.controllers.Activities.ChattingWindowActivity;
-import edu.njit.fall15.team1.cs673messenger.controllers.Activities.FragmentListener;
 import edu.njit.fall15.team1.cs673messenger.controllers.Adapters.RecentListAdapter;
 import edu.njit.fall15.team1.cs673messenger.models.Friend;
 import edu.njit.fall15.team1.cs673messenger.models.MessageModel;
@@ -38,11 +37,19 @@ import edu.njit.fall15.team1.cs673messenger.models.MessageModels;
  * Created by jack on 10/5/15.
  */
 public class ChattingListFragment extends ListFragment implements RecentChatsListener{
+    int n = 0;
 
-    private RecentListAdapter adapter = null;
+    /**
+     * The fragment argument representing the section number for this
+     * fragment.
+     */
+    private static final String ARG_SECTION_NUMBER = "section_number";
+
+    private RecentListAdapter adapter;
     protected boolean isCreated = false;
     private List<MessageModels> messageModelses = new LinkedList<>();
-    private FragmentListener listener;
+
+    View rootView;
 
     public ChattingListFragment(){
     }
@@ -57,20 +64,19 @@ public class ChattingListFragment extends ListFragment implements RecentChatsLis
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Log.d(getClass().getSimpleName(),"onCreateView");
-        return inflater.inflate(R.layout.chatlistfragment, container, false);
+        Log.d(getClass().getSimpleName(), "onCreateView");
+        rootView = inflater.inflate(R.layout.chatlistfragment, container, false);
+        return rootView;
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         Log.d(getClass().getSimpleName(), "onActivityCreated");
-        super.onActivityCreated(savedInstanceState);
 
-        if (adapter == null){
-            adapter = new RecentListAdapter(this.getContext(), messageModelses);
-            setListAdapter(adapter);
-            getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-        }
+        adapter = new RecentListAdapter(this.getContext(), messageModelses);
+        setListAdapter(adapter);
+        getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        super.onActivityCreated(savedInstanceState);
     }
 
     @Override
@@ -83,9 +89,6 @@ public class ChattingListFragment extends ListFragment implements RecentChatsLis
     public void onResume() {
         Log.d(getClass().getSimpleName(), "onResume");
         super.onResume();
-        if (listener != null){
-            listener.updateFragments(0);
-        }
     }
 
     @Override
@@ -117,7 +120,6 @@ public class ChattingListFragment extends ListFragment implements RecentChatsLis
         if (!isCreated) {
             return;
         }
-
         if (isVisibleToUser) {
             pageStart();
         }else {
@@ -129,8 +131,8 @@ public class ChattingListFragment extends ListFragment implements RecentChatsLis
      * pageStart
      */
     private void pageStart() {
-        Log.d(getClass().getSimpleName(), "pageStart");
         updateData();
+        Log.d(getClass().getSimpleName(), "pageStart");
     }
 
     /**
@@ -146,12 +148,14 @@ public class ChattingListFragment extends ListFragment implements RecentChatsLis
      * @return list of MessageModels
      */
     private void updateData(){
-        messageModelses.clear();
-        messageModelses.addAll(RecentChatsManager.getInstance().getRecentChats());
-        if (adapter != null){
-            ((RecentListAdapter)getListAdapter()).notifyDataSetChanged();
+        if (rootView != null && adapter != null){
+            TextView retentText = (TextView)rootView.findViewById(R.id.recentChatNumber);
+            retentText.setText("Recent chats(" + RecentChatsManager.getInstance().getRecentChats().size() + ")");
+            messageModelses.clear();
+            messageModelses.addAll(RecentChatsManager.getInstance().getRecentChats());
+            adapter.notifyDataSetChanged();
+            Log.d(getClass().getSimpleName(), "getData for list view");
         }
-        Log.d(getClass().getSimpleName(), "getData for list view");
     }
 
 
@@ -162,9 +166,7 @@ public class ChattingListFragment extends ListFragment implements RecentChatsLis
     @Override
     public void receivedMessage(MessageModel messageModel) {
         Log.d(getClass().getSimpleName(), "receivedMessage: " + messageModel.getMessage());
-        if (listener != null){
-            listener.updateFragments(0);
-        }
+        updateData();
         //Check setting notify.
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         boolean notifySetting = sp.getBoolean("notifyMe", true);
@@ -240,15 +242,17 @@ public class ChattingListFragment extends ListFragment implements RecentChatsLis
         }
     }
 
-    public void setListener(FragmentListener listener){
-        this.listener = listener;
+    /**
+     * Returns a new instance of this fragment for the given section
+     * number.
+     */
+    public static ChattingListFragment newInstance(int sectionNumber) {
+        ChattingListFragment fragment = new ChattingListFragment();
+        Bundle args = new Bundle();
+        args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+        fragment.setArguments(args);
+        return fragment;
     }
 
-    public void update(){
-        TextView chatNumText = (TextView)getActivity().findViewById(R.id.recentChatNumber);
-        int chatNum = RecentChatsManager.getInstance().getRecentChats().size();
-        Log.d(getClass().getSimpleName(),"Update number of chats:"+chatNum);
-        chatNumText.setText("Recent Chats(" + chatNum + ")");
-        updateData();
-    }
+
 }
