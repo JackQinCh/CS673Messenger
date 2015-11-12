@@ -4,6 +4,7 @@ package edu.njit.fall15.team1.cs673messenger.controllers.Fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +14,7 @@ import edu.njit.fall15.team1.cs673messenger.R;
 /**
  * Created by jack on 10/14/15.
  */
-public class GroupChatFragment extends Fragment {
+public class GroupChatFragment extends ListFragment {
     public GroupChatFragment(){
 
     }

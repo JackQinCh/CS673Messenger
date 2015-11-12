@@ -5,12 +5,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".controllers.GroupChatFragment">
 
+    <ListView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@android:id/list"
+            android:layout_centerHorizontal="true" android:layout_below="@+id/numberOfGroupLabel"/>
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/groupchat"
-        android:textSize="40dp"
-        android:textStyle="bold"
-        android:layout_centerInParent="true"/>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Your groups(0)"
+            android:id="@+id/numberOfGroupLabel"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:paddingTop="3dp"
+            android:paddingLeft="3dp" />
 
 </RelativeLayout>
