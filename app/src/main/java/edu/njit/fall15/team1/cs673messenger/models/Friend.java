@@ -35,12 +35,12 @@ public class Friend{
         return status;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        Friend friend = (Friend) o;
+    public boolean isEquals(Friend friend){
+
         if (friend.getUser().equals(this.user)){
             return true;
         }
         return false;
     }
+
 }
