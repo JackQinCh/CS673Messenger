@@ -14,7 +14,6 @@
 
         <activity
             android:name=".controllers.Activities.LaunchActivity"
-            android:logo="@mipmap/ic_launcher"
             android:screenOrientation="portrait">
             <!-- Launcher Intent filter -->
             <intent-filter>

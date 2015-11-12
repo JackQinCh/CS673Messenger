@@ -44,7 +44,7 @@ public class ChattingWindowActivity extends Activity implements RecentChatsListe
         friend = findFriend(friendUser);
         RecentChatsManager.getInstance().addListener(this);
 
-        Log.d("Jack", "Chatting with " + friend.getProfileName());
+        Log.d(getLocalClassName(), "Chatting with " + friend.getProfileName());
 
         chatHistoryLv = (ListView) findViewById(R.id.chatting_history_lv);
         setAdapterForThis();
@@ -115,7 +115,7 @@ public class ChattingWindowActivity extends Activity implements RecentChatsListe
         Friend friend = messageModel.getFriend();
         String message = messageModel.getMessage();
         if (friend.equals(this.friend)){
-            Log.d("Jack", "Chatting window received a message from " + friend.getProfileName() + ":" + message);
+            Log.d(getLocalClassName(), "Chatting window received a message from " + friend.getProfileName() + ":" + message);
             initMessages();
             chatHistoryAdapter.notifyDataSetChanged();
         }
