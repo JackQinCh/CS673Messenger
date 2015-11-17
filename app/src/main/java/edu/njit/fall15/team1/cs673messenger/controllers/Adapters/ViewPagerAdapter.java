@@ -4,7 +4,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import edu.njit.fall15.team1.cs673messenger.controllers.Fragments.ChattingListFragment;
+import edu.njit.fall15.team1.cs673messenger.controllers.Fragments.RecentChatsFragment;
 import edu.njit.fall15.team1.cs673messenger.controllers.Fragments.FriendsListFragment;
 import edu.njit.fall15.team1.cs673messenger.controllers.Fragments.GroupChatFragment;
 
@@ -21,7 +21,7 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position){
             case 0:
-                return ChattingListFragment.newInstance(position+1);
+                return RecentChatsFragment.newInstance(position+1);
             case 1:
                 return new FriendsListFragment();
             case 2:

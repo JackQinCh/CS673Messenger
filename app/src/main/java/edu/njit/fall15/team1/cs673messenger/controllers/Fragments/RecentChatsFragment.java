@@ -30,13 +30,13 @@ import edu.njit.fall15.team1.cs673messenger.R;
 import edu.njit.fall15.team1.cs673messenger.controllers.Activities.ChattingWindowActivity;
 import edu.njit.fall15.team1.cs673messenger.controllers.Adapters.RecentListAdapter;
 import edu.njit.fall15.team1.cs673messenger.models.Friend;
-import edu.njit.fall15.team1.cs673messenger.models.MessageModel;
-import edu.njit.fall15.team1.cs673messenger.models.MessageModels;
+import edu.njit.fall15.team1.cs673messenger.models.Message;
+import edu.njit.fall15.team1.cs673messenger.models.Messages;
 
 /**
  * Created by jack on 10/5/15.
  */
-public class ChattingListFragment extends ListFragment implements RecentChatsListener{
+public class RecentChatsFragment extends ListFragment implements RecentChatsListener{
     int n = 0;
 
     /**
@@ -47,11 +47,11 @@ public class ChattingListFragment extends ListFragment implements RecentChatsLis
 
     private RecentListAdapter adapter;
     protected boolean isCreated = false;
-    private List<MessageModels> messageModelses = new LinkedList<>();
+    private List<Messages> messages = new LinkedList<>();
 
     View rootView;
 
-    public ChattingListFragment(){
+    public RecentChatsFragment(){
     }
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -73,7 +73,7 @@ public class ChattingListFragment extends ListFragment implements RecentChatsLis
     public void onActivityCreated(Bundle savedInstanceState) {
         Log.d(getClass().getSimpleName(), "onActivityCreated");
 
-        adapter = new RecentListAdapter(this.getContext(), messageModelses);
+        adapter = new RecentListAdapter(this.getContext(), messages);
         setListAdapter(adapter);
         getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         super.onActivityCreated(savedInstanceState);
@@ -145,14 +145,14 @@ public class ChattingListFragment extends ListFragment implements RecentChatsLis
 
     /**
      * Get listview data
-     * @return list of MessageModels
+     * @return list of Messages
      */
     private void updateData(){
         if (rootView != null && adapter != null){
             TextView retentText = (TextView)rootView.findViewById(R.id.recentChatNumber);
             retentText.setText("Recent chats(" + RecentChatsManager.getInstance().getRecentChats().size() + ")");
-            messageModelses.clear();
-            messageModelses.addAll(RecentChatsManager.getInstance().getRecentChats());
+            messages.clear();
+            messages.addAll(RecentChatsManager.getInstance().getRecentChats());
             adapter.notifyDataSetChanged();
             Log.d(getClass().getSimpleName(), "getData for list view");
         }
@@ -161,18 +161,18 @@ public class ChattingListFragment extends ListFragment implements RecentChatsLis
 
     /**
      * Receive message feedback
-     * @param messageModel
+     * @param message
      */
     @Override
-    public void receivedMessage(MessageModel messageModel) {
-        Log.d(getClass().getSimpleName(), "receivedMessage: " + messageModel.getMessage());
+    public void receivedMessage(Message message) {
+        Log.d(getClass().getSimpleName(), "receivedMessage: " + message.getMessage());
         updateData();
         //Check setting notify.
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         boolean notifySetting = sp.getBoolean("notifyMe", true);
         Log.d(getClass().getSimpleName(), String.valueOf(notifySetting));
 
-        notifyMessage(notifySetting, messageModel.getMessage());
+        notifyMessage(notifySetting, message.getMessage());
     }
 
     /**
@@ -234,7 +234,7 @@ public class ChattingListFragment extends ListFragment implements RecentChatsLis
         Friend friend;
         if (RecentChatsManager.getInstance().getRecentChats().size() != 0){
             friend = RecentChatsManager.getInstance().getRecentChats().get(position).getWithWho();
-
+            Log.d(getClass().getSimpleName(), friend.toString());
             Intent intent = new Intent();
             intent.putExtra("FriendUser",friend.getUser());
             intent.setClass(this.getActivity(), ChattingWindowActivity.class);
@@ -246,8 +246,8 @@ public class ChattingListFragment extends ListFragment implements RecentChatsLis
      * Returns a new instance of this fragment for the given section
      * number.
      */
-    public static ChattingListFragment newInstance(int sectionNumber) {
-        ChattingListFragment fragment = new ChattingListFragment();
+    public static RecentChatsFragment newInstance(int sectionNumber) {
+        RecentChatsFragment fragment = new RecentChatsFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_SECTION_NUMBER, sectionNumber);
         fragment.setArguments(args);

@@ -5,7 +5,7 @@ import java.util.Date;
 /**
  * Created by jack on 10/25/15.
  */
-public class MessageModel {
+public final class Message {
     private Friend friend;
     private MessageType type;
     private Date time;
@@ -16,7 +16,7 @@ public class MessageModel {
 
         private int _value;
 
-        private MessageType(int value){
+        MessageType(int value){
             _value = value;
         }
 
@@ -25,7 +25,7 @@ public class MessageModel {
         }
     }
 
-    public MessageModel(MessageType type, Friend friend, Date time, String message) {
+    public Message(MessageType type, Friend friend, Date time, String message) {
         this.friend = friend;
         this.type = type;
         this.time = time;

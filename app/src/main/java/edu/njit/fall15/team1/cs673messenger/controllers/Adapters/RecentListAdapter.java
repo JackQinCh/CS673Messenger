@@ -13,22 +13,22 @@ import java.util.Date;
 import java.util.List;
 
 import edu.njit.fall15.team1.cs673messenger.R;
-import edu.njit.fall15.team1.cs673messenger.models.MessageModel;
-import edu.njit.fall15.team1.cs673messenger.models.MessageModels;
+import edu.njit.fall15.team1.cs673messenger.models.Message;
+import edu.njit.fall15.team1.cs673messenger.models.Messages;
 
 /**
  * Created by jack on 10/26/15.
  */
-public class RecentListAdapter extends ArrayAdapter<MessageModels> {
+public class RecentListAdapter extends ArrayAdapter<Messages> {
     private Context context = null;
-    private List<MessageModels> modelses = null;
+    private List<Messages> modelses = null;
     /**
      * Constructor
      *
      * @param context  The current context.
      * @param modelses  The objects to represent in the ListView.
      */
-    public RecentListAdapter(Context context, List<MessageModels> modelses) {
+    public RecentListAdapter(Context context, List<Messages> modelses) {
         super(context,0,modelses);
         this.context = context;
         this.modelses = modelses;
@@ -71,25 +71,25 @@ public class RecentListAdapter extends ArrayAdapter<MessageModels> {
 
         if (modelses.get(position).getMessages().size() != 0){
             //Set content
-            MessageModel messageModel = modelses.get(position).getMessages().getLast();
-            if (messageModel.getType() == MessageModel.MessageType.From){
-                String contentString = ":" + messageModel.getMessage();
+            Message message = modelses.get(position).getMessages().getLast();
+            if (message.getType() == Message.MessageType.From){
+                String contentString = ":" + message.getMessage();
                 holder.content.setText(contentString);
             }else{
-                String contentString = "You:" + messageModel.getMessage();
+                String contentString = "You:" + message.getMessage();
                 holder.content.setText(contentString);
             }
             //Set Time
             SimpleDateFormat sF = new SimpleDateFormat("yyyy MMM d");
             String currentDate = sF.format(new Date());
-            String messageDate = sF.format(messageModel.getTime());
+            String messageDate = sF.format(message.getTime());
 
             if (!currentDate.equals(messageDate)){
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MMM d");
-                holder.time.setText(simpleDateFormat.format(messageModel.getTime()));
+                holder.time.setText(simpleDateFormat.format(message.getTime()));
             }else{
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
-                holder.time.setText(simpleDateFormat.format(messageModel.getTime()));
+                holder.time.setText(simpleDateFormat.format(message.getTime()));
             }
         }else {
             holder.content.setText("");

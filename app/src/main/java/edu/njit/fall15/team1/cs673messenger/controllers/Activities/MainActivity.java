@@ -6,9 +6,11 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import android.view.View;
 import edu.njit.fall15.team1.cs673messenger.APIs.FacebookServer;
 import edu.njit.fall15.team1.cs673messenger.R;
 import edu.njit.fall15.team1.cs673messenger.controllers.Adapters.ViewPagerAdapter;
@@ -86,6 +88,10 @@ public class MainActivity extends AppCompatActivity{
                 break;
         }
         return false;
+    }
+
+    public void onCreateGroupChat(View v){
+        Log.d(getClass().getSimpleName(),"onCreateGroupChat");
     }
 
 }

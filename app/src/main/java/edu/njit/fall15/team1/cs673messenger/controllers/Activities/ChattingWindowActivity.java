@@ -20,8 +20,8 @@ import edu.njit.fall15.team1.cs673messenger.controllers.Adapters.ChattingAdapter
 import edu.njit.fall15.team1.cs673messenger.models.ChatMessage;
 import edu.njit.fall15.team1.cs673messenger.models.Friend;
 import edu.njit.fall15.team1.cs673messenger.models.Friends;
-import edu.njit.fall15.team1.cs673messenger.models.MessageModel;
-import edu.njit.fall15.team1.cs673messenger.models.MessageModels;
+import edu.njit.fall15.team1.cs673messenger.models.Message;
+import edu.njit.fall15.team1.cs673messenger.models.Messages;
 
 /**
  * Created by jack on 10/25/15.
@@ -94,10 +94,10 @@ public class ChattingWindowActivity extends Activity implements RecentChatsListe
 
     public void sendMessage(View v){
         //Send message.
-        String message = textEditor.getText().toString();
-        MessageModel messageModel = new MessageModel(MessageModel.MessageType.To,
-                friend, new Date(), message);
-        RecentChatsManager.getInstance().sendMessage(messageModel);
+        String messageTest = textEditor.getText().toString();
+        Message message = new Message(Message.MessageType.To,
+                friend, new Date(), messageTest);
+        RecentChatsManager.getInstance().sendMessage(message);
         //Display message.
         initMessages();
         chatHistoryAdapter.notifyDataSetChanged();
@@ -111,7 +111,7 @@ public class ChattingWindowActivity extends Activity implements RecentChatsListe
      * @param messageModel
      */
     @Override
-    public void receivedMessage(MessageModel messageModel) {
+    public void receivedMessage(Message messageModel) {
         Friend friend = messageModel.getFriend();
         String message = messageModel.getMessage();
         if (friend.equals(this.friend)){
@@ -128,10 +128,10 @@ public class ChattingWindowActivity extends Activity implements RecentChatsListe
     private List<ChatMessage> getData(){
         List<ChatMessage> list = new LinkedList<>();
 
-        MessageModels messageModels = RecentChatsManager.getInstance().getMessageModels(friend);
+        Messages messages = RecentChatsManager.getInstance().getMessages(friend);
 
-        if (messageModels.getMessages().size() != 0){
-            for(MessageModel model:messageModels.getMessages()){
+        if (messages.getMessages().size() != 0){
+            for(Message model: messages.getMessages()){
                 list.add(new ChatMessage(model.getType().value(), model.getMessage()));
             }
         }
