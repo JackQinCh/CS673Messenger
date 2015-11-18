@@ -17,6 +17,7 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smackx.muc.MultiUserChat;
 
 import java.io.File;
 import java.util.Date;
@@ -76,7 +77,7 @@ public enum FacebookServer implements PacketListener, ConnectionCreationListener
                 ConnectionCreationListener connectionCreationListener = params[0];
                 if (connection == null){
                     connection = new XMPPConnection(setConnectConfig(host));
-                    connection.addPacketListener(packetListener, new MessageTypeFilter(Message.Type.chat));
+                    connection.addPacketListener(packetListener, new MessageFilter(Message.Type.chat, Message.Type.groupchat));
                     XMPPConnection.addConnectionCreationListener(connectionCreationListener);
                 }
                 try {
@@ -276,7 +277,6 @@ public enum FacebookServer implements PacketListener, ConnectionCreationListener
                         listener.facebookReceivedMessage(Messages.GROUP_CHAT, from, message, new Date());
                     }
                 }
-
             }
         }
     }

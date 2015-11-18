@@ -81,31 +81,31 @@ public class RecentChatsFragment extends ListFragment implements RecentChatsList
 
     @Override
     public void onStart() {
-        Log.d(getClass().getSimpleName(), "onStart");
+//        Log.d(getClass().getSimpleName(), "onStart");
         super.onStart();
     }
 
     @Override
     public void onResume() {
-        Log.d(getClass().getSimpleName(), "onResume");
+//        Log.d(getClass().getSimpleName(), "onResume");
         super.onResume();
     }
 
     @Override
     public void onPause() {
-        Log.d(getClass().getSimpleName(), "onPause");
+//        Log.d(getClass().getSimpleName(), "onPause");
         super.onPause();
     }
 
     @Override
     public void onStop() {
-        Log.d(getClass().getSimpleName(), "onStop");
+//        Log.d(getClass().getSimpleName(), "onStop");
         super.onStop();
     }
 
     @Override
     public void onDestroy() {
-        Log.d(getClass().getSimpleName(), "onDestroy");
+//        Log.d(getClass().getSimpleName(), "onDestroy");
         super.onDestroy();
         RecentChatsManager.INSTANCE.removeListener(this);
     }
@@ -132,14 +132,14 @@ public class RecentChatsFragment extends ListFragment implements RecentChatsList
      */
     private void pageStart() {
         updateData();
-        Log.d(getClass().getSimpleName(), "pageStart");
+//        Log.d(getClass().getSimpleName(), "pageStart");
     }
 
     /**
      * pageEnd
      */
     private void pageEnd() {
-        Log.d(getClass().getSimpleName(), "pageEnd");
+//        Log.d(getClass().getSimpleName(), "pageEnd");
     }
 
 
