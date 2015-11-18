@@ -55,7 +55,7 @@ public class LaunchActivity extends Activity implements FacebookServerListener{
 
     private void init() {
         FacebookServer.getInstance().addListeners(this);
-        RecentChatsManager.getInstance();
+//        RecentChatsManager.INSTANCE;
         FacebookServer.getInstance().connect(getString(R.string.facebook_server));
     }
 
@@ -87,8 +87,9 @@ public class LaunchActivity extends Activity implements FacebookServerListener{
     public void facebookLogined(Boolean isLogin) {
     }
 
-    //Useless
     @Override
-    public void facebookReceivedMessage(String from, String message, Date time) {
+    public void facebookReceivedMessage(int type, String from, String message, Date time) {
+
     }
+
 }

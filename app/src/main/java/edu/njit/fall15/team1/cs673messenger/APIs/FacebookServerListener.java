@@ -8,5 +8,5 @@ import java.util.Date;
 public interface FacebookServerListener {
     void facebookConnected(Boolean isConnected);
     void facebookLogined(Boolean isLogin);
-    void facebookReceivedMessage(String from, String message, Date time);
+    void facebookReceivedMessage(int type, String from, String message, Date time);
 }

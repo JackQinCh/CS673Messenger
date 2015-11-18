@@ -21,17 +21,17 @@ import edu.njit.fall15.team1.cs673messenger.models.Messages;
  */
 public class RecentListAdapter extends ArrayAdapter<Messages> {
     private Context context = null;
-    private List<Messages> modelses = null;
+    private List<Messages> recentChats = null;
     /**
      * Constructor
      *
      * @param context  The current context.
-     * @param modelses  The objects to represent in the ListView.
+     * @param recentChats  The objects to represent in the ListView.
      */
-    public RecentListAdapter(Context context, List<Messages> modelses) {
-        super(context,0,modelses);
+    public RecentListAdapter(Context context, List<Messages> recentChats) {
+        super(context,0,recentChats);
         this.context = context;
-        this.modelses = modelses;
+        this.recentChats = recentChats;
     }
 
 
@@ -67,11 +67,11 @@ public class RecentListAdapter extends ArrayAdapter<Messages> {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        holder.name.setText(modelses.get(position).getWithWho().getProfileName());
+        holder.name.setText(recentChats.get(position).getName());
 
-        if (modelses.get(position).getMessages().size() != 0){
+        if (recentChats.get(position).getMessages().size() != 0){
             //Set content
-            Message message = modelses.get(position).getMessages().getLast();
+            Message message = recentChats.get(position).getMessages().get(recentChats.get(position).getMessages().size()-1);
             if (message.getType() == Message.MessageType.From){
                 String contentString = ":" + message.getMessage();
                 holder.content.setText(contentString);

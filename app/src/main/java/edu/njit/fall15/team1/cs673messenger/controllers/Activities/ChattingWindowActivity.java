@@ -13,13 +13,13 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+import edu.njit.fall15.team1.cs673messenger.APIs.FriendsManager;
 import edu.njit.fall15.team1.cs673messenger.APIs.RecentChatsListener;
 import edu.njit.fall15.team1.cs673messenger.APIs.RecentChatsManager;
 import edu.njit.fall15.team1.cs673messenger.R;
 import edu.njit.fall15.team1.cs673messenger.controllers.Adapters.ChattingAdapter;
 import edu.njit.fall15.team1.cs673messenger.models.ChatMessage;
 import edu.njit.fall15.team1.cs673messenger.models.Friend;
-import edu.njit.fall15.team1.cs673messenger.models.Friends;
 import edu.njit.fall15.team1.cs673messenger.models.Message;
 import edu.njit.fall15.team1.cs673messenger.models.Messages;
 
@@ -30,8 +30,8 @@ public class ChattingWindowActivity extends Activity implements RecentChatsListe
     private ListView chatHistoryLv;
     private EditText textEditor;
     private ChattingAdapter chatHistoryAdapter;
-    private List<ChatMessage> messages = new ArrayList<>();
-    private Friend friend;
+    private List<ChatMessage> messageLines = new ArrayList<>();
+    private String chatId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,15 +39,14 @@ public class ChattingWindowActivity extends Activity implements RecentChatsListe
         setContentView(R.layout.chattingwindow);
 
         Intent intent = getIntent();
-        String friendUser = intent.getStringExtra("FriendUser");
+        chatId = intent.getStringExtra(getString(R.string.chat_id));
 
-        friend = findFriend(friendUser);
-        RecentChatsManager.getInstance().addListener(this);
+        RecentChatsManager.INSTANCE.addListener(this);
 
-        Log.d(getLocalClassName(), "Chatting with " + friend.getProfileName());
+        Log.d(getLocalClassName(), "Chat:" + chatId);
 
         chatHistoryLv = (ListView) findViewById(R.id.chatting_history_lv);
-        setAdapterForThis();
+        updateMessages();
 
         textEditor = (EditText) findViewById(R.id.text_editor);
 
@@ -56,68 +55,47 @@ public class ChattingWindowActivity extends Activity implements RecentChatsListe
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        RecentChatsManager.getInstance().removeListener(this);
-    }
-
-    /**
-     * Find friend by his userID.
-     * @param user String
-     * @return Friend
-     */
-    private Friend findFriend(String user){
-        Friends friends = new Friends();
-        LinkedList<Friend> friendLinkedList = friends.getFriends();
-
-        if(friendLinkedList.size() != 0){
-            for(Friend f:friendLinkedList){
-                if (f.getUser().equals(user)){
-                    return f;
-                }
-            }
-        }
-
-        return null;
-    }
-
-    // Set up adapter
-    private void setAdapterForThis() {
-        initMessages();
-        chatHistoryAdapter = new ChattingAdapter(this, messages);
-        chatHistoryLv.setAdapter(chatHistoryAdapter);
+        RecentChatsManager.INSTANCE.removeListener(this);
     }
 
     // Initial message list data.
-    private void initMessages() {
-        messages.clear();
-        messages.addAll(getData());
+    private void updateMessages() {
+        messageLines.clear();
+        messageLines.addAll(getData());
+        if (chatHistoryAdapter == null){
+            chatHistoryAdapter = new ChattingAdapter(this, messageLines);
+            chatHistoryLv.setAdapter(chatHistoryAdapter);
+        }
+        chatHistoryAdapter.notifyDataSetChanged();
     }
 
     public void sendMessage(View v){
         //Send message.
-        String messageTest = textEditor.getText().toString();
+        String messageText = textEditor.getText().toString();
+        Friend friend = FriendsManager.checkFriend(chatId);
+        if (friend == null)
+            return;// Need to implement...
         Message message = new Message(Message.MessageType.To,
-                friend, new Date(), messageTest);
-        RecentChatsManager.getInstance().sendMessage(message);
+                friend, new Date(), messageText);
+        int type = Messages.PERSONAL_CHAT;
+        RecentChatsManager.INSTANCE.addMessage(chatId, type, message);
         //Display message.
-        initMessages();
-        chatHistoryAdapter.notifyDataSetChanged();
+        updateMessages();
         //Clear input text view.
         textEditor.setText("");
-
     }
 
     /**
      * Received a message
-     * @param messageModel
+     * @param message
      */
     @Override
-    public void receivedMessage(Message messageModel) {
-        Friend friend = messageModel.getFriend();
-        String message = messageModel.getMessage();
-        if (friend.equals(this.friend)){
+    public void receivedMessage(Message message) {
+        Friend friend = message.getFriend();
+        String messageText = message.getMessage();
+        if (chatId == friend.getUser()){
             Log.d(getLocalClassName(), "Chatting window received a message from " + friend.getProfileName() + ":" + message);
-            initMessages();
-            chatHistoryAdapter.notifyDataSetChanged();
+            updateMessages();
         }
     }
 
@@ -128,11 +106,12 @@ public class ChattingWindowActivity extends Activity implements RecentChatsListe
     private List<ChatMessage> getData(){
         List<ChatMessage> list = new LinkedList<>();
 
-        Messages messages = RecentChatsManager.getInstance().getMessages(friend);
+        int type = Messages.PERSONAL_CHAT;
+        Messages messages = RecentChatsManager.INSTANCE.getMessages(type, chatId);
 
         if (messages.getMessages().size() != 0){
-            for(Message model: messages.getMessages()){
-                list.add(new ChatMessage(model.getType().value(), model.getMessage()));
+            for(Message message: messages.getMessages()){
+                list.add(new ChatMessage(message.getType().value(), message.getMessage()));
             }
         }
         return list;

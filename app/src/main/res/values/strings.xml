@@ -16,4 +16,6 @@
     <string name="status_inactive">Inactive</string>
 
     <string name="facebook_server">chat.facebook.com</string>
+
+    <string name="chat_id">Chat Id</string>
 </resources>

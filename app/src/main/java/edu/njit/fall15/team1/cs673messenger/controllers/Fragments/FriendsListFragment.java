@@ -12,17 +12,16 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import edu.njit.fall15.team1.cs673messenger.APIs.FriendsManager;
 import edu.njit.fall15.team1.cs673messenger.R;
 import edu.njit.fall15.team1.cs673messenger.controllers.Activities.ChattingWindowActivity;
 import edu.njit.fall15.team1.cs673messenger.controllers.Adapters.FriendListItemAdapter;
 import edu.njit.fall15.team1.cs673messenger.models.Friend;
-import edu.njit.fall15.team1.cs673messenger.models.Friends;
 
 /**
  * Created by jack on 10/14/15.
  */
 public class FriendsListFragment extends ListFragment {
-    private Friends friendsFactory = new Friends();
     private List<Friend> friends;
 
     public FriendsListFragment(){
@@ -59,10 +58,11 @@ public class FriendsListFragment extends ListFragment {
      * Refresh friends data
      */
     private void refreshFriends(){
-        TextView numOfFriend = (TextView)getActivity().findViewById(R.id.numberOfFriendLabel);
-        numOfFriend.setText("Your friends("+friendsFactory.getFriends().size()+")");
-        ((FriendListItemAdapter)getListAdapter()).notifyDataSetChanged();
         friends = getFriendsData();
+        TextView numOfFriendLabel = (TextView)getActivity().findViewById(R.id.numberOfFriendLabel);
+        numOfFriendLabel.setText("Your friends("+friends.size()+")");
+        ((FriendListItemAdapter)getListAdapter()).notifyDataSetChanged();
+
     }
 
     /**
@@ -71,7 +71,7 @@ public class FriendsListFragment extends ListFragment {
      */
     private List<Friend> getFriendsData() {
 
-        return friendsFactory.getFriends();
+        return FriendsManager.getFriends();
     }
 
     /**
@@ -87,7 +87,7 @@ public class FriendsListFragment extends ListFragment {
         Friend friend = friends.get(position);
         //Change to other page
         Intent intent = new Intent();
-        intent.putExtra("FriendUser",friend.getUser());
+        intent.putExtra(getActivity().getString(R.string.chat_id),friend.getUser());
         intent.setClass(this.getActivity(), ChattingWindowActivity.class);
         startActivity(intent);
     }

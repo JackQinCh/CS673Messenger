@@ -2,11 +2,12 @@ package edu.njit.fall15.team1.cs673messenger.APIs;
 
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
+import java.util.List;
 
 import edu.njit.fall15.team1.cs673messenger.models.Friend;
-import edu.njit.fall15.team1.cs673messenger.models.Friends;
 import edu.njit.fall15.team1.cs673messenger.models.Message;
 import edu.njit.fall15.team1.cs673messenger.models.Messages;
 
@@ -14,12 +15,20 @@ import edu.njit.fall15.team1.cs673messenger.models.Messages;
  * RecentChatsManager is a Singleton, manages recent chat lists.
  * Created by jack on 10/25/15.
  */
-public class RecentChatsManager implements FacebookServerListener{
-    private LinkedList<Messages> recentChats = new LinkedList<>();
-    private LinkedList<RecentChatsListener> listeners = new LinkedList<>();
+public enum  RecentChatsManager implements FacebookServerListener{
+    INSTANCE;
 
-    public LinkedList<Messages> getRecentChats() {
-        return recentChats;
+    private List<Messages> recentChats = new LinkedList<>();
+    private List<RecentChatsListener> listeners = new LinkedList<>();
+
+    RecentChatsManager() {
+        FacebookServer.getInstance().addListeners(this);
+    }
+
+    public List<Messages> getRecentChats() {
+        List<Messages> list = new ArrayList<>();
+        list.addAll(recentChats);
+        return list;
     }
 
     public void addListener(RecentChatsListener listener) {
@@ -33,6 +42,114 @@ public class RecentChatsManager implements FacebookServerListener{
         }
     }
 
+    /**
+     * Get Messgaes with chatId.
+     * @param type
+     * @param chatId
+     * @return
+     */
+    public Messages getMessages(int type, String chatId){
+        if (recentChats.size() != 0) {
+            for (Messages messages : recentChats) {
+                if (messages.checkId(chatId)) {
+                    return messages;
+                }
+            }
+        }
+        Log.d(getClass().getSimpleName(),"Didn't find the messages with "+chatId);
+        if (type == Messages.PERSONAL_CHAT){
+            Friend friend = FriendsManager.checkFriend(chatId);
+            if (friend != null){
+                Messages messages = Messages.newPersonalMessages(friend);
+                recentChats.add(messages);
+                return messages;//copy
+            }
+        }else if (type == Messages.GROUP_CHAT){
+            Log.d(getClass().getSimpleName(), "New Group_chat");
+            return null;
+        }
+        return null;
+    }
+
+    /**
+     * Add a message into Recent messages list.
+     * @param chatId
+     * @param type
+     * @param message
+     */
+    public void addMessage(String chatId, int type,Message message){
+        if (recentChats.size() != 0){
+            for (Messages ms:recentChats){
+                if(ms.getChatId().equals(chatId)){
+                    ms.addMessage(message);
+                    if (message.getType() == Message.MessageType.To){
+                        FacebookServer.getInstance().sendMessage(message);
+                    }
+                    Log.i(getClass().getSimpleName(),toString());
+                    return;
+                }
+            }
+        }
+        Log.d(getClass().getSimpleName(),"Didn't find the messages with "+chatId);
+        if (type == Messages.PERSONAL_CHAT){
+            Friend friend = FriendsManager.checkFriend(chatId);
+            if (friend != null){
+                Messages messages = Messages.newPersonalMessages(friend);
+                recentChats.add(messages);
+            }
+        }else {
+            Log.e(getClass().getSimpleName(),"No group chat implementation.");
+        }
+        Log.i(getClass().getSimpleName(),toString());
+    }
+
+    @Override
+    public void facebookReceivedMessage(int type, String from, String messageText, Date time) {
+        Log.d(getClass().getSimpleName(), "ReceivedMessage from FacebookServer.");
+
+        Friend friend = FriendsManager.checkFriend(from);
+        if (friend != null){
+            if (type == Messages.PERSONAL_CHAT){
+                Message message = new Message(
+                        Message.MessageType.From,
+                        friend,
+                        time,
+                        messageText);
+                addMessage(from, Messages.PERSONAL_CHAT, message);
+                if (listeners.size() != 0) {
+                    Log.d(getClass().getSimpleName(), "Notify GUI listeners.");
+                    for (RecentChatsListener listener : listeners)
+                        listener.receivedMessage(message);
+                }
+            }else if (type == Messages.GROUP_CHAT){
+
+            }
+
+        }else{
+            Log.e(getClass().getSimpleName(),"Didn't find this friend.");
+        }
+    }
+
+    @Override
+    public String toString() {
+        String recentChatsString = "Recent chats list:\n";
+        if (recentChats.size() != 0){
+            for (Messages messages:recentChats){
+                recentChatsString += messages.getChatId()+"\n";
+                for (Friend f:messages.getMembers()){
+                    recentChatsString += f.getProfileName() + ", ";
+                }
+                recentChatsString += "\n";
+                if (messages.getMessages().size() != 0){
+                    for (Message message:messages.getMessages()){
+                        recentChatsString += message.toString() +", "+ message.getTime() + "\n";
+                    }
+                }
+            }
+        }
+        return recentChatsString;
+    }
+
     @Override
     public void facebookConnected(Boolean isConnected) {
 
@@ -41,106 +158,5 @@ public class RecentChatsManager implements FacebookServerListener{
     @Override
     public void facebookLogined(Boolean isLogin) {
 
-    }
-
-
-    private static class RecentChatsManagerHolder{
-        private static RecentChatsManager instance = new RecentChatsManager();
-    }
-
-    private RecentChatsManager() {
-        FacebookServer.getInstance().addListeners(this);
-    }
-
-    public static RecentChatsManager getInstance(){
-        return RecentChatsManagerHolder.instance;
-    }
-
-    public Messages getMessages(Friend withWho){
-        if (recentChats.size() != 0){
-            for(Messages models:recentChats){
-                if (models.getWithWho().isEquals(withWho)){
-                    return models;
-                }
-            }
-        }else{
-            Messages models = new Messages(withWho);
-            recentChats.add(models);
-            return models;
-        }
-        return null;
-    }
-
-    public void sendMessage(Message message){
-        if (recentChats.size() != 0){
-            for (Messages ms:recentChats){
-                if(ms.getWithWho().isEquals(message.getFriend())){
-                    ms.addMessage(message);
-                }
-            }
-        }else {
-            Messages models = new Messages(message.getFriend());
-            models.addMessage(message);
-            recentChats.add(models);
-        }
-        Log.i(getClass().getSimpleName(),this.toString());
-    }
-
-    @Override
-    public void facebookReceivedMessage(String from, String message, Date time) {
-        Log.d(getClass().getSimpleName(), "ReceivedMessage from FacebookServer.");
-        if (recentChats.size() != 0) {//If the list is not empty, find the friend and add the message.
-            for (Messages models : recentChats) {
-                if (models.getWithWho().getUser().equals(from)) {
-                    Message model = new Message(
-                            Message.MessageType.From,
-                            models.getWithWho(),
-                            time,
-                            message);
-                    models.addMessage(model);
-                    if (listeners.size() != 0) {
-                        Log.d(getClass().getSimpleName(), "Notify listeners.");
-                        for (RecentChatsListener listener : listeners)
-                            listener.receivedMessage(model);
-                    }
-                }
-                break;
-            }
-        }else{//If list is empty, create a new chat history list.
-            Friends friends = new Friends();
-            Friend friend = friends.checkFriend(from);
-            if (friend != null){
-                Message model = new Message(
-                        Message.MessageType.From,
-                        friend,
-                        time,
-                        message);
-                Messages models = new Messages(friend);
-                models.addMessage(model);
-                recentChats.add(models);
-                if (listeners.size() != 0) {
-                    Log.d(getClass().getSimpleName(), "Notify listeners.");
-                    for (RecentChatsListener listener : listeners)
-                        listener.receivedMessage(model);
-                }
-            }
-        }
-        Log.i(getClass().getSimpleName(),this.toString());
-    }
-
-    @Override
-    public String toString() {
-        String recentChatsString = "Recent chats list:\n";
-        if (recentChats.size() != 0){
-            for (Messages models:recentChats){
-                recentChatsString += models.getWithWho().getProfileName()+"\n";
-                if (models.getMessages().size() != 0){
-                    for (Message model:models.getMessages()){
-                        recentChatsString += model.toString() + "\n";
-                    }
-                }
-            }
-        }
-        return recentChatsString;
     }
 }

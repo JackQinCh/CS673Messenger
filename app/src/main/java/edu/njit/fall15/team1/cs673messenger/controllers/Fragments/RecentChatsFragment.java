@@ -56,7 +56,7 @@ public class RecentChatsFragment extends ListFragment implements RecentChatsList
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        RecentChatsManager.getInstance().addListener(this);
+        RecentChatsManager.INSTANCE.addListener(this);
         Log.d(getClass().getSimpleName(), "onCreate");
 
         isCreated = true;
@@ -107,7 +107,7 @@ public class RecentChatsFragment extends ListFragment implements RecentChatsList
     public void onDestroy() {
         Log.d(getClass().getSimpleName(), "onDestroy");
         super.onDestroy();
-        RecentChatsManager.getInstance().removeListener(this);
+        RecentChatsManager.INSTANCE.removeListener(this);
     }
 
     /**
@@ -149,10 +149,11 @@ public class RecentChatsFragment extends ListFragment implements RecentChatsList
      */
     private void updateData(){
         if (rootView != null && adapter != null){
+            List<Messages> recentChats = RecentChatsManager.INSTANCE.getRecentChats();
             TextView retentText = (TextView)rootView.findViewById(R.id.recentChatNumber);
-            retentText.setText("Recent chats(" + RecentChatsManager.getInstance().getRecentChats().size() + ")");
+            retentText.setText("Recent chats(" + recentChats.size() + ")");
             messages.clear();
-            messages.addAll(RecentChatsManager.getInstance().getRecentChats());
+            messages.addAll(recentChats);
             adapter.notifyDataSetChanged();
             Log.d(getClass().getSimpleName(), "getData for list view");
         }
@@ -231,12 +232,12 @@ public class RecentChatsFragment extends ListFragment implements RecentChatsList
      */
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        Friend friend;
-        if (RecentChatsManager.getInstance().getRecentChats().size() != 0){
-            friend = RecentChatsManager.getInstance().getRecentChats().get(position).getWithWho();
-            Log.d(getClass().getSimpleName(), friend.toString());
+        List<Messages> recentChats = RecentChatsManager.INSTANCE.getRecentChats();
+        if (recentChats.size() != 0){
+            String chatId = recentChats.get(position).getChatId();
+            Log.d(getClass().getSimpleName(), chatId);
             Intent intent = new Intent();
-            intent.putExtra("FriendUser",friend.getUser());
+            intent.putExtra(getActivity().getString(R.string.chat_id),chatId);
             intent.setClass(this.getActivity(), ChattingWindowActivity.class);
             startActivity(intent);
         }

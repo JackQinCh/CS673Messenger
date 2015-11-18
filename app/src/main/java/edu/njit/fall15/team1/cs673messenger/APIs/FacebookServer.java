@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.util.Log;
 
+import edu.njit.fall15.team1.cs673messenger.models.Messages;
 import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.ConnectionConfiguration;
 import org.jivesoftware.smack.ConnectionCreationListener;
@@ -20,8 +21,6 @@ import org.jivesoftware.smack.util.StringUtils;
 import java.io.File;
 import java.util.Date;
 import java.util.LinkedList;
-
-import edu.njit.fall15.team1.cs673messenger.models.Friend;
 
 /**
  * Singleton of Facebook Server
@@ -121,20 +120,20 @@ public class FacebookServer implements PacketListener, ConnectionCreationListene
             connection.disconnect();
     }
 
-    public void sendMessage(Friend to, String message){
+    public void sendMessage(edu.njit.fall15.team1.cs673messenger.models.Message message){
         if (connection != null){
-            AsyncTask<String, Void, Void> asyncTask = new AsyncTask<String, Void, Void>() {
+            AsyncTask<edu.njit.fall15.team1.cs673messenger.models.Message, Void, Void> asyncTask = new AsyncTask<edu.njit.fall15.team1.cs673messenger.models.Message, Void, Void>() {
                 @Override
-                protected Void doInBackground(String... params) {
-                    String to = params[0];
-                    String message = params[1];
+                protected Void doInBackground(edu.njit.fall15.team1.cs673messenger.models.Message... params) {
+                    String to = params[0].getFriend().getUser();
+                    String messageText = params[0].getMessage();
                     Message msg = new Message(to, Message.Type.chat);
-                    msg.setBody(message);
+                    msg.setBody(messageText);
                     connection.sendPacket(msg);
                     return null;
                 }
             };
-            asyncTask.execute(to.getUser(), message);
+            asyncTask.execute(message);
         }
     }
 
@@ -289,8 +288,14 @@ public class FacebookServer implements PacketListener, ConnectionCreationListene
             Log.d(getClass().getSimpleName(), "Receive a mesage:"+message);
             if (listeners.size() != 0){
                 Log.d(getClass().getSimpleName(), "Notify the message:"+message);
-                for (FacebookServerListener listener:listeners)
-                    listener.facebookReceivedMessage(from, message, new Date());
+                for (FacebookServerListener listener:listeners){
+                    if (msg.getType() == Message.Type.chat){
+                        listener.facebookReceivedMessage(Messages.PERSONAL_CHAT, from, message, new Date());
+                    }else if (msg.getType() == Message.Type.groupchat){
+                        listener.facebookReceivedMessage(Messages.GROUP_CHAT, from, message, new Date());
+                    }
+                }
+
             }
         }
     }

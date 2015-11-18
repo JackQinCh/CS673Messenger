@@ -139,7 +139,7 @@ public class XMPP {
 
                         Roster roster = connection.getRoster();
                         Collection<RosterEntry> entries = roster.getEntries();
-                        Log.d("DENIS", "Your Friend List detected: " + "\n\n" + entries.size() + " Friends :");
+                        Log.d("DENIS", "Your Friend List detected: " + "\n\n" + entries.size() + " FriendsManager :");
 
                         // shows first time onliners---->
                         String temp[] = new String[50];
