@@ -72,10 +72,10 @@ public class RecentListAdapter extends ArrayAdapter<Messages> {
         if (recentChats.get(position).getMessages().size() != 0){
             //Set content
             Message message = recentChats.get(position).getMessages().get(recentChats.get(position).getMessages().size()-1);
-            if (message.getType() == Message.MessageType.From){
+            if (message.getType() == Message.MESSAGE_FROM){
                 String contentString = ":" + message.getMessage();
                 holder.content.setText(contentString);
-            }else{
+            }else if (message.getType() == Message.MESSAGE_TO){
                 String contentString = "You:" + message.getMessage();
                 holder.content.setText(contentString);
             }

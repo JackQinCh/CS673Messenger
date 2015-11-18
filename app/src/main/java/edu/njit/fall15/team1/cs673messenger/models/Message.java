@@ -7,25 +7,14 @@ import java.util.Date;
  */
 public final class Message {
     private Friend friend;
-    private MessageType type;
+    private int type;
     private Date time;
     private String message;
 
-    public enum MessageType{
-        From(0), To(1);
+    public final static int MESSAGE_FROM = 0;
+    public final static int MESSAGE_TO   = 1;
 
-        private int _value;
-
-        MessageType(int value){
-            _value = value;
-        }
-
-        public int value(){
-            return _value;
-        }
-    }
-
-    public Message(MessageType type, Friend friend, Date time, String message) {
+    public Message(int type, Friend friend, Date time, String message) {
         this.friend = friend;
         this.type = type;
         this.time = time;
@@ -36,7 +25,7 @@ public final class Message {
         return friend;
     }
 
-    public MessageType getType() {
+    public int getType() {
         return type;
     }
 
@@ -51,7 +40,7 @@ public final class Message {
     @Override
     public String toString() {
         String messageString;
-        messageString = type.toString()+","+
+        messageString = type+","+
                 friend.getProfileName()+","+
                 time.toString()+","+
                 message.toString();

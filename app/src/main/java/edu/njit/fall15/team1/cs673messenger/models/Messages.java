@@ -89,7 +89,7 @@ public final class Messages {
 
     public void addMessage(Message m){
         messages.add(m);
-        if (m.getType().equals(Message.MessageType.To)){
+        if (m.getType() == Message.MESSAGE_TO){
             FacebookServer.INSTANCE.sendMessage(m);
             Log.d(getClass().getSimpleName(),"Sending message to "+m.getFriend().getProfileName()+":"+m.getMessage());
         }
