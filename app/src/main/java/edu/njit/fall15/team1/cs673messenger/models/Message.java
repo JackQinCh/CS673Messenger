@@ -54,7 +54,7 @@ public final class Message {
         messageString = type.toString()+","+
                 friend.getProfileName()+","+
                 time.toString()+","+
-                message.toString()+".";
+                message.toString();
         return messageString;
     }
 }

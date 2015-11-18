@@ -30,17 +30,17 @@ public class AppPreferencesActivity extends PreferenceActivity{
 
             SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
-            Preference username = (Preference)findPreference("usernameDisplay");
+            Preference username = findPreference("usernameDisplay");
             String name;
             //display username
-            name = FacebookServer.getInstance().getUserName();
+            name = FacebookServer.INSTANCE.getUserName();
             if (name != null)
                 username.setTitle(name);
 
             sp.registerOnSharedPreferenceChangeListener(this);
 
             //change status
-            FacebookServer.getInstance().setActiveStatus(sp.getBoolean("changeStatusSetting", true));
+            FacebookServer.INSTANCE.setActiveStatus(sp.getBoolean("changeStatusSetting", true));
 
         }
 
@@ -68,7 +68,7 @@ public class AppPreferencesActivity extends PreferenceActivity{
                     boolean status = sharedPreferences.getBoolean(key, true);
                     Log.d(getClass().getSimpleName(), String.valueOf(status));
                     //change status
-                    FacebookServer.getInstance().setActiveStatus(status);
+                    FacebookServer.INSTANCE.setActiveStatus(status);
                     break;
                 default:
                     break;

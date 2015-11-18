@@ -22,7 +22,7 @@ public enum  RecentChatsManager implements FacebookServerListener{
     private List<RecentChatsListener> listeners = new LinkedList<>();
 
     RecentChatsManager() {
-        FacebookServer.getInstance().addListeners(this);
+        FacebookServer.INSTANCE.addListeners(this);
     }
 
     public List<Messages> getRecentChats() {
@@ -83,7 +83,7 @@ public enum  RecentChatsManager implements FacebookServerListener{
                 if(ms.getChatId().equals(chatId)){
                     ms.addMessage(message);
                     if (message.getType() == Message.MessageType.To){
-                        FacebookServer.getInstance().sendMessage(message);
+                        FacebookServer.INSTANCE.sendMessage(message);
                     }
                     Log.i(getClass().getSimpleName(),toString());
                     return;

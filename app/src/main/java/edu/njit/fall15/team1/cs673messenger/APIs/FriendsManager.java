@@ -38,7 +38,7 @@ public final class FriendsManager {
      */
     public static List<Friend> getFriends(){
         LinkedList<Friend> friends = new LinkedList<>();
-        Roster roster = FacebookServer.getInstance().getRoster();
+        Roster roster = FacebookServer.INSTANCE.getRoster();
 
         //Log
         try{

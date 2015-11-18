@@ -20,14 +20,14 @@ public class LoginActivity extends Activity implements FacebookServerListener{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_interface);
 
-        FacebookServer.getInstance().addListeners(this);
+        FacebookServer.INSTANCE.addListeners(this);
 
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        FacebookServer.getInstance().removeListeners(this);
+        FacebookServer.INSTANCE.removeListeners(this);
     }
 
     /**
@@ -38,11 +38,11 @@ public class LoginActivity extends Activity implements FacebookServerListener{
         Log.d(this.getClass().getSimpleName(),"Login button.");
         String userName = getETString(R.id.fbUsername);
         String password = getETString(R.id.fbPassword);
-        if (!FacebookServer.getInstance().isConnected()){
-            FacebookServer.getInstance().connect(getString(R.string.facebook_server));
+        if (!FacebookServer.INSTANCE.isConnected()){
+            FacebookServer.INSTANCE.connect(getString(R.string.facebook_server));
             Log.d(this.getClass().getSimpleName(), "Login button: is not connected.");
         }else {
-            FacebookServer.getInstance().login(userName, password);
+            FacebookServer.INSTANCE.login(userName, password);
             Log.d(this.getClass().getSimpleName(), "Login button: login.");
         }
     }
@@ -73,8 +73,8 @@ public class LoginActivity extends Activity implements FacebookServerListener{
 
             this.finish();
         }else {
-            FacebookServer.getInstance().disConnect();
-            FacebookServer.getInstance().connect(getString(R.string.facebook_server));
+            FacebookServer.INSTANCE.disConnect();
+            FacebookServer.INSTANCE.connect(getString(R.string.facebook_server));
             Toast.makeText(this, "Please try again.", Toast.LENGTH_SHORT).show();
         }
     }

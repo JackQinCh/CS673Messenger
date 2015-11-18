@@ -72,11 +72,11 @@ public class MainActivity extends AppCompatActivity{
 
         switch (id){
             case R.id.action_signout:
-                FacebookServer.getInstance().disConnect();
+                FacebookServer.INSTANCE.disConnect();
                 Intent intentSignout = new Intent();
                 intentSignout.setClass(MainActivity.this, LoginActivity.class);
                 startActivity(intentSignout);
-                FacebookServer.getInstance().disConnect();
+                FacebookServer.INSTANCE.disConnect();
                 this.finish();
                 return true;
             case R.id.action_setting:

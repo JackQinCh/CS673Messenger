@@ -26,7 +26,8 @@ import java.util.LinkedList;
  * Singleton of Facebook Server
  * Created by jack on 10/21/15.
  */
-public class FacebookServer implements PacketListener, ConnectionCreationListener{
+public enum FacebookServer implements PacketListener, ConnectionCreationListener{
+    INSTANCE;
 
     @Override
     public void connectionCreated(Connection connection) {
@@ -37,26 +38,6 @@ public class FacebookServer implements PacketListener, ConnectionCreationListene
                     listener.facebookConnected(true);
             }
         }
-    }
-
-    /**
-     * Instance holder
-     */
-    private static class FacebookHolder{
-        private static FacebookServer instance = new FacebookServer();
-    }
-
-    /**
-     * Private Constructor
-     */
-    private FacebookServer(){}
-
-    /**
-     * Get FacebookServer Singleton Instance
-     * @return FacebookServer
-     */
-    public static FacebookServer getInstance(){
-        return FacebookHolder.instance;
     }
 
     /**

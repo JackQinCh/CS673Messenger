@@ -49,14 +49,14 @@ public class LaunchActivity extends Activity implements FacebookServerListener{
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        FacebookServer.getInstance().removeListeners(this);
+        FacebookServer.INSTANCE.removeListeners(this);
         Log.d(getClass().getSimpleName(),"onDestroy");
     }
 
     private void init() {
-        FacebookServer.getInstance().addListeners(this);
+        FacebookServer.INSTANCE.addListeners(this);
 //        RecentChatsManager.INSTANCE;
-        FacebookServer.getInstance().connect(getString(R.string.facebook_server));
+        FacebookServer.INSTANCE.connect(getString(R.string.facebook_server));
     }
 
     @Override
