@@ -34,7 +34,6 @@ public class RecentListAdapter extends ArrayAdapter<Messages> {
         this.recentChats = recentChats;
     }
 
-
     /**
      * ViewHolder
      */
@@ -53,7 +52,6 @@ public class RecentListAdapter extends ArrayAdapter<Messages> {
      */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        Log.d(getClass().getSimpleName(), "getView");
         ViewHolder holder;
 
         if (null == convertView){
@@ -97,7 +95,6 @@ public class RecentListAdapter extends ArrayAdapter<Messages> {
         }
 
         // 5. retrn rowView
-        Log.d(getClass().getSimpleName(), "getView finished.");
         return convertView;
     }
 

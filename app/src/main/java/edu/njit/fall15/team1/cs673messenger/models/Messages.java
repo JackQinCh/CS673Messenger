@@ -59,9 +59,15 @@ public final class Messages {
      * Static Factory generates a Group Messages package.
      * @return
      */
-    public static Messages newGroupMessages(){
+    public static Messages newGroupMessages(String name, List<Friend> members){
         Date date = new Date();
-        return new Messages(GROUP_CHAT, date.toString());
+        Messages messages = new Messages(GROUP_CHAT, date.toString());
+        messages.setName(name);
+        if (members.size() != 0){
+            for (Friend f:members)
+                messages.addMember(f);
+        }
+        return messages;
     }
 
     public boolean checkId(String id){

@@ -43,6 +43,14 @@ public enum  RecentChatsManager implements FacebookServerListener{
     }
 
     /**
+     * Add messages into recent chats.
+     * @param messages
+     */
+    public void addMessages(Messages messages){
+        recentChats.add(messages);
+        Log.i(getClass().getSimpleName(), toString());
+    }
+    /**
      * Get Messgaes with chatId.
      * @param type
      * @param chatId
