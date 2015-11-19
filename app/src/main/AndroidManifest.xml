@@ -43,6 +43,13 @@
             <!-- Launcher Intent filter -->
         </activity>
 
+        <activity
+                android:name=".controllers.Activities.CreateGroupActivity"
+                android:screenOrientation="portrait"
+                android:windowSoftInputMode="stateAlwaysHidden">
+            <!-- Launcher Intent filter -->
+        </activity>
+
     </application>
 
 </manifest>

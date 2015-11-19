@@ -98,7 +98,6 @@ public class ChattingWindowActivity extends Activity implements RecentChatsListe
     @Override
     public void receivedMessage(Message message) {
         Friend friend = message.getFriend();
-        String messageText = message.getMessage();
         if (chatId == friend.getUser()){
             Log.d(getLocalClassName(), "Chatting window received a message from " + friend.getProfileName() + ":" + message);
             updateMessages();

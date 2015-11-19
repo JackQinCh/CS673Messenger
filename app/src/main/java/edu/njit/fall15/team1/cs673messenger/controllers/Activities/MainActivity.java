@@ -92,6 +92,9 @@ public class MainActivity extends AppCompatActivity{
 
     public void onCreateGroupChat(View v){
         Log.d(getClass().getSimpleName(),"onCreateGroupChat");
+        Intent intent = new Intent();
+        intent.setClass(MainActivity.this, CreateGroupActivity.class);
+        startActivity(intent);
     }
 
 }

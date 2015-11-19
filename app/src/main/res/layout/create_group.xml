@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Group Name:"
+            android:id="@+id/groupNameLabel"/>
+    <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionDone"
+            android:id="@+id/groupNameET"
+            android:layout_gravity="center_horizontal"/>
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Members:"
+            android:id="@+id/membersLabel"/>
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:id="@+id/membersDisplay"/>
+    <ListView
+            android:layout_width="match_parent"
+            android:layout_height="309dp"
+            android:id="@android:id/list"
+            android:layout_gravity="center_horizontal"
+            android:choiceMode="multipleChoice" android:layout_weight="1.11"/>
+    <RelativeLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cancel"
+                android:id="@+id/cancelButton" android:layout_marginLeft="0dp"
+                android:layout_alignParentTop="true" android:layout_alignParentStart="true"/>
+        <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Create"
+                android:id="@+id/createButton" android:layout_marginLeft="225dp"
+                android:layout_alignParentTop="true" android:layout_alignParentEnd="true"/>
+    </RelativeLayout>
+</LinearLayout>
