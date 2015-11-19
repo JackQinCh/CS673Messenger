@@ -100,7 +100,7 @@ public enum FacebookServer implements PacketListener, ConnectionCreationListener
                 protected Void doInBackground(edu.njit.fall15.team1.cs673messenger.models.Message... params) {
                     String to = params[0].getFriend().getUser();
                     String messageText = params[0].getMessage();
-                    Message msg = new Message(to, Message.Type.chat);
+                    Message msg = new Message(to, Message.Type.groupchat);
                     msg.setBody(messageText);
                     connection.sendPacket(msg);
                     return null;
@@ -258,7 +258,11 @@ public enum FacebookServer implements PacketListener, ConnectionCreationListener
         if (msg.getBody() != null){
             from = StringUtils.parseBareAddress(msg.getFrom());
             message = msg.getBody();
-            Log.d(getClass().getSimpleName(), "Receive a mesage:"+message);
+            Log.d(getClass().getSimpleName(), "Receive a message:"+message);
+//            Log.d(getClass().getSimpleName(), "Message type:"+msg.getType());
+//            Log.d(getClass().getSimpleName(), "Message thread:"+msg.getThread());
+//            Log.d(getClass().getSimpleName(), "Message bodies size:"+msg.getBodies().size());
+//            Log.d(getClass().getSimpleName(), "Message subjects size:"+msg.getSubjects().size());
             if (listeners.size() != 0){
                 Log.d(getClass().getSimpleName(), "Notify the message:"+message);
                 for (FacebookServerListener listener:listeners){

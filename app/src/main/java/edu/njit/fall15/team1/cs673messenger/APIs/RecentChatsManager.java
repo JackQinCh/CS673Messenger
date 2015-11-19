@@ -82,7 +82,7 @@ public enum  RecentChatsManager implements FacebookServerListener{
             for (Messages ms:recentChats){
                 if(ms.getChatId().equals(chatId)){
                     ms.addMessage(message);
-                    if (message.getType() == Message.MESSAGE_TO){
+                    if (message.getDirection() == Message.DIRECTION_TO){
                         FacebookServer.INSTANCE.sendMessage(message);
                     }
                     Log.i(getClass().getSimpleName(),toString());
@@ -110,11 +110,14 @@ public enum  RecentChatsManager implements FacebookServerListener{
         Friend friend = FriendsManager.checkFriend(from);
         if (friend != null){
             if (type == Messages.PERSONAL_CHAT){
-                Message message = new Message(
-                        Message.MESSAGE_FROM,
+                Message message = Message.createMessage(Message.TYPE_CHAT,
+                        Message.COMMAND_NONE,
+                        Message.DIRECTION_FROM,
                         friend,
                         time,
-                        messageText);
+                        messageText,
+                        "");
+
                 addMessage(from, Messages.PERSONAL_CHAT, message);
                 if (listeners.size() != 0) {
                     Log.d(getClass().getSimpleName(), "Notify GUI listeners.");

@@ -75,8 +75,14 @@ public class ChattingWindowActivity extends Activity implements RecentChatsListe
         Friend friend = FriendsManager.checkFriend(chatId);
         if (friend == null)
             return;// Need to implement...
-        Message message = new Message(Message.MESSAGE_TO,
-                friend, new Date(), messageText);
+        Message message = Message.createMessage(Message.TYPE_CHAT,
+                        Message.COMMAND_NONE,
+                        Message.DIRECTION_TO,
+                        friend,
+                        new Date(),
+                        messageText,
+                        "");
+
         int type = Messages.PERSONAL_CHAT;
         RecentChatsManager.INSTANCE.addMessage(chatId, type, message);
         //Display message.
@@ -111,7 +117,7 @@ public class ChattingWindowActivity extends Activity implements RecentChatsListe
 
         if (messages.getMessages().size() != 0){
             for(Message message: messages.getMessages()){
-                list.add(new ChatMessage(message.getType(), message.getMessage()));
+                list.add(new ChatMessage(message.getDirection(), message.getMessage()));
             }
         }
         return list;
