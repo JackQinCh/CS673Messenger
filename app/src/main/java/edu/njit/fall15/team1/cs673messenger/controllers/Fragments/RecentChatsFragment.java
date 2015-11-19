@@ -37,7 +37,6 @@ import edu.njit.fall15.team1.cs673messenger.models.Messages;
  * Created by jack on 10/5/15.
  */
 public class RecentChatsFragment extends ListFragment implements RecentChatsListener{
-    int n = 0;
 
     /**
      * The fragment argument representing the section number for this
@@ -49,7 +48,7 @@ public class RecentChatsFragment extends ListFragment implements RecentChatsList
     protected boolean isCreated = false;
     private List<Messages> messages = new LinkedList<>();
 
-    View rootView;
+    private View rootView;
 
     public RecentChatsFragment(){
     }
@@ -71,41 +70,19 @@ public class RecentChatsFragment extends ListFragment implements RecentChatsList
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
         Log.d(getClass().getSimpleName(), "onActivityCreated");
 
-        adapter = new RecentListAdapter(this.getContext(), messages);
-        setListAdapter(adapter);
-        getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-        super.onActivityCreated(savedInstanceState);
+        if (adapter == null){
+            adapter = new RecentListAdapter(this.getContext(), messages);
+            setListAdapter(adapter);
+            getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        }
     }
 
-    @Override
-    public void onStart() {
-//        Log.d(getClass().getSimpleName(), "onStart");
-        super.onStart();
-    }
-
-    @Override
-    public void onResume() {
-//        Log.d(getClass().getSimpleName(), "onResume");
-        super.onResume();
-    }
-
-    @Override
-    public void onPause() {
-//        Log.d(getClass().getSimpleName(), "onPause");
-        super.onPause();
-    }
-
-    @Override
-    public void onStop() {
-//        Log.d(getClass().getSimpleName(), "onStop");
-        super.onStop();
-    }
 
     @Override
     public void onDestroy() {
-//        Log.d(getClass().getSimpleName(), "onDestroy");
         super.onDestroy();
         RecentChatsManager.INSTANCE.removeListener(this);
     }
@@ -132,14 +109,12 @@ public class RecentChatsFragment extends ListFragment implements RecentChatsList
      */
     private void pageStart() {
         updateData();
-//        Log.d(getClass().getSimpleName(), "pageStart");
     }
 
     /**
      * pageEnd
      */
     private void pageEnd() {
-//        Log.d(getClass().getSimpleName(), "pageEnd");
     }
 
 
@@ -155,7 +130,6 @@ public class RecentChatsFragment extends ListFragment implements RecentChatsList
             messages.clear();
             messages.addAll(recentChats);
             adapter.notifyDataSetChanged();
-            Log.d(getClass().getSimpleName(), "getData for list view");
         }
     }
 
