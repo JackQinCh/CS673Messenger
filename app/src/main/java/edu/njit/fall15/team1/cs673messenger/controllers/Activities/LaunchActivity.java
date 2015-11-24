@@ -14,7 +14,6 @@ import java.util.Date;
 
 import edu.njit.fall15.team1.cs673messenger.APIs.FacebookServer;
 import edu.njit.fall15.team1.cs673messenger.APIs.FacebookServerListener;
-import edu.njit.fall15.team1.cs673messenger.APIs.RecentChatsManager;
 import edu.njit.fall15.team1.cs673messenger.R;
 
 /**
@@ -88,7 +87,7 @@ public class LaunchActivity extends Activity implements FacebookServerListener{
     }
 
     @Override
-    public void facebookReceivedMessage(int type, String from, String message, Date time) {
+    public void facebookReceivedMessage(String from, String message, Date time) {
 
     }
 

@@ -70,7 +70,7 @@ public enum  RecentChatsManager implements FacebookServerListener{
      * @param chatId
      * @return
      */
-    public Messages getMessages(int type, String chatId){
+    public synchronized Messages getMessages(int type, String chatId){
         if (recentChats.size() != 0) {
             for (Messages messages : recentChats) {
                 if (messages.checkId(chatId)) {
@@ -95,14 +95,12 @@ public enum  RecentChatsManager implements FacebookServerListener{
 
     /**
      * Add a message into Recent messages list.
-     * @param chatId
-     * @param type
      * @param message
      */
-    public void addMessage(String chatId, int type,Message message){
-        if (recentChats.size() != 0){
+    public synchronized void addMessage(Message message){
+        if (recentChats.size() != 0){//If recent chats is not empty, find the chat and add the message into it.
             for (Messages ms:recentChats){
-                if(ms.getChatId().equals(chatId)){
+                if(ms.getChatId().equals(message.getChatID())){
                     ms.addMessage(message);
                     if (message.getDirection() == Message.DIRECTION_TO){
                         FacebookServer.INSTANCE.sendMessage(message);
@@ -111,43 +109,38 @@ public enum  RecentChatsManager implements FacebookServerListener{
                     return;
                 }
             }
+        }//If recent chats is empty or didn't find the chat, create a chat. When receive a message.
+        Log.d(getClass().getSimpleName() + "->addMessage():", "Didn't find the chat: " + message.getChatID());
+        Messages messages = null;
+        if (message.getType() == Messages.PERSONAL_CHAT){
+            messages = Messages.newPersonalMessages(message.getFriend().get(0));
+        }else if (message.getType() == Messages.GROUP_CHAT){
+            messages = Messages.newGroupMessages(message.getName(), message.getChatID(), message.getFriend());
         }
-        Log.d(getClass().getSimpleName(),"Didn't find the messages with "+chatId);
-        if (type == Messages.PERSONAL_CHAT){
-            Friend friend = FriendsManager.checkFriend(chatId);
-            if (friend != null){
-                Messages messages = Messages.newPersonalMessages(friend);
-                recentChats.add(messages);
-            }
-        }else {
-            Log.e(getClass().getSimpleName(),"No group chat implementation.");
+        messages.addMessage(message);
+        recentChats.add(messages);
+        if (message.getDirection() == Message.DIRECTION_TO){
+            FacebookServer.INSTANCE.sendMessage(message);
         }
         Log.i(getClass().getSimpleName(),toString());
     }
 
     @Override
-    public void facebookReceivedMessage(int type, String from, String messageText, Date time) {
-        Log.d(getClass().getSimpleName(), "ReceivedMessage from FacebookServer.");
+    public void facebookReceivedMessage(String from, String messageText, Date time) {
+        Log.d(getClass().getSimpleName(), "Received a Message from FacebookServer.");
 
         Friend friend = FriendsManager.checkFriend(from);
         if (friend != null){
-            if (type == Messages.PERSONAL_CHAT){
-                Message message = Message.createMessage(Message.TYPE_CHAT,
-                        Message.COMMAND_NONE,
-                        Message.DIRECTION_FROM,
-                        friend,
-                        time,
-                        messageText,
-                        "");
-
-                addMessage(from, Messages.PERSONAL_CHAT, message);
+            Message message = Message.createWithReceivedMessage(messageText, friend, time);
+            if (message.getType() == Messages.PERSONAL_CHAT){
+                addMessage(message);
                 if (listeners.size() != 0) {
                     Log.d(getClass().getSimpleName(), "Notify GUI listeners.");
                     for (RecentChatsListener listener : listeners)
                         listener.receivedMessage(message);
                 }
-            }else if (type == Messages.GROUP_CHAT){
-
+            }else if (message.getType() == Messages.GROUP_CHAT){
+                Log.e(getClass().getSimpleName(),"To be continue...");
             }
 
         }else{

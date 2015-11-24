@@ -3,15 +3,21 @@ package edu.njit.fall15.team1.cs673messenger.controllers.Activities;
 import android.app.ListActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.*;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
+
 import edu.njit.fall15.team1.cs673messenger.APIs.FriendsManager;
 import edu.njit.fall15.team1.cs673messenger.APIs.RecentChatsManager;
 import edu.njit.fall15.team1.cs673messenger.R;
 import edu.njit.fall15.team1.cs673messenger.models.Friend;
-import edu.njit.fall15.team1.cs673messenger.models.Messages;
-
-import java.util.LinkedList;
-import java.util.List;
+import edu.njit.fall15.team1.cs673messenger.models.Message;
 
 /**
  * Created by jack on 15/11/18.
@@ -68,13 +74,21 @@ public class CreateGroupActivity extends ListActivity{
         }else{
             if (members.size() < 3){
                 Toast.makeText(this, "The number of members can not be less than 3.", Toast.LENGTH_SHORT).show();
-            }else {
-                Messages messages = Messages.newGroupMessages(groupName, members);
-                RecentChatsManager.INSTANCE.addMessages(messages);
+            }else {//Create
+                Date time = new Date();
+                Message message = Message.createGroupMessage(
+                        groupName,
+                        time.toString(),
+                        Message.COMMAND_CREATE_GROUP,
+                        Message.DIRECTION_TO,
+                        members,
+                        time,
+                        "",
+                        "");
+                RecentChatsManager.INSTANCE.addMessage(message);
                 cancel(v);
             }
         }
-
     }
     public void cancel(View v){
         this.finish();

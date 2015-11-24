@@ -1,13 +1,8 @@
 package edu.njit.fall15.team1.cs673messenger.models;
 
-import android.util.Log;
-
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-
-import edu.njit.fall15.team1.cs673messenger.APIs.FacebookServer;
 
 /**
  * Created by jack on 10/25/15.
@@ -59,9 +54,8 @@ public final class Messages {
      * Static Factory generates a Group Messages package.
      * @return
      */
-    public static Messages newGroupMessages(String name, List<Friend> members){
-        Date date = new Date();
-        Messages messages = new Messages(GROUP_CHAT, date.toString());
+    public static Messages newGroupMessages(String name,String chatId, List<Friend> members){
+        Messages messages = new Messages(GROUP_CHAT, chatId);
         messages.setName(name);
         if (members.size() != 0){
             for (Friend f:members)
@@ -95,11 +89,8 @@ public final class Messages {
 
     public void addMessage(Message m){
         messages.add(m);
-        if (m.getDirection() == Message.DIRECTION_TO){
-            FacebookServer.INSTANCE.sendMessage(m);
-            Log.d(getClass().getSimpleName(),"Sending message to "+m.getFriend().getProfileName()+":"+m.getMessage());
-        }
     }
+
     public List<Message> getMessages() {
         List<Message> ms = new ArrayList<>();
         ms.addAll(messages);

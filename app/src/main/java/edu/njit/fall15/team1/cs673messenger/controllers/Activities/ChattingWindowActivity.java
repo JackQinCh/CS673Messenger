@@ -9,7 +9,6 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -75,16 +74,10 @@ public class ChattingWindowActivity extends Activity implements RecentChatsListe
         Friend friend = FriendsManager.checkFriend(chatId);
         if (friend == null)
             return;// Need to implement...
-        Message message = Message.createMessage(Message.TYPE_CHAT,
-                        Message.COMMAND_NONE,
-                        Message.DIRECTION_TO,
-                        friend,
-                        new Date(),
-                        messageText,
-                        "");
+        Message message = Message.createPersonalMessage(Message.DIRECTION_TO, friend, messageText);
 
         int type = Messages.PERSONAL_CHAT;
-        RecentChatsManager.INSTANCE.addMessage(chatId, type, message);
+        RecentChatsManager.INSTANCE.addMessage(message);
         //Display message.
         updateMessages();
         //Clear input text view.
@@ -97,7 +90,7 @@ public class ChattingWindowActivity extends Activity implements RecentChatsListe
      */
     @Override
     public void receivedMessage(Message message) {
-        Friend friend = message.getFriend();
+        Friend friend = message.getFriend().get(0);
         if (chatId == friend.getUser()){
             Log.d(getLocalClassName(), "Chatting window received a message from " + friend.getProfileName() + ":" + message);
             updateMessages();

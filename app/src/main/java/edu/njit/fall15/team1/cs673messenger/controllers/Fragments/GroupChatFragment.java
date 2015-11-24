@@ -3,14 +3,15 @@ package edu.njit.fall15.team1.cs673messenger.controllers.Fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import edu.njit.fall15.team1.cs673messenger.APIs.RecentChatsListener;
 import edu.njit.fall15.team1.cs673messenger.APIs.RecentChatsManager;
 import edu.njit.fall15.team1.cs673messenger.R;
@@ -18,16 +19,13 @@ import edu.njit.fall15.team1.cs673messenger.controllers.Adapters.GroupListAdapte
 import edu.njit.fall15.team1.cs673messenger.models.Message;
 import edu.njit.fall15.team1.cs673messenger.models.Messages;
 
-import java.util.LinkedList;
-import java.util.List;
-
 /**
  * Created by jack on 10/14/15.
  */
 public class GroupChatFragment extends ListFragment implements RecentChatsListener {
     protected boolean isCreated = false;
     private GroupListAdapter adapter;
-    private List<Messages> groupChats = new LinkedList<>();
+    private List<Messages> groupChats = new ArrayList<>();
     private View rootView;
 
     public GroupChatFragment(){

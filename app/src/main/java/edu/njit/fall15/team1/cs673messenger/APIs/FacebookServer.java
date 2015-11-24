@@ -3,8 +3,14 @@ package edu.njit.fall15.team1.cs673messenger.APIs;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.util.Log;
-import edu.njit.fall15.team1.cs673messenger.models.Messages;
-import org.jivesoftware.smack.*;
+
+import org.jivesoftware.smack.Connection;
+import org.jivesoftware.smack.ConnectionConfiguration;
+import org.jivesoftware.smack.ConnectionCreationListener;
+import org.jivesoftware.smack.PacketListener;
+import org.jivesoftware.smack.Roster;
+import org.jivesoftware.smack.XMPPConnection;
+import org.jivesoftware.smack.XMPPException;
 import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
@@ -13,6 +19,9 @@ import org.jivesoftware.smack.util.StringUtils;
 import java.io.File;
 import java.util.Date;
 import java.util.LinkedList;
+
+import edu.njit.fall15.team1.cs673messenger.models.Friend;
+import edu.njit.fall15.team1.cs673messenger.models.Messages;
 
 /**
  * Singleton of Facebook Server
@@ -93,20 +102,22 @@ public enum FacebookServer implements PacketListener, ConnectionCreationListener
             connection.disconnect();
     }
 
-    public void sendMessage(edu.njit.fall15.team1.cs673messenger.models.Message message){
+    public void sendMessage(final edu.njit.fall15.team1.cs673messenger.models.Message message){
         if (connection != null){
-            AsyncTask<edu.njit.fall15.team1.cs673messenger.models.Message, Void, Void> asyncTask = new AsyncTask<edu.njit.fall15.team1.cs673messenger.models.Message, Void, Void>() {
+            AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
                 @Override
-                protected Void doInBackground(edu.njit.fall15.team1.cs673messenger.models.Message... params) {
-                    String to = params[0].getFriend().getUser();
-                    String messageText = params[0].getMessage();
-                    Message msg = new Message(to, Message.Type.groupchat);
-                    msg.setBody(messageText);
-                    connection.sendPacket(msg);
+                protected Void doInBackground(Void... params) {
+                    for (Friend f:message.getFriend()){
+                        String to = f.getUser();
+                        String messageText = message.getPacketString();
+                        Message msg = new Message(to, Message.Type.chat);
+                        msg.setBody(messageText);
+                        connection.sendPacket(msg);
+                    }
                     return null;
                 }
             };
-            asyncTask.execute(message);
+            asyncTask.execute();
         }
     }
 
@@ -266,11 +277,7 @@ public enum FacebookServer implements PacketListener, ConnectionCreationListener
             if (listeners.size() != 0){
                 Log.d(getClass().getSimpleName(), "Notify the message:"+message);
                 for (FacebookServerListener listener:listeners){
-                    if (msg.getType() == Message.Type.chat){
-                        listener.facebookReceivedMessage(Messages.PERSONAL_CHAT, from, message, new Date());
-                    }else if (msg.getType() == Message.Type.groupchat){
-                        listener.facebookReceivedMessage(Messages.GROUP_CHAT, from, message, new Date());
-                    }
+                    listener.facebookReceivedMessage(from, message, new Date());
                 }
             }
         }
