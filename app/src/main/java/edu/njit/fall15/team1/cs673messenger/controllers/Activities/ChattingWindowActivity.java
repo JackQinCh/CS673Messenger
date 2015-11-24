@@ -45,8 +45,7 @@ public class ChattingWindowActivity extends Activity implements RecentChatsListe
         Log.d(getLocalClassName(), "Chat:" + chatId);
 
         chatHistoryLv = (ListView) findViewById(R.id.chatting_history_lv);
-        messageLines.clear();
-        messageLines.addAll(getData());
+        updateMessages();
         chatHistoryAdapter = new ChattingAdapter(this, messageLines);
         chatHistoryLv.setAdapter(chatHistoryAdapter);
 
@@ -71,7 +70,6 @@ public class ChattingWindowActivity extends Activity implements RecentChatsListe
                     chatHistoryAdapter.notifyDataSetChanged();
                 }
             });
-
         }
     }
 
