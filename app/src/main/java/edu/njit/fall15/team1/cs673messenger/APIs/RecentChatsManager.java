@@ -56,21 +56,21 @@ public enum  RecentChatsManager implements FacebookServerListener{
         }
     }
 
-    /**
-     * Add messages into recent chats.
-     * @param messages
-     */
-    public void addMessages(Messages messages){
-        recentChats.add(messages);
-        Log.i(getClass().getSimpleName(), toString());
-    }
+//    /**
+//     * Add messages into recent chats.
+//     * @param messages
+//     */
+//    public void addMessages(Messages messages){
+//        recentChats.add(messages);
+//        Log.i(getClass().getSimpleName(), toString());
+//    }
     /**
      * Get Messgaes with chatId.
      * @param type
      * @param chatId
      * @return
      */
-    public synchronized Messages getMessages(int type, String chatId){
+    public Messages getMessages(int type, String chatId){
         if (recentChats.size() != 0) {
             for (Messages messages : recentChats) {
                 if (messages.checkId(chatId)) {
@@ -97,13 +97,25 @@ public enum  RecentChatsManager implements FacebookServerListener{
      * Add a message into Recent messages list.
      * @param message
      */
-    public synchronized void addMessage(Message message){
+    public void addMessage(Message message){
         if (recentChats.size() != 0){//If recent chats is not empty, find the chat and add the message into it.
             for (Messages ms:recentChats){
                 if(ms.getChatId().equals(message.getChatID())){
                     ms.addMessage(message);
+
                     if (message.getDirection() == Message.DIRECTION_TO){
                         FacebookServer.INSTANCE.sendMessage(message);
+                        if (listeners.size() != 0) {
+                            Log.d(getClass().getSimpleName(), "Notify GUI listeners.");
+                            for (RecentChatsListener listener : listeners)
+                                listener.updateGUI();
+                        }
+                    }else {
+                        if (listeners.size() != 0) {
+                            Log.d(getClass().getSimpleName(), "Notify GUI listeners.");
+                            for (RecentChatsListener listener : listeners)
+                                listener.receivedMessage(message);
+                        }
                     }
                     Log.i(getClass().getSimpleName(),toString());
                     return;
@@ -112,16 +124,29 @@ public enum  RecentChatsManager implements FacebookServerListener{
         }//If recent chats is empty or didn't find the chat, create a chat. When receive a message.
         Log.d(getClass().getSimpleName() + "->addMessage():", "Didn't find the chat: " + message.getChatID());
         Messages messages = null;
-        if (message.getType() == Messages.PERSONAL_CHAT){
+        if (message.getType() == Message.TYPE_CHAT){
             messages = Messages.newPersonalMessages(message.getFriend().get(0));
-        }else if (message.getType() == Messages.GROUP_CHAT){
+        }else if (message.getType() == Message.TYPE_GROUP){
             messages = Messages.newGroupMessages(message.getName(), message.getChatID(), message.getFriend());
         }
         messages.addMessage(message);
         recentChats.add(messages);
+
         if (message.getDirection() == Message.DIRECTION_TO){
             FacebookServer.INSTANCE.sendMessage(message);
+            if (listeners.size() != 0) {
+                Log.d(getClass().getSimpleName(), "Notify GUI listeners.");
+                for (RecentChatsListener listener : listeners)
+                    listener.updateGUI();
+            }
+        }else {
+            if (listeners.size() != 0) {
+                Log.d(getClass().getSimpleName(), "listeners size:"+listeners.size());
+                for (RecentChatsListener listener : listeners)
+                    listener.receivedMessage(message);
+            }
         }
+
         Log.i(getClass().getSimpleName(),toString());
     }
 
@@ -132,19 +157,10 @@ public enum  RecentChatsManager implements FacebookServerListener{
         Friend friend = FriendsManager.checkFriend(from);
         if (friend != null){
             Message message = Message.createWithReceivedMessage(messageText, friend, time);
-            if (message.getType() == Messages.PERSONAL_CHAT){
-                addMessage(message);
-                if (listeners.size() != 0) {
-                    Log.d(getClass().getSimpleName(), "Notify GUI listeners.");
-                    for (RecentChatsListener listener : listeners)
-                        listener.receivedMessage(message);
-                }
-            }else if (message.getType() == Messages.GROUP_CHAT){
-                Log.e(getClass().getSimpleName(),"To be continue...");
-            }
+            addMessage(message);
 
         }else{
-            Log.e(getClass().getSimpleName(),"Didn't find this friend.");
+            Log.e(getClass().getSimpleName(), "Didn't find this friend.");
         }
     }
 
@@ -160,7 +176,7 @@ public enum  RecentChatsManager implements FacebookServerListener{
                 recentChatsString += "\n";
                 if (messages.getMessages().size() != 0){
                     for (Message message:messages.getMessages()){
-                        recentChatsString += message.toString() +", "+ message.getTime() + "\n";
+                        recentChatsString += message.toString() + "\n";
                     }
                 }
             }

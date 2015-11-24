@@ -1,8 +1,12 @@
 package edu.njit.fall15.team1.cs673messenger.models;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import edu.njit.fall15.team1.cs673messenger.APIs.FriendsManager;
 
 /**
  * Created by jack on 10/25/15.
@@ -108,53 +112,88 @@ public final class Message {
                 time,
                 messageContent,
                 extra);
+        Log.d(Message.class.getSimpleName(), message.toString());
         return message;
 
     }
 
 
-//    public void addFriend(Friend friend){
-//        if (!friends.contains(friend))
-//            friends.add(friend);
-//    }
-//    /**
-//     * Static Generation Factory
-//     * @param direction
-//     * @param s
-//     * @param userId
-//     * @return
-//     */
+    /**
+     * Static Generation Factory with received message
+     * @param s
+     * @param friend
+     * @param time
+     * @return Message
+     */
     public static Message createWithReceivedMessage( String s, Friend friend, Date time ){
+        String packetStr = s;
+        Log.d(Message.class.getSimpleName(), packetStr);
         List<Friend> friends = new ArrayList<>();
         friends.add(friend);
         if (friend == null)
             return null;
-
-        String message = "";
+        String name = null;
+        String ID = null;
+        String messageText = "";
         int command = COMMAND_NONE;
         String extra = "";
+        List<Friend> members = new ArrayList<>();
         //Type
-        if (s.startsWith(HEADER_TYPE+TYPE_GROUP+HEADER_END)){//Type: group chat
-            s.replace(HEADER_TYPE+TYPE_GROUP+HEADER_END,"");
+        if (packetStr.startsWith(HEADER_TYPE+TYPE_GROUP+HEADER_END)){//Type: group chat
+            packetStr = packetStr.replace(HEADER_TYPE+TYPE_GROUP+HEADER_END, "");
+            Log.d(Message.class.getSimpleName(), packetStr);
         }else{//Type: chat
-            return new Message(friend.getProfileName(), friend.getUser(), TYPE_CHAT, COMMAND_NONE, Message.DIRECTION_FROM, friends, time, s, "");
+            messageText = packetStr;
+            return createPersonalMessage(Message.DIRECTION_FROM, friend, messageText);
         }
 
-//        if (s.startsWith(HEADER_NAME)){
-//            String nameStr = s.substring(0, s.indexOf(HEADER_END));
-//        }
-//
-//        if (s.startsWith(HEADER_COMMAND)){
-//            String commandStr = s.substring(0, 10);
-//            command = Integer.parseInt(commandStr.substring(9, 10));
-//            s.replace(HEADER_COMMAND+command+HEADER_END,"");
-//        }
-//        if (command == Message.COMMAND_CREATE_GROUP){
-//
-//        }
+        if (packetStr.startsWith(HEADER_NAME)){
+            String nameStr = packetStr.substring(0, packetStr.indexOf(HEADER_END)+1);
+            name = nameStr.substring(6, nameStr.length()-1);
+            Log.d(Message.class.getSimpleName(),"Group name:"+name);
+            packetStr = packetStr.replace(nameStr, "");
+            Log.d(Message.class.getSimpleName(), packetStr);
+        }
 
-        //To be continue...
-//        return new Message(name, type, command, direction, f, time, message, extra);
+        if (packetStr.startsWith(HEADER_ID)){
+            String IDStr = packetStr.substring(0, packetStr.indexOf(HEADER_END)+1);
+            ID = IDStr.substring(4, IDStr.length()-1);
+            Log.d(Message.class.getSimpleName(),"Group ID:"+ID);
+            packetStr = packetStr.replace(IDStr, "");
+            Log.d(Message.class.getSimpleName(), packetStr);
+        }
+
+        if (packetStr.startsWith(HEADER_COMMAND)){
+            String commandStr = packetStr.substring(0, packetStr.indexOf(HEADER_END)+1);
+            command = Integer.parseInt(commandStr.substring(9, commandStr.length()-1));
+            Log.d(Message.class.getSimpleName(),"Command:"+command);
+            packetStr = packetStr.replace(commandStr,"");
+            Log.d(Message.class.getSimpleName(), packetStr);
+        }
+        String memberStr = packetStr.substring(0, packetStr.indexOf(HEADER_END)+1);
+        if (command == Message.COMMAND_CREATE_GROUP){
+            String[] membersStr = memberStr.substring(9, memberStr.length()-1).split(",");
+            for (String userID:membersStr){
+                Friend f = FriendsManager.checkFriend(userID);
+                if (f != null)
+                    members.add(f);
+                Log.d(Message.class.getSimpleName(),"Member:"+f.getProfileName());
+            }
+            if (members.size() != 0){
+                Log.d(Message.class.getSimpleName(), messageText);
+                return createGroupMessage(
+                        name,
+                        ID,
+                        command,
+                        Message.DIRECTION_FROM,
+                        members,
+                        time,
+                        messageText,
+                        extra);
+            }
+        }
+        packetStr = packetStr.replace(memberStr,"");
+        Log.d(Message.class.getSimpleName(), packetStr);
         return null;
     }
 

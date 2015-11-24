@@ -1,7 +1,6 @@
 package edu.njit.fall15.team1.cs673messenger.controllers.Adapters;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +19,6 @@ import edu.njit.fall15.team1.cs673messenger.models.Messages;
  * Created by jack on 10/26/15.
  */
 public class RecentListAdapter extends ArrayAdapter<Messages> {
-    private Context context = null;
     private List<Messages> recentChats = null;
     /**
      * Constructor
@@ -29,8 +27,7 @@ public class RecentListAdapter extends ArrayAdapter<Messages> {
      * @param recentChats  The objects to represent in the ListView.
      */
     public RecentListAdapter(Context context, List<Messages> recentChats) {
-        super(context,0,recentChats);
-        this.context = context;
+        super(context,R.layout.recentlistitem,recentChats);
         this.recentChats = recentChats;
     }
 
@@ -55,7 +52,7 @@ public class RecentListAdapter extends ArrayAdapter<Messages> {
         ViewHolder holder;
 
         if (null == convertView){
-            convertView = LayoutInflater.from(context).inflate(R.layout.recentlistitem, null);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.recentlistitem, null);
             holder = new ViewHolder();
             holder.name = (TextView) convertView.findViewById(R.id.recentName);
             holder.content = (TextView) convertView.findViewById(R.id.recentContent);

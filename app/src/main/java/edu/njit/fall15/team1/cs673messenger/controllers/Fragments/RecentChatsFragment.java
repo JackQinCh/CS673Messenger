@@ -21,7 +21,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 import edu.njit.fall15.team1.cs673messenger.APIs.RecentChatsListener;
@@ -29,7 +29,6 @@ import edu.njit.fall15.team1.cs673messenger.APIs.RecentChatsManager;
 import edu.njit.fall15.team1.cs673messenger.R;
 import edu.njit.fall15.team1.cs673messenger.controllers.Activities.ChattingWindowActivity;
 import edu.njit.fall15.team1.cs673messenger.controllers.Adapters.RecentListAdapter;
-import edu.njit.fall15.team1.cs673messenger.models.Friend;
 import edu.njit.fall15.team1.cs673messenger.models.Message;
 import edu.njit.fall15.team1.cs673messenger.models.Messages;
 
@@ -46,8 +45,7 @@ public class RecentChatsFragment extends ListFragment implements RecentChatsList
 
     private RecentListAdapter adapter;
     protected boolean isCreated = false;
-    private List<Messages> messages = new LinkedList<>();
-
+    private ArrayList<Messages> messages = new ArrayList<Messages>();
     private View rootView;
 
     public RecentChatsFragment(){
@@ -74,7 +72,7 @@ public class RecentChatsFragment extends ListFragment implements RecentChatsList
         Log.d(getClass().getSimpleName(), "onActivityCreated");
 
         if (adapter == null){
-            adapter = new RecentListAdapter(this.getContext(), messages);
+            adapter = new RecentListAdapter(getActivity(), messages);
             setListAdapter(adapter);
             getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         }
@@ -120,19 +118,28 @@ public class RecentChatsFragment extends ListFragment implements RecentChatsList
 
     /**
      * Get listview data
-     * @return list of Messages
      */
     private void updateData(){
         if (rootView != null && adapter != null){
             List<Messages> recentChats = RecentChatsManager.INSTANCE.getRecentChats();
             TextView retentText = (TextView)rootView.findViewById(R.id.recentChatNumber);
             retentText.setText("Recent chats(" + recentChats.size() + ")");
-            messages.clear();
-            messages.addAll(recentChats);
-            adapter.notifyDataSetChanged();
+            adapter.clear();
+            adapter.addAll(recentChats);
+//            getActivity().runOnUiThread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    adapter.notifyDataSetChanged();
+//                }
+//            });
         }
     }
 
+
+    @Override
+    public void updateGUI() {
+        updateData();
+    }
 
     /**
      * Receive message feedback
@@ -141,7 +148,7 @@ public class RecentChatsFragment extends ListFragment implements RecentChatsList
     @Override
     public void receivedMessage(Message message) {
         Log.d(getClass().getSimpleName(), "receivedMessage: " + message.getMessage());
-        updateData();
+//        updateData();
         //Check setting notify.
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         boolean notifySetting = sp.getBoolean("notifyMe", true);
@@ -228,6 +235,5 @@ public class RecentChatsFragment extends ListFragment implements RecentChatsList
         fragment.setArguments(args);
         return fragment;
     }
-
 
 }

@@ -57,6 +57,9 @@ public class CreateGroupActivity extends ListActivity{
         updateMemberDisplay();
     }
 
+    /**
+     * Update member string
+     */
     private void updateMemberDisplay() {
         String membersStr = "";
         if (members.size()!=0){
@@ -67,6 +70,10 @@ public class CreateGroupActivity extends ListActivity{
         memberList.setText(membersStr);
     }
 
+    /**
+     * Create group button action
+     * @param v
+     */
     public void create(View v){
         String groupName = groupNameInput.getText().toString();
         if (groupName.equals("")){
@@ -90,6 +97,11 @@ public class CreateGroupActivity extends ListActivity{
             }
         }
     }
+
+    /**
+     * Cancel button action
+     * @param v
+     */
     public void cancel(View v){
         this.finish();
     }

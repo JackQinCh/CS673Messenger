@@ -25,7 +25,7 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
             case 1:
                 return new FriendsListFragment();
             case 2:
-                return new GroupChatFragment();
+                return GroupChatFragment.newInstance(position+1);
             default:
         }
         return null;

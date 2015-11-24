@@ -21,7 +21,6 @@ import java.util.Date;
 import java.util.LinkedList;
 
 import edu.njit.fall15.team1.cs673messenger.models.Friend;
-import edu.njit.fall15.team1.cs673messenger.models.Messages;
 
 /**
  * Singleton of Facebook Server
@@ -270,10 +269,6 @@ public enum FacebookServer implements PacketListener, ConnectionCreationListener
             from = StringUtils.parseBareAddress(msg.getFrom());
             message = msg.getBody();
             Log.d(getClass().getSimpleName(), "Receive a message:"+message);
-//            Log.d(getClass().getSimpleName(), "Message type:"+msg.getType());
-//            Log.d(getClass().getSimpleName(), "Message thread:"+msg.getThread());
-//            Log.d(getClass().getSimpleName(), "Message bodies size:"+msg.getBodies().size());
-//            Log.d(getClass().getSimpleName(), "Message subjects size:"+msg.getSubjects().size());
             if (listeners.size() != 0){
                 Log.d(getClass().getSimpleName(), "Notify the message:"+message);
                 for (FacebookServerListener listener:listeners){
