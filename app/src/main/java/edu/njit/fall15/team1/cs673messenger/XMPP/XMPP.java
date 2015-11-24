@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.media.Ringtone;
@@ -30,8 +31,17 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.util.StringUtils;
+import org.jivesoftware.smackx.workgroup.packet.UserID;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.SocketException;
+import java.net.SocketTimeoutException;
+import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -130,12 +140,16 @@ public class XMPP {
                         SASLAuthentication.supportSASLMechanism("PLAIN");
                         connection.login(loginUser, passwordUser);
                         Log.d("DENIS", "Connected as user  " + connection.getUser() + " " + connection.getChatManager());
+                        Log.d("DENIS", "Connected as user  " + connection.getConnectionID() + " " + connection.getChatManager());
 
                         // Set the status to available
                         Presence presence = new Presence(Presence.Type.available);
                         // Set the status to unavailable
                         //Presence presence = new Presence(Presence.Type.unavailable);
                         connection.sendPacket(presence);
+
+
+
 
                         Roster roster = connection.getRoster();
                         Collection<RosterEntry> entries = roster.getEntries();
@@ -151,7 +165,29 @@ public class XMPP {
                             Presence friendPresence = connection.getRoster().getPresence(user);
                             //friendPresence.getType();
                             Log.i("DENIS", "Friend's username is " + name + " [" + friendPresence.getType() + "] " + user + " Type: " + entry.getType());
+
+                            Log.d("DENIS", "****************GET**USER**PICTURE***********");
+                            // trim value for user to paste it in URL for Graph API
+                            String usrid;
+                            usrid = user.substring(1);
+                            String[] arr = usrid.split("@");
+                            usrid = arr[0];
+                            Log.d("DENIS", usrid);
+                            try {
+                                Bitmap bitmap = getFacebookProfilePicture(usrid);
+
+                                if (bitmap != null) {
+                                    Log.i("DENIS", "I got something to show user picture!");
+                                }
+                            }
+                            catch (Exception e) {
+                                e.printStackTrace();
+                            }
+
+
+                            Log.d("DENIS", "****************GET**USER**PICTURE***********");
                         }
+
 
                         Log.i("DENIS", "Message List Starts");
                         if (connection != null) {
@@ -286,6 +322,22 @@ public class XMPP {
             }
         };
         connectionThread.execute();
+    }
+
+    public static Bitmap getFacebookProfilePicture(String userID)
+    throws MalformedURLException, IOException  {
+        String imageURL;
+        Bitmap bitmap = null;
+        imageURL = "https://graph.facebook.com/" + userID
+                + "/picture?type=large";
+
+            URL url1 = new URL(imageURL);
+            HttpURLConnection ucon1 = (HttpURLConnection) url1.openConnection();
+            ucon1.setInstanceFollowRedirects(false);
+            URL secondURL1 = new URL(ucon1.getHeaderField("Location"));
+            InputStream in = (InputStream) new URL(imageURL).getContent();
+            bitmap = BitmapFactory.decodeStream(in);
+        return bitmap;
     }
 
     /**
