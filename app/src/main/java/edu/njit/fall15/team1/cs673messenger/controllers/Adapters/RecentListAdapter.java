@@ -4,7 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
@@ -18,8 +18,9 @@ import edu.njit.fall15.team1.cs673messenger.models.Messages;
 /**
  * Created by jack on 10/26/15.
  */
-public class RecentListAdapter extends ArrayAdapter<Messages> {
-    private List<Messages> recentChats = null;
+public class RecentListAdapter extends BaseAdapter {
+    private List<Messages> recentChats;
+    private Context context;
     /**
      * Constructor
      *
@@ -27,17 +28,42 @@ public class RecentListAdapter extends ArrayAdapter<Messages> {
      * @param recentChats  The objects to represent in the ListView.
      */
     public RecentListAdapter(Context context, List<Messages> recentChats) {
-        super(context,R.layout.recentlistitem,recentChats);
+        super();
+        this.context = context;
         this.recentChats = recentChats;
     }
 
     /**
-     * ViewHolder
+     * How many items are in the data set represented by this Adapter.
+     *
+     * @return Count of items.
      */
-    private static class ViewHolder {
-        TextView name;
-        TextView content;
-        TextView time;
+    @Override
+    public int getCount() {
+        return recentChats.size();
+    }
+
+    /**
+     * Get the data item associated with the specified position in the data set.
+     *
+     * @param position Position of the item whose data we want within the adapter's
+     *                 data set.
+     * @return The data at the specified position.
+     */
+    @Override
+    public Object getItem(int position) {
+        return recentChats.get(position);
+    }
+
+    /**
+     * Get the row id associated with the specified position in the list.
+     *
+     * @param position The position of the item within the adapter's data set whose row id we want.
+     * @return The id of the item at the specified position.
+     */
+    @Override
+    public long getItemId(int position) {
+        return position;
     }
 
     /**
@@ -49,10 +75,12 @@ public class RecentListAdapter extends ArrayAdapter<Messages> {
      */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder holder;
+        ViewHolder holder = null;
 
-        if (null == convertView){
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.recentlistitem, null);
+        Messages messages = recentChats.get(position);
+
+        if (convertView == null){
+            convertView = LayoutInflater.from(context).inflate(R.layout.recentlistitem, null);
             holder = new ViewHolder();
             holder.name = (TextView) convertView.findViewById(R.id.recentName);
             holder.content = (TextView) convertView.findViewById(R.id.recentContent);
@@ -66,7 +94,7 @@ public class RecentListAdapter extends ArrayAdapter<Messages> {
 
         if (recentChats.get(position).getMessages().size() != 0){
             //Set content
-            Message message = recentChats.get(position).getMessages().get(recentChats.get(position).getMessages().size()-1);
+            Message message = messages.getMessages().get(recentChats.get(position).getMessages().size()-1);
             if (message.getDirection() == Message.DIRECTION_FROM){
                 String contentString = ":" + message.getMessage();
                 holder.content.setText(contentString);
@@ -86,13 +114,19 @@ public class RecentListAdapter extends ArrayAdapter<Messages> {
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
                 holder.time.setText(simpleDateFormat.format(message.getTime()));
             }
-        }else {
-            holder.content.setText("");
-            holder.time.setText("");
         }
 
         // 5. retrn rowView
         return convertView;
+    }
+
+    /**
+     * ViewHolder
+     */
+    static class ViewHolder {
+        TextView name;
+        TextView content;
+        TextView time;
     }
 
 }

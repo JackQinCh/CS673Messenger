@@ -45,7 +45,7 @@ public class RecentChatsFragment extends ListFragment implements RecentChatsList
 
     private RecentListAdapter adapter;
     protected boolean isCreated = false;
-    private ArrayList<Messages> messages = new ArrayList<Messages>();
+    private ArrayList<Messages> messages = new ArrayList<>();
     private View rootView;
 
     public RecentChatsFragment(){
@@ -75,6 +75,7 @@ public class RecentChatsFragment extends ListFragment implements RecentChatsList
             adapter = new RecentListAdapter(getActivity(), messages);
             setListAdapter(adapter);
             getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+            updateData();
         }
     }
 
@@ -121,17 +122,17 @@ public class RecentChatsFragment extends ListFragment implements RecentChatsList
      */
     private void updateData(){
         if (rootView != null && adapter != null){
-            List<Messages> recentChats = RecentChatsManager.INSTANCE.getRecentChats();
-            TextView retentText = (TextView)rootView.findViewById(R.id.recentChatNumber);
-            retentText.setText("Recent chats(" + recentChats.size() + ")");
-            adapter.clear();
-            adapter.addAll(recentChats);
-//            getActivity().runOnUiThread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    adapter.notifyDataSetChanged();
-//                }
-//            });
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    List<Messages> recentChats = RecentChatsManager.INSTANCE.getRecentChats();
+                    TextView retentText = (TextView)rootView.findViewById(R.id.recentChatNumber);
+                    retentText.setText("Recent chats(" + recentChats.size() + ")");
+                    messages.clear();
+                    messages.addAll(recentChats);
+                    adapter.notifyDataSetChanged();
+                }
+            });
         }
     }
 
@@ -148,7 +149,7 @@ public class RecentChatsFragment extends ListFragment implements RecentChatsList
     @Override
     public void receivedMessage(Message message) {
         Log.d(getClass().getSimpleName(), "receivedMessage: " + message.getMessage());
-//        updateData();
+        updateData();
         //Check setting notify.
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         boolean notifySetting = sp.getBoolean("notifyMe", true);

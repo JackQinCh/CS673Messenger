@@ -16,7 +16,6 @@ import edu.njit.fall15.team1.cs673messenger.models.ChatMessage;
  * Created by jack on 10/25/15.
  */
 public class ChattingAdapter extends BaseAdapter {
-    protected static final String TAG = "ChattingAdapter";
     private Context context;
 
     private List<ChatMessage> chatMessages;   //关联数据

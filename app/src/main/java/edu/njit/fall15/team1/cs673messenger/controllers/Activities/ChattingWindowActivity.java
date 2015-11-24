@@ -61,12 +61,13 @@ public class ChattingWindowActivity extends Activity implements RecentChatsListe
 
     // Initial message list data.
     private void updateMessages() {
-        messageLines.clear();
-        messageLines.addAll(getData());
+
         if (chatHistoryAdapter != null){
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    messageLines.clear();
+                    messageLines.addAll(getData());
                     chatHistoryAdapter.notifyDataSetChanged();
                 }
             });

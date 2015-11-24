@@ -8,8 +8,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 import edu.njit.fall15.team1.cs673messenger.APIs.RecentChatsListener;
@@ -25,7 +26,7 @@ import edu.njit.fall15.team1.cs673messenger.models.Messages;
 public class GroupChatFragment extends ListFragment implements RecentChatsListener {
     protected boolean isCreated = false;
     private GroupListAdapter adapter;
-    private List<Messages> groupChats = new LinkedList<>();
+    private ArrayList<Messages> groupChats = new ArrayList<>();
     private View rootView;
     private static final String ARG_SECTION_NUMBER = "section_number";
 
@@ -62,8 +63,9 @@ public class GroupChatFragment extends ListFragment implements RecentChatsListen
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         if (adapter == null){
-            adapter = new GroupListAdapter(this.getContext(), groupChats);
+            adapter = new GroupListAdapter(getActivity(), groupChats);
             setListAdapter(adapter);
+            updateData();
         }
     }
 
@@ -108,16 +110,21 @@ public class GroupChatFragment extends ListFragment implements RecentChatsListen
      * Update chat list data
      */
     private void updateData() {
-//        List<Messages> list = RecentChatsManager.INSTANCE.getGroupChats();
-//        TextView groupNumber = (TextView)rootView.findViewById(R.id.numberOfGroupLabel);
-//        groupNumber.setText("Your groups(" + list.size() + ")");
-//
-//        groupChats.clear();
-//        groupChats.addAll(list);
-//
-//        if (rootView != null && adapter != null){
-//            adapter.notifyDataSetChanged();
-//        }
+        if (rootView != null && adapter != null){
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    List<Messages> list = RecentChatsManager.INSTANCE.getGroupChats();
+                    TextView groupNumber = (TextView) rootView.findViewById(R.id.numberOfGroupLabel);
+                    groupNumber.setText("Your groups(" + list.size() + ")");
+
+                    groupChats.clear();
+                    groupChats.addAll(list);
+                    adapter.notifyDataSetChanged();
+                }
+            });
+
+        }
     }
 
     @Override

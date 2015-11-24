@@ -1,6 +1,5 @@
 package edu.njit.fall15.team1.cs673messenger.controllers.Adapters;
 
-import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,8 +17,8 @@ import edu.njit.fall15.team1.cs673messenger.models.Messages;
  * Created by jack on 15/11/19.
  */
 public class GroupListAdapter extends BaseAdapter {
-    private List<Messages> groupChats = null;
-    Context context = null;
+    private List<Messages> groupChats;
+    Context context;
     /**
      * Constructor
      *
@@ -29,14 +28,13 @@ public class GroupListAdapter extends BaseAdapter {
     public GroupListAdapter(Context context, List<Messages> groupChats) {
         super();
         this.context = context;
-//        super(context, R.layout.group_list_item, groupChats);
         this.groupChats = groupChats;
     }
 
     /**
      * ViewHolder
      */
-    private static class ViewHolder {
+    static class ViewHolder {
         TextView groupName;
         TextView members;
     }
@@ -83,12 +81,11 @@ public class GroupListAdapter extends BaseAdapter {
      */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder holder;
+        ViewHolder holder = null;
 
+        Messages messages = groupChats.get(position);
         if (null == convertView){
-            LayoutInflater mInflater = (LayoutInflater) context
-                    .getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-            convertView = mInflater.inflate(R.layout.group_list_item, null);
+            convertView = LayoutInflater.from(context).inflate(R.layout.group_list_item, null);
             holder = new ViewHolder();
             holder.groupName = (TextView) convertView.findViewById(R.id.groupNameLabel);
             holder.members = (TextView) convertView.findViewById(R.id.groupMembersLabel);
@@ -100,7 +97,7 @@ public class GroupListAdapter extends BaseAdapter {
         holder.groupName.setText(groupChats.get(position).getName());
 
         String membersStr = "You and ";
-        for (Friend member:groupChats.get(position).getMembers()){
+        for (Friend member:messages.getMembers()){
             membersStr += member.getProfileName() + ", ";
         }
         holder.members.setText(membersStr);
