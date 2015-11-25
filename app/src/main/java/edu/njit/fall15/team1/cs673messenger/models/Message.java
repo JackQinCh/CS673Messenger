@@ -146,7 +146,7 @@ public final class Message {
             messageText = packetStr;
             return createPersonalMessage(Message.DIRECTION_FROM, friend, messageText);
         }
-
+        //Name
         if (packetStr.startsWith(HEADER_NAME)){
             String nameStr = packetStr.substring(0, packetStr.indexOf(HEADER_END)+1);
             name = nameStr.substring(6, nameStr.length()-1);
@@ -154,7 +154,7 @@ public final class Message {
             packetStr = packetStr.replace(nameStr, "");
             Log.d(Message.class.getSimpleName(), packetStr);
         }
-
+        //Chat Id
         if (packetStr.startsWith(HEADER_ID)){
             String IDStr = packetStr.substring(0, packetStr.indexOf(HEADER_END)+1);
             ID = IDStr.substring(4, IDStr.length()-1);
@@ -162,7 +162,7 @@ public final class Message {
             packetStr = packetStr.replace(IDStr, "");
             Log.d(Message.class.getSimpleName(), packetStr);
         }
-
+        //Command
         if (packetStr.startsWith(HEADER_COMMAND)){
             String commandStr = packetStr.substring(0, packetStr.indexOf(HEADER_END)+1);
             command = Integer.parseInt(commandStr.substring(9, commandStr.length()-1));
@@ -170,6 +170,7 @@ public final class Message {
             packetStr = packetStr.replace(commandStr,"");
             Log.d(Message.class.getSimpleName(), packetStr);
         }
+        //Members in create group command.
         String memberStr = packetStr.substring(0, packetStr.indexOf(HEADER_END)+1);
         if (command == Message.COMMAND_CREATE_GROUP){
             String[] membersStr = memberStr.substring(9, memberStr.length()-1).split(",");
@@ -193,8 +194,18 @@ public final class Message {
             }
         }
         packetStr = packetStr.replace(memberStr,"");
+        //Extra
+        if (packetStr.startsWith(HEADER_EXTRA)){
+            String extraStr = packetStr.substring(0, packetStr.indexOf(HEADER_END)+1);
+            extra = extraStr.substring(7, extraStr.length()-1);
+            Log.d(Message.class.getSimpleName(),"Extra:"+extra);
+            packetStr = packetStr.replace(extraStr, "");
+            Log.d(Message.class.getSimpleName(), packetStr);
+        }
+        //Message Text
+        messageText = packetStr;
         Log.d(Message.class.getSimpleName(), packetStr);
-        return null;
+        return createGroupMessage(name, ID, command, DIRECTION_FROM, friends, time, messageText, extra);
     }
 
     public static Message createMessage(String name,String chatID, int type, int command, int direction, List<Friend> friends, Date time, String message, String extra){

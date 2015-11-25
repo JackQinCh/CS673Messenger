@@ -18,7 +18,6 @@ import edu.njit.fall15.team1.cs673messenger.R;
 import edu.njit.fall15.team1.cs673messenger.controllers.Adapters.ChattingAdapter;
 import edu.njit.fall15.team1.cs673messenger.models.Friend;
 import edu.njit.fall15.team1.cs673messenger.models.Message;
-import edu.njit.fall15.team1.cs673messenger.models.Messages;
 
 /**
  * Created by jack on 10/25/15.
@@ -113,7 +112,7 @@ public class ChattingWindowActivity extends Activity implements RecentChatsListe
      * @return
      */
     private List<Message> getData(){
-        return RecentChatsManager.INSTANCE.getMessages(Messages.PERSONAL_CHAT, chatId).getMessages();
+        return RecentChatsManager.INSTANCE.getMessages(chatId).getMessages();
     }
 
 }

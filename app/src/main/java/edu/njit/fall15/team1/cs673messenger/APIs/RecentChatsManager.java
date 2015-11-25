@@ -56,39 +56,18 @@ public enum  RecentChatsManager implements FacebookServerListener{
         }
     }
 
-//    /**
-//     * Add messages into recent chats.
-//     * @param messages
-//     */
-//    public void addMessages(Messages messages){
-//        recentChats.add(messages);
-//        Log.i(getClass().getSimpleName(), toString());
-//    }
     /**
      * Get Messgaes with chatId.
-     * @param type
      * @param chatId
-     * @return
+     * @return Messages
      */
-    public Messages getMessages(int type, String chatId){
+    public Messages getMessages(String chatId){
         if (recentChats.size() != 0) {
             for (Messages messages : recentChats) {
                 if (messages.checkId(chatId)) {
                     return messages;
                 }
             }
-        }
-        Log.d(getClass().getSimpleName(),"Didn't find the messages with "+chatId);
-        if (type == Messages.PERSONAL_CHAT){
-            Friend friend = FriendsManager.checkFriend(chatId);
-            if (friend != null){
-                Messages messages = Messages.newPersonalMessages(friend);
-                recentChats.add(messages);
-                return messages;//copy
-            }
-        }else if (type == Messages.GROUP_CHAT){
-            Log.d(getClass().getSimpleName(), "New Group_chat");
-            return null;
         }
         return null;
     }
@@ -192,5 +171,9 @@ public enum  RecentChatsManager implements FacebookServerListener{
     @Override
     public void facebookLogined(Boolean isLogin) {
 
+    }
+
+    public void addMessages(Messages messages) {
+        recentChats.add(messages);
     }
 }
