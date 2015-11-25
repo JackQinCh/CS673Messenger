@@ -10,7 +10,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import edu.njit.fall15.team1.cs673messenger.R;
-import edu.njit.fall15.team1.cs673messenger.models.ChatMessage;
+import edu.njit.fall15.team1.cs673messenger.models.Message;
 
 /**
  * Created by jack on 10/25/15.
@@ -18,9 +18,9 @@ import edu.njit.fall15.team1.cs673messenger.models.ChatMessage;
 public class ChattingAdapter extends BaseAdapter {
     private Context context;
 
-    private List<ChatMessage> chatMessages;   //关联数据
+    private List<Message> chatMessages;   //关联数据
     //析构函数
-    public ChattingAdapter(Context context, List<ChatMessage> messages) {
+    public ChattingAdapter(Context context, List<Message> messages) {
         super();
         this.context = context;
         this.chatMessages = messages;
@@ -45,23 +45,23 @@ public class ChattingAdapter extends BaseAdapter {
     @Override                               //获取要展示的项目View对象
     public View getView(int position, View convertView, ViewGroup parent) {
         ViewHolder holder = null;
-        ChatMessage message = chatMessages.get(position);
+        Message message = chatMessages.get(position);
         if (convertView == null || (holder = (ViewHolder) convertView.getTag()).flag != message.getDirection()) {
 
             holder = new ViewHolder();
-            if (message.getDirection() == ChatMessage.MESSAGE_FROM) {
-                holder.flag = ChatMessage.MESSAGE_FROM;
+            if (message.getDirection() == Message.DIRECTION_FROM) {
+                holder.flag = Message.DIRECTION_FROM;
                 convertView = LayoutInflater.from(context).inflate(R.layout.chatting_item_from, null);
 
             } else {
-                holder.flag = ChatMessage.MESSAGE_TO;
+                holder.flag = Message.DIRECTION_TO;
                 convertView = LayoutInflater.from(context).inflate(R.layout.chatting_item_to, null);
             }
 
             holder.text = (TextView) convertView.findViewById(R.id.chatting_content_itv);
             convertView.setTag(holder);
         }
-        holder.text.setText(message.getContent());
+        holder.text.setText(message.getMessage());
 
         return convertView;
     }

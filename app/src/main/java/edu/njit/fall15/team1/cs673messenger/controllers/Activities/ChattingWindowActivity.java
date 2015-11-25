@@ -17,7 +17,6 @@ import edu.njit.fall15.team1.cs673messenger.APIs.RecentChatsListener;
 import edu.njit.fall15.team1.cs673messenger.APIs.RecentChatsManager;
 import edu.njit.fall15.team1.cs673messenger.R;
 import edu.njit.fall15.team1.cs673messenger.controllers.Adapters.ChattingAdapter;
-import edu.njit.fall15.team1.cs673messenger.models.ChatMessage;
 import edu.njit.fall15.team1.cs673messenger.models.Friend;
 import edu.njit.fall15.team1.cs673messenger.models.Message;
 import edu.njit.fall15.team1.cs673messenger.models.Messages;
@@ -29,7 +28,7 @@ public class ChattingWindowActivity extends Activity implements RecentChatsListe
     private ListView chatHistoryLv;
     private EditText textEditor;
     private ChattingAdapter chatHistoryAdapter;
-    private ArrayList<ChatMessage> messageLines = new ArrayList<>();
+    private ArrayList<Message> messageLines = new ArrayList<>();
     private String chatId;
 
     @Override
@@ -114,15 +113,16 @@ public class ChattingWindowActivity extends Activity implements RecentChatsListe
      * Get data for listView
      * @return
      */
-    private List<ChatMessage> getData(){
-        List<ChatMessage> list = new LinkedList<>();
+    private List<Message> getData(){
+        List<Message> list = new LinkedList<>();
 
         Messages messages = RecentChatsManager.INSTANCE.getMessages(Messages.PERSONAL_CHAT, chatId);
 
         if (messages.getMessages().size() != 0){
-            for(Message message: messages.getMessages()){
-                list.add(new ChatMessage(message.getDirection(), message.getMessage()));
-            }
+            list.addAll(messages.getMessages());
+//            for(Message message: messages.getMessages()){
+//                list.add(new ChatMessage(message.getDirection(), message.getMessage()));
+//            }
         }
         return list;
     }
