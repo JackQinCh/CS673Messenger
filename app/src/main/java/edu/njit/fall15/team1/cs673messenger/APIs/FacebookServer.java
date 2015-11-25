@@ -5,6 +5,8 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.util.Log;
+import android.util.LruCache;
+import android.widget.ImageView;
 
 import org.jivesoftware.smack.Connection;
 import org.jivesoftware.smack.ConnectionConfiguration;
@@ -27,6 +29,7 @@ import java.net.URL;
 import java.util.Date;
 import java.util.LinkedList;
 
+import edu.njit.fall15.team1.cs673messenger.R;
 import edu.njit.fall15.team1.cs673messenger.models.Friend;
 
 /**
@@ -323,5 +326,32 @@ public enum FacebookServer implements PacketListener, ConnectionCreationListener
         InputStream in = (InputStream) new URL(imageURL).getContent();
         bitmap = BitmapFactory.decodeStream(in);
         return bitmap;
+    }
+
+    private final int maxMemory = (int) Runtime.getRuntime().maxMemory();//获取当前应用程序所分配的最大内存
+    private final int cacheSize = maxMemory / 5;//只分5分之一用来做图片缓存
+    private LruCache<String, Bitmap> mLruCache = new LruCache<String, Bitmap>(
+            cacheSize) {
+        protected int sizeOf(String key, Bitmap bitmap) {//复写sizeof()方法
+            // replaced by getByteCount() in API 12
+            return bitmap.getRowBytes() * bitmap.getHeight() / 1024; //这里是按多少KB来算
+        }
+    };
+
+    /**
+     *
+     * @param urlStr 所需要加载的图片的url，以String形式传进来，可以把这个url作为缓存图片的key
+     * @param image ImageView 控件
+     */
+    public void loadBitmap(String urlStr, ImageView image) {
+        System.out.println(urlStr);
+        AsyncImageLoader asyncLoader = new AsyncImageLoader(image, mLruCache);//什么一个异步图片加载对象
+        Bitmap bitmap = asyncLoader.getBitmapFromMemoryCache(urlStr);//首先从内存缓存中获取图片
+        if (bitmap != null) {
+            image.setImageBitmap(bitmap);//如果缓存中存在这张图片则直接设置给ImageView
+        } else {
+            image.setImageResource(R.drawable.blank_profile);//否则先设置成默认的图片
+            asyncLoader.execute(urlStr);//然后执行异步任务AsycnTask 去网上加载图片
+        }
     }
 }
