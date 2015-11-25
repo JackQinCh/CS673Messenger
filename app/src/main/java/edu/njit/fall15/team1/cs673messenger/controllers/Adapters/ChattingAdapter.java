@@ -55,7 +55,7 @@ public class ChattingAdapter extends BaseAdapter {
                 holder.flag = Message.DIRECTION_FROM;
                 convertView = LayoutInflater.from(context).inflate(R.layout.chatting_item_from, null);
                 holder.photo = (ImageView) convertView.findViewById(R.id.fromPhoto);
-                FacebookServer.INSTANCE.loadBitmap(message.getChatID(), holder.photo);
+                FacebookServer.INSTANCE.loadBitmap(message.getFriend().get(0).getUser(), holder.photo);
             } else {
                 holder.flag = Message.DIRECTION_TO;
                 convertView = LayoutInflater.from(context).inflate(R.layout.chatting_item_to, null);

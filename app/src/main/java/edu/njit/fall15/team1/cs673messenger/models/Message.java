@@ -137,7 +137,6 @@ public final class Message {
         String messageText = "";
         int command = COMMAND_NONE;
         String extra = "";
-        List<Friend> members = new ArrayList<>();
         //Type
         if (packetStr.startsWith(HEADER_TYPE+TYPE_GROUP+HEADER_END)){//Type: group chat
             packetStr = packetStr.replace(HEADER_TYPE+TYPE_GROUP+HEADER_END, "");
@@ -177,21 +176,21 @@ public final class Message {
             for (String userID:membersStr){
                 Friend f = FriendsManager.checkFriend(userID);
                 if (f != null)
-                    members.add(f);
+                    friends.add(f);
                 Log.d(Message.class.getSimpleName(),"Member:"+f.getProfileName());
             }
-            if (members.size() != 0){
-                Log.d(Message.class.getSimpleName(), messageText);
-                return createGroupMessage(
-                        name,
-                        ID,
-                        command,
-                        Message.DIRECTION_FROM,
-                        members,
-                        time,
-                        messageText,
-                        extra);
-            }
+//            if (friends.size() != 0){
+//                Log.d(Message.class.getSimpleName(), messageText);
+//                return createGroupMessage(
+//                        name,
+//                        ID,
+//                        command,
+//                        Message.DIRECTION_FROM,
+//                        friends,
+//                        time,
+//                        messageText,
+//                        extra);
+//            }
         }
         packetStr = packetStr.replace(memberStr,"");
         //Extra

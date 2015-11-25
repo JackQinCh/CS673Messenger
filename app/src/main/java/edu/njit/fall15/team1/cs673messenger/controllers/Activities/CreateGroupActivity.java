@@ -84,7 +84,7 @@ public class CreateGroupActivity extends ListActivity{
                         Message.DIRECTION_TO,
                         members,
                         time,
-                        "",
+                        "I created the group.",
                         "");
                 RecentChatsManager.INSTANCE.addMessage(message);
                 cancel(v);
