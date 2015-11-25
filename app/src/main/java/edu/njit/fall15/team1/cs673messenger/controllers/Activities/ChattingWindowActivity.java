@@ -9,15 +9,16 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-import edu.njit.fall15.team1.cs673messenger.APIs.FriendsManager;
 import edu.njit.fall15.team1.cs673messenger.APIs.RecentChatsListener;
 import edu.njit.fall15.team1.cs673messenger.APIs.RecentChatsManager;
 import edu.njit.fall15.team1.cs673messenger.R;
 import edu.njit.fall15.team1.cs673messenger.controllers.Adapters.ChattingAdapter;
 import edu.njit.fall15.team1.cs673messenger.models.Friend;
 import edu.njit.fall15.team1.cs673messenger.models.Message;
+import edu.njit.fall15.team1.cs673messenger.models.Messages;
 
 /**
  * Created by jack on 10/25/15.
@@ -79,11 +80,23 @@ public class ChattingWindowActivity extends Activity implements RecentChatsListe
     public void sendMessage(View v){
         //Send message.
         String messageText = textEditor.getText().toString();
-        Friend friend = FriendsManager.checkFriend(chatId);
-        if (friend == null)
-            return;// Need to implement...
-        Message message = Message.createPersonalMessage(Message.DIRECTION_TO, friend, messageText);
-        RecentChatsManager.INSTANCE.addMessage(message);
+
+        Messages messages = RecentChatsManager.INSTANCE.getMessages(chatId);
+        if (messages.getType() == Messages.PERSONAL_CHAT){
+            Message message = Message.createPersonalMessage(Message.DIRECTION_TO, messages.getMembers().get(0), messageText);
+            RecentChatsManager.INSTANCE.addMessage(message);
+        }else if (messages.getType() == Messages.GROUP_CHAT){
+            Message message = Message.createGroupMessage(
+                    messages.getName(),
+                    chatId,
+                    Message.COMMAND_GROUP_CHAT,
+                    Message.DIRECTION_TO,
+                    messages.getMembers(),
+                    new Date(),
+                    messageText,
+                    "");
+            RecentChatsManager.INSTANCE.addMessage(message);
+        }
         //Clear input text view.
         textEditor.setText("");
     }
@@ -101,7 +114,7 @@ public class ChattingWindowActivity extends Activity implements RecentChatsListe
     public void receivedMessage(Message message) {
         Log.d(getClass().getSimpleName(), "receivedMessage");
         Friend friend = message.getFriend().get(0);
-        if (chatId.equals(friend.getUser())){
+        if (chatId.equals(message.getChatID())){
             Log.d(getClass().getSimpleName(), "Received a message from " + friend.getProfileName() + ":" + message);
             updateMessages();
         }

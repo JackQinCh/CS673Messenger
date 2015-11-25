@@ -73,7 +73,7 @@ public class CreateGroupActivity extends ListActivity{
         if (groupName.equals("")){
             Toast.makeText(this, "Please input group name.", Toast.LENGTH_SHORT).show();
         }else{
-            if (members.size() < 3){
+            if (members.size() < 2){
                 Toast.makeText(this, "The number of members can not be less than 3.", Toast.LENGTH_SHORT).show();
             }else {//Create
                 Date time = new Date();

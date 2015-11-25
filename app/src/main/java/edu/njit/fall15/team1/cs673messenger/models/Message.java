@@ -120,9 +120,9 @@ public final class Message {
 
     /**
      * Static Generation Factory with received message
-     * @param s
-     * @param friend
-     * @param time
+     * @param s String
+     * @param friend Friend
+     * @param time Date
      * @return Message
      */
     public static Message createWithReceivedMessage( String s, Friend friend, Date time ){
@@ -172,12 +172,15 @@ public final class Message {
         //Members in create group command.
         String memberStr = packetStr.substring(0, packetStr.indexOf(HEADER_END)+1);
         if (command == Message.COMMAND_CREATE_GROUP){
-            String[] membersStr = memberStr.substring(9, memberStr.length()-1).split(",");
+            String[] membersStr = memberStr.substring(9, memberStr.length()-2).split(",");
+            Friend f;
             for (String userID:membersStr){
-                Friend f = FriendsManager.checkFriend(userID);
-                if (f != null)
+                Log.d(Message.class.getSimpleName(),"str:"+userID);
+                f = FriendsManager.checkFriend(userID);
+                if (f != null){
                     friends.add(f);
-                Log.d(Message.class.getSimpleName(),"Member:"+f.getProfileName());
+                    Log.d(Message.class.getSimpleName(),"Member:"+f.getProfileName());
+                }
             }
         }
         packetStr = packetStr.replace(memberStr,"");
@@ -195,10 +198,27 @@ public final class Message {
         return createGroupMessage(name, ID, command, DIRECTION_FROM, friends, time, messageText, extra);
     }
 
+    /**
+     * Static factory
+     * @param name String
+     * @param chatID String
+     * @param type int
+     * @param command int
+     * @param direction int
+     * @param friends List of Friend
+     * @param time Date
+     * @param message String
+     * @param extra String
+     * @return Message
+     */
     public static Message createMessage(String name,String chatID, int type, int command, int direction, List<Friend> friends, Date time, String message, String extra){
         return new Message(name, chatID, type, command, direction, friends, time, message, extra);
     }
 
+    /**
+     * get Friends
+     * @return List of Friend
+     */
     public List<Friend> getFriend() {
         List<Friend> list = new ArrayList<>();
         list.addAll(friends);

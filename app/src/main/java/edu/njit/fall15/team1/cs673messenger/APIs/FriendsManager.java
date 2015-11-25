@@ -2,13 +2,14 @@ package edu.njit.fall15.team1.cs673messenger.APIs;
 
 import android.util.Log;
 
-import edu.njit.fall15.team1.cs673messenger.models.Friend;
 import org.jivesoftware.smack.Roster;
 import org.jivesoftware.smack.RosterEntry;
 import org.jivesoftware.smack.packet.Presence;
 
 import java.util.LinkedList;
 import java.util.List;
+
+import edu.njit.fall15.team1.cs673messenger.models.Friend;
 
 /**
  * Created by jack on 10/22/15.
@@ -18,10 +19,9 @@ public final class FriendsManager {
     }
 
     public static Friend checkFriend(String userid){
-        Log.d(FriendsManager.class.getSimpleName(), userid);
+        Log.d(FriendsManager.class.getSimpleName(), "Checking:"+userid);
         List<Friend> friends = getFriends();
         for(Friend friend:friends){
-            Log.d(FriendsManager.class.getSimpleName(), friend.getUser());
             if (friend.getUser().equals(userid)){
                 Log.d(FriendsManager.class.getSimpleName(), "Found the friend "+friend);
                 return friend;
