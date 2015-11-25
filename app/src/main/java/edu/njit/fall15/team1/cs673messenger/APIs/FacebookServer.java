@@ -1,5 +1,7 @@
 package edu.njit.fall15.team1.cs673messenger.APIs;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.util.Log;
@@ -17,6 +19,11 @@ import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.util.StringUtils;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Date;
 import java.util.LinkedList;
 
@@ -268,7 +275,7 @@ public enum FacebookServer implements PacketListener, ConnectionCreationListener
         if (msg.getBody() != null){
             from = StringUtils.parseBareAddress(msg.getFrom());
             message = msg.getBody();
-            Log.d(getClass().getSimpleName(), "Receive a message:"+message);
+            Log.d(getClass().getSimpleName(), "Receive a message:" + message);
             if (listeners.size() != 0){
                 Log.d(getClass().getSimpleName(), "Notify the message:"+message);
                 for (FacebookServerListener listener:listeners){
@@ -291,5 +298,30 @@ public enum FacebookServer implements PacketListener, ConnectionCreationListener
             return null;
     }
 
+    /**
+     * Get user photo
+     * @param userID
+     * @return Bitmap
+     * @throws MalformedURLException
+     * @throws IOException
+     */
+    public Bitmap getFacebookProfilePicture(String userID)
+            throws MalformedURLException, IOException {
+        String usrid;
+        usrid = userID.substring(1);
+        String[] arr = usrid.split("@");
+        usrid = arr[0];
+        String imageURL;
+        Bitmap bitmap = null;
+        imageURL = "https://graph.facebook.com/" + usrid
+                + "/picture?type=large";
 
+        URL url1 = new URL(imageURL);
+        HttpURLConnection ucon1 = (HttpURLConnection) url1.openConnection();
+        ucon1.setInstanceFollowRedirects(false);
+        URL secondURL1 = new URL(ucon1.getHeaderField("Location"));
+        InputStream in = (InputStream) new URL(imageURL).getContent();
+        bitmap = BitmapFactory.decodeStream(in);
+        return bitmap;
+    }
 }

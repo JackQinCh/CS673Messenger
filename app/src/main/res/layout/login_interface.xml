@@ -43,14 +43,13 @@
         android:onClick="login" />
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:id="@+id/imageView"
+        android:src="@drawable/facebook"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="44dp"
-        android:minHeight="120dp"
-        android:minWidth="120dp"
-        android:src="@drawable/facebook_icon"/>
+        android:layout_above="@+id/fbUsername"
+        android:layout_margin="30dp" />
 
 </RelativeLayout>

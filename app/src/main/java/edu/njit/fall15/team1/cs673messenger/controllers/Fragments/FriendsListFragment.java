@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import edu.njit.fall15.team1.cs673messenger.APIs.FriendsManager;
@@ -22,7 +23,8 @@ import edu.njit.fall15.team1.cs673messenger.models.Friend;
  * Created by jack on 10/14/15.
  */
 public class FriendsListFragment extends ListFragment {
-    private List<Friend> friends;
+    private List<Friend> friends = new ArrayList<>();
+    private FriendListItemAdapter adapter;
 
     public FriendsListFragment(){
     }
@@ -43,7 +45,7 @@ public class FriendsListFragment extends ListFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        FriendListItemAdapter adapter = new FriendListItemAdapter(this.getContext(), getFriendsData());
+        adapter = new FriendListItemAdapter(getActivity(), friends);
         setListAdapter(adapter);
         getListView().setChoiceMode(ListView.CHOICE_MODE_SINGLE);
     }
@@ -58,10 +60,16 @@ public class FriendsListFragment extends ListFragment {
      * Refresh friends data
      */
     private void refreshFriends(){
-        friends = getFriendsData();
-        TextView numOfFriendLabel = (TextView)getActivity().findViewById(R.id.numberOfFriendLabel);
-        numOfFriendLabel.setText("Your friends("+friends.size()+")");
-        ((FriendListItemAdapter)getListAdapter()).notifyDataSetChanged();
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                friends = getFriendsData();
+                TextView numOfFriendLabel = (TextView) getActivity().findViewById(R.id.numberOfFriendLabel);
+                numOfFriendLabel.setText("Your friends(" + friends.size() + ")");
+                adapter.notifyDataSetChanged();
+            }
+        });
+
 
     }
 
