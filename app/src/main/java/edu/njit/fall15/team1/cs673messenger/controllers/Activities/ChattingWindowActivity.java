@@ -45,7 +45,8 @@ public class ChattingWindowActivity extends Activity implements RecentChatsListe
         Log.d(getLocalClassName(), "Chat:" + chatId);
 
         chatHistoryLv = (ListView) findViewById(R.id.chatting_history_lv);
-        updateMessages();
+        messageLines.clear();
+        messageLines.addAll(getData());
         chatHistoryAdapter = new ChattingAdapter(this, messageLines);
         chatHistoryLv.setAdapter(chatHistoryAdapter);
 
@@ -66,9 +67,9 @@ public class ChattingWindowActivity extends Activity implements RecentChatsListe
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    messageLines.clear();
-                    messageLines.addAll(getData());
-                    chatHistoryAdapter.notifyDataSetChanged();
+                messageLines.clear();
+                messageLines.addAll(getData());
+                chatHistoryAdapter.notifyDataSetChanged();
                 }
             });
         }
