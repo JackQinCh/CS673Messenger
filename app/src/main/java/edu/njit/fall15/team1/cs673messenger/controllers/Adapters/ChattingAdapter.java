@@ -5,10 +5,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
 
+import edu.njit.fall15.team1.cs673messenger.APIs.FacebookServer;
 import edu.njit.fall15.team1.cs673messenger.R;
 import edu.njit.fall15.team1.cs673messenger.models.Message;
 
@@ -52,7 +54,8 @@ public class ChattingAdapter extends BaseAdapter {
             if (message.getDirection() == Message.DIRECTION_FROM) {
                 holder.flag = Message.DIRECTION_FROM;
                 convertView = LayoutInflater.from(context).inflate(R.layout.chatting_item_from, null);
-
+                holder.photo = (ImageView) convertView.findViewById(R.id.fromPhoto);
+                FacebookServer.INSTANCE.loadBitmap(message.getChatID(), holder.photo);
             } else {
                 holder.flag = Message.DIRECTION_TO;
                 convertView = LayoutInflater.from(context).inflate(R.layout.chatting_item_to, null);
@@ -67,6 +70,7 @@ public class ChattingAdapter extends BaseAdapter {
     }
     //优化listview的Adapter
     static class ViewHolder {
+        ImageView photo;
         TextView text;
         int flag;
     }
