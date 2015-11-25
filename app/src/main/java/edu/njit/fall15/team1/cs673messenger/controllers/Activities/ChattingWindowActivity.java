@@ -9,7 +9,6 @@ import android.widget.EditText;
 import android.widget.ListView;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 import edu.njit.fall15.team1.cs673messenger.APIs.FriendsManager;
@@ -114,17 +113,7 @@ public class ChattingWindowActivity extends Activity implements RecentChatsListe
      * @return
      */
     private List<Message> getData(){
-        List<Message> list = new LinkedList<>();
-
-        Messages messages = RecentChatsManager.INSTANCE.getMessages(Messages.PERSONAL_CHAT, chatId);
-
-        if (messages.getMessages().size() != 0){
-            list.addAll(messages.getMessages());
-//            for(Message message: messages.getMessages()){
-//                list.add(new ChatMessage(message.getDirection(), message.getMessage()));
-//            }
-        }
-        return list;
+        return RecentChatsManager.INSTANCE.getMessages(Messages.PERSONAL_CHAT, chatId).getMessages();
     }
 
 }

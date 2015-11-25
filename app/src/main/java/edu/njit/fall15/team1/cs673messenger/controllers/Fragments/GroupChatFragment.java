@@ -1,6 +1,7 @@
 package edu.njit.fall15.team1.cs673messenger.controllers.Fragments;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ListFragment;
@@ -8,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -16,6 +18,7 @@ import java.util.List;
 import edu.njit.fall15.team1.cs673messenger.APIs.RecentChatsListener;
 import edu.njit.fall15.team1.cs673messenger.APIs.RecentChatsManager;
 import edu.njit.fall15.team1.cs673messenger.R;
+import edu.njit.fall15.team1.cs673messenger.controllers.Activities.ChattingWindowActivity;
 import edu.njit.fall15.team1.cs673messenger.controllers.Adapters.GroupListAdapter;
 import edu.njit.fall15.team1.cs673messenger.models.Message;
 import edu.njit.fall15.team1.cs673messenger.models.Messages;
@@ -137,5 +140,18 @@ public class GroupChatFragment extends ListFragment implements RecentChatsListen
     public void receivedMessage(Message message) {
         Log.d(getClass().getSimpleName(), "receivedMessage Update GUI list.");
         updateData();
+    }
+
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        List<Messages> recentChats = RecentChatsManager.INSTANCE.getGroupChats();
+        if (recentChats.size() != 0){
+            String chatId = recentChats.get(position).getChatId();
+            Log.d(getClass().getSimpleName(), chatId);
+            Intent intent = new Intent();
+            intent.putExtra(getActivity().getString(R.string.chat_id),chatId);
+            intent.setClass(this.getActivity(), ChattingWindowActivity.class);
+            startActivity(intent);
+        }
     }
 }
