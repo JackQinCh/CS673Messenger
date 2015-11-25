@@ -179,18 +179,6 @@ public final class Message {
                     friends.add(f);
                 Log.d(Message.class.getSimpleName(),"Member:"+f.getProfileName());
             }
-//            if (friends.size() != 0){
-//                Log.d(Message.class.getSimpleName(), messageText);
-//                return createGroupMessage(
-//                        name,
-//                        ID,
-//                        command,
-//                        Message.DIRECTION_FROM,
-//                        friends,
-//                        time,
-//                        messageText,
-//                        extra);
-//            }
         }
         packetStr = packetStr.replace(memberStr,"");
         //Extra
