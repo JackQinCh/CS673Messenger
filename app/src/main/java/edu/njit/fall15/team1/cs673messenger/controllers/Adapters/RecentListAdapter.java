@@ -5,12 +5,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import edu.njit.fall15.team1.cs673messenger.APIs.FacebookServer;
 import edu.njit.fall15.team1.cs673messenger.R;
 import edu.njit.fall15.team1.cs673messenger.models.Message;
 import edu.njit.fall15.team1.cs673messenger.models.Messages;
@@ -75,32 +77,26 @@ public class RecentListAdapter extends BaseAdapter {
      */
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder holder = null;
-
         Messages messages = recentChats.get(position);
 
-        if (convertView == null){
-            convertView = LayoutInflater.from(context).inflate(R.layout.recentlistitem, null);
-            holder = new ViewHolder();
-            holder.name = (TextView) convertView.findViewById(R.id.recentName);
-            holder.content = (TextView) convertView.findViewById(R.id.recentContent);
-            holder.time = (TextView) convertView.findViewById(R.id.recentTime);
-            convertView.setTag(holder);
-        }else {
-            holder = (ViewHolder) convertView.getTag();
-        }
+        convertView = LayoutInflater.from(context).inflate(R.layout.recentlistitem, null);
+        ImageView photo = (ImageView) convertView.findViewById(R.id.recentPhoto);
+        TextView name = (TextView) convertView.findViewById(R.id.recentName);
+        TextView content = (TextView) convertView.findViewById(R.id.recentContent);
+        TextView time = (TextView) convertView.findViewById(R.id.recentTime);
 
-        holder.name.setText(recentChats.get(position).getName());
+        FacebookServer.INSTANCE.loadBitmap(messages.getChatId(), photo);
+        name.setText(recentChats.get(position).getName());
 
         if (recentChats.get(position).getMessages().size() != 0){
             //Set content
             Message message = messages.getMessages().get(recentChats.get(position).getMessages().size()-1);
             if (message.getDirection() == Message.DIRECTION_FROM){
                 String contentString = ":" + message.getMessage();
-                holder.content.setText(contentString);
+                content.setText(contentString);
             }else if (message.getDirection() == Message.DIRECTION_TO){
                 String contentString = "You:" + message.getMessage();
-                holder.content.setText(contentString);
+                content.setText(contentString);
             }
             //Set Time
             SimpleDateFormat sF = new SimpleDateFormat("yyyy MMM d");
@@ -109,24 +105,15 @@ public class RecentListAdapter extends BaseAdapter {
 
             if (!currentDate.equals(messageDate)){
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MMM d");
-                holder.time.setText(simpleDateFormat.format(message.getTime()));
+                time.setText(simpleDateFormat.format(message.getTime()));
             }else{
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
-                holder.time.setText(simpleDateFormat.format(message.getTime()));
+                time.setText(simpleDateFormat.format(message.getTime()));
             }
         }
 
         // 5. retrn rowView
         return convertView;
-    }
-
-    /**
-     * ViewHolder
-     */
-    static class ViewHolder {
-        TextView name;
-        TextView content;
-        TextView time;
     }
 
 }
