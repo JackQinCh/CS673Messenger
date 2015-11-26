@@ -144,26 +144,24 @@ public class RecentChatsFragment extends ListFragment implements RecentChatsList
 
     /**
      * Receive message feedback
-     * @param message
+     * @param message Message
      */
     @Override
     public void receivedMessage(Message message) {
         Log.d(getClass().getSimpleName(), "receivedMessage: " + message.getMessage());
         updateData();
+        notifyMessage(message);
+    }
+    /**
+     * Notify receive message
+     * @param message Message
+     */
+    private void notifyMessage(Message message){
         //Check setting notify.
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         boolean notifySetting = sp.getBoolean("notifyMe", true);
         Log.d(getClass().getSimpleName(), String.valueOf(notifySetting));
 
-        notifyMessage(notifySetting, message);
-    }
-
-    /**
-     * Notify receive message
-     * @param notifySetting boolean
-     * @param notifyMessage String
-     */
-    private void notifyMessage(boolean notifySetting, Message message){
         if (notifySetting) {
             //Ring
             try {
@@ -204,6 +202,7 @@ public class RecentChatsFragment extends ListFragment implements RecentChatsList
             notificationManager.notify(673, notification);
         }
     }
+
 
     /**
      * List view select action
