@@ -24,18 +24,27 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingRight="7dp" >
+        android:paddingRight="7dp"
+        android:weightSum="1">
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/imageButton"
+            android:src="@android:drawable/ic_menu_search"
+            android:layout_marginTop="15dp"
+            android:onClick="onSearch"
+            android:background="#00000000" />
 
         <EditText
             android:id="@+id/text_editor"
-            android:layout_width="fill_parent"
+            android:layout_width="189dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginBottom="5.0dip"
             android:layout_marginLeft="7.0dip"
             android:layout_marginRight="7dp"
             android:layout_marginTop="5.0dip"
-            android:layout_weight="1.0"
             android:autoText="true"
             android:capitalize="sentences"
             android:focusable="true"
@@ -45,7 +54,8 @@
             android:maxLength="2000"
             android:maxLines="8"
             android:minHeight="34.0dip"
-            android:nextFocusRight="@+id/send_button"/>
+            android:nextFocusRight="@+id/send_button"
+            android:layout_weight="0.90" />
 
         <Button
             android:gravity="center"

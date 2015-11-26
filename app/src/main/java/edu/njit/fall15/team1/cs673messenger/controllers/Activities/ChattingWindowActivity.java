@@ -128,4 +128,10 @@ public class ChattingWindowActivity extends Activity implements RecentChatsListe
         return RecentChatsManager.INSTANCE.getMessages(chatId).getMessages();
     }
 
+    public void onSearch(View v){
+        onSearchRequested();
+    }
+
+
+
 }

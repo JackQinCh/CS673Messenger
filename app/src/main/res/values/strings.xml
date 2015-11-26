@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Team #1</string>
-
+    <string name="app_version">ver 1.0</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
 
@@ -18,4 +18,7 @@
     <string name="facebook_server">chat.facebook.com</string>
 
     <string name="chat_id">Chat Id</string>
+
+    <string name="search_label">Search chat content</string>
+    <string name="search_hint">Search chat</string>
 </resources>
