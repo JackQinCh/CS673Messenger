@@ -155,7 +155,7 @@ public class RecentChatsFragment extends ListFragment implements RecentChatsList
         boolean notifySetting = sp.getBoolean("notifyMe", true);
         Log.d(getClass().getSimpleName(), String.valueOf(notifySetting));
 
-        notifyMessage(notifySetting, message.getMessage());
+        notifyMessage(notifySetting, message);
     }
 
     /**
@@ -163,7 +163,7 @@ public class RecentChatsFragment extends ListFragment implements RecentChatsList
      * @param notifySetting boolean
      * @param notifyMessage String
      */
-    private void notifyMessage(boolean notifySetting, String notifyMessage){
+    private void notifyMessage(boolean notifySetting, Message message){
         if (notifySetting) {
             //Ring
             try {
@@ -184,9 +184,9 @@ public class RecentChatsFragment extends ListFragment implements RecentChatsList
             //Notification.Builder builder = new NotificationCompat.Builder(context);
             builder.setContentIntent(contentIntent)
                     .setSmallIcon(R.drawable.stat_sys_download)
-                    .setLargeIcon(BitmapFactory.decodeResource(res, R.drawable.facebook_icon))
-                    .setContentTitle("CS673 App: You have new message!")
-                    .setContentText(notifyMessage); // Text from message
+                    .setLargeIcon(BitmapFactory.decodeResource(res, R.mipmap.ic_launcher))
+                    .setContentTitle("From:"+message.getName())
+                    .setContentText(message.getMessage()); // Text from message
 
             Notification notification = builder.build();
 
