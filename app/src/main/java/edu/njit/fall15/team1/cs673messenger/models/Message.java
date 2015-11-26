@@ -46,8 +46,9 @@ public final class Message {
     public final static int COMMAND_NONE = 0;
     public final static int COMMAND_CREATE_GROUP = 1;
     public final static int COMMAND_GROUP_CHAT = 2;
-    public final static int COMMAND_GROUP_TASK = 3;
-    public final static int COMMAND_SHARE_LOCATION = 4;
+    public final static int COMMAND_CREATE_TASK = 3;
+    public final static int COMMAND_REMOVE_TASK = 4;
+    public final static int COMMAND_SHARE_LOCATION = 5;
 
     public final static String HEADER_TYPE = "<TYPE:";
     public final static String HEADER_NAME = "<NAME:";
@@ -118,6 +119,10 @@ public final class Message {
     }
 
 
+    public String getExtra() {
+        return extra;
+    }
+
     /**
      * Static Generation Factory with received message
      * @param s String
@@ -183,6 +188,7 @@ public final class Message {
                 }
             }
         }
+
         packetStr = packetStr.replace(memberStr,"");
         //Extra
         if (packetStr.startsWith(HEADER_EXTRA)){
@@ -271,8 +277,11 @@ public final class Message {
             case COMMAND_GROUP_CHAT:
                 commandStr = "Command: Normal group chat";
                 break;
-            case COMMAND_GROUP_TASK:
+            case COMMAND_CREATE_TASK:
                 commandStr = "Command: Create group task";
+                break;
+            case COMMAND_REMOVE_TASK:
+                commandStr = "Command: Remove group task";
                 break;
             case COMMAND_SHARE_LOCATION:
                 commandStr = "Command: Share location";

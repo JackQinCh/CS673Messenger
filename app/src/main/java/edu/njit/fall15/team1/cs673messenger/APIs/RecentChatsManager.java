@@ -1,17 +1,5 @@
 package edu.njit.fall15.team1.cs673messenger.APIs;
 
-import android.app.Notification;
-import android.app.PendingIntent;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.res.Resources;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
-import android.net.Uri;
-import android.preference.PreferenceManager;
-import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -19,8 +7,6 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-import edu.njit.fall15.team1.cs673messenger.R;
-import edu.njit.fall15.team1.cs673messenger.controllers.Activities.MainActivity;
 import edu.njit.fall15.team1.cs673messenger.models.Friend;
 import edu.njit.fall15.team1.cs673messenger.models.Message;
 import edu.njit.fall15.team1.cs673messenger.models.Messages;
@@ -104,6 +90,7 @@ public enum  RecentChatsManager implements FacebookServerListener{
                                 listener.updateGUI();
                         }
                     }else {
+                        doMessageCommond(message);
                         if (listeners.size() != 0) {
                             Log.d(getClass().getSimpleName(), "Notify GUI listeners.");
                             for (RecentChatsListener listener : listeners)
@@ -141,6 +128,14 @@ public enum  RecentChatsManager implements FacebookServerListener{
         }
 
         Log.i(getClass().getSimpleName(),toString());
+    }
+
+    private void doMessageCommond(Message message) {
+        if (message.getCommand() == Message.COMMAND_CREATE_TASK){
+            TaskManager.INSTANCE.addTask(message.getChatID(), message.getExtra());
+        }else if (message.getCommand() == Message.COMMAND_REMOVE_TASK){
+            TaskManager.INSTANCE.removeTask(message.getChatID(), message.getExtra());
+        }
     }
 
     @Override

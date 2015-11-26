@@ -1,6 +1,8 @@
 package edu.njit.fall15.team1.cs673messenger.controllers.Activities;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,6 +16,7 @@ import java.util.List;
 
 import edu.njit.fall15.team1.cs673messenger.APIs.RecentChatsListener;
 import edu.njit.fall15.team1.cs673messenger.APIs.RecentChatsManager;
+import edu.njit.fall15.team1.cs673messenger.APIs.TaskManager;
 import edu.njit.fall15.team1.cs673messenger.R;
 import edu.njit.fall15.team1.cs673messenger.controllers.Adapters.ChattingAdapter;
 import edu.njit.fall15.team1.cs673messenger.models.Friend;
@@ -136,7 +139,75 @@ public class ChattingWindowActivity extends Activity implements RecentChatsListe
     public boolean onSearchRequested() {
         Bundle searchData= new Bundle();
         searchData.putString("Chat ID", chatId);
-        startSearch(null,false, searchData,false);
+        startSearch(null, false, searchData, false);
         return true;
+    }
+
+    public void onCreateNewTask(View v){
+        final EditText text = new EditText(ChattingWindowActivity.this);
+        new AlertDialog.Builder(ChattingWindowActivity.this)
+            .setTitle("Please input new task.")
+            .setIcon(android.R.drawable.ic_dialog_info)
+            .setView(text)
+            .setPositiveButton("Create",
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            String taskStr = text.getText().toString();
+                            System.out.println(taskStr);
+                            if (taskStr.equals("")){
+                                return;
+                            }
+                            TaskManager.INSTANCE.addTask(chatId, taskStr);
+
+                            Messages messages = RecentChatsManager.INSTANCE.getMessages(chatId);
+                            if (messages.getType() == Messages.GROUP_CHAT){
+                                Message message = Message.createGroupMessage(
+                                        messages.getName(),
+                                        chatId,
+                                        Message.COMMAND_CREATE_TASK,
+                                        Message.DIRECTION_TO,
+                                        messages.getMembers(),
+                                        new Date(),
+                                        "I created a task:" + taskStr,
+                                        taskStr);
+                                RecentChatsManager.INSTANCE.addMessage(message);
+                            }
+                        }
+                    })
+            .setNegativeButton("Cancel", null).show();
+    }
+
+    public void onCheckTask(View v){
+        List<String> tasklist = TaskManager.INSTANCE.findTasks(chatId).getTaskList();
+        if (tasklist.size() == 0)
+            return;
+        final String[] tasks = new String[tasklist.size()];
+        tasklist.toArray(tasks);
+        new AlertDialog.Builder(this)
+                .setTitle("Touch to finish the task.")
+                .setItems(tasks, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        String taskStr = TaskManager.INSTANCE.findTasks(chatId).getTaskList().get(which);
+
+                        Messages messages = RecentChatsManager.INSTANCE.getMessages(chatId);
+                        if (messages.getType() == Messages.GROUP_CHAT){
+                            Message message = Message.createGroupMessage(
+                                    messages.getName(),
+                                    chatId,
+                                    Message.COMMAND_REMOVE_TASK,
+                                    Message.DIRECTION_TO,
+                                    messages.getMembers(),
+                                    new Date(),
+                                    "I finished the task:" + taskStr,
+                                    taskStr);
+                            RecentChatsManager.INSTANCE.addMessage(message);
+                        }
+                        TaskManager.INSTANCE.removeTask(chatId, which);
+                    }
+                })
+                .setNegativeButton("Cancel", null).show();
     }
 }
