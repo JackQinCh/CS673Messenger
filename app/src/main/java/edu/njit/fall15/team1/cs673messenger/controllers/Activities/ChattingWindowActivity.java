@@ -132,6 +132,11 @@ public class ChattingWindowActivity extends Activity implements RecentChatsListe
         onSearchRequested();
     }
 
-
-
+    @Override
+    public boolean onSearchRequested() {
+        Bundle searchData= new Bundle();
+        searchData.putString("Chat ID", chatId);
+        startSearch(null,false, searchData,false);
+        return true;
+    }
 }
