@@ -2,15 +2,24 @@ package edu.njit.fall15.team1.cs673messenger.controllers.Activities;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.TimePicker;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -26,7 +35,7 @@ import edu.njit.fall15.team1.cs673messenger.models.Messages;
 /**
  * Created by jack on 10/25/15.
  */
-public class ChattingWindowActivity extends Activity implements RecentChatsListener{
+public class ChattingWindowActivity extends Activity implements RecentChatsListener, AdapterView.OnItemClickListener {
     private ListView chatHistoryLv;
     private EditText textEditor;
     private ChattingAdapter chatHistoryAdapter;
@@ -46,6 +55,7 @@ public class ChattingWindowActivity extends Activity implements RecentChatsListe
         Log.d(getLocalClassName(), "Chat:" + chatId);
 
         chatHistoryLv = (ListView) findViewById(R.id.chatting_history_lv);
+        chatHistoryLv.setOnItemClickListener(this);
         messageLines.clear();
         messageLines.addAll(getData());
         chatHistoryAdapter = new ChattingAdapter(this, messageLines);
@@ -64,13 +74,13 @@ public class ChattingWindowActivity extends Activity implements RecentChatsListe
     // Initial message list data.
     private void updateMessages() {
 
-        if (chatHistoryAdapter != null){
+        if (chatHistoryAdapter != null) {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                messageLines.clear();
-                messageLines.addAll(getData());
-                chatHistoryAdapter.notifyDataSetChanged();
+                    messageLines.clear();
+                    messageLines.addAll(getData());
+                    chatHistoryAdapter.notifyDataSetChanged();
                 }
             });
         }
@@ -80,15 +90,15 @@ public class ChattingWindowActivity extends Activity implements RecentChatsListe
      * Send message button action.
      * @param v
      */
-    public void sendMessage(View v){
+    public void sendMessage(View v) {
         //Send message.
         String messageText = textEditor.getText().toString();
 
         Messages messages = RecentChatsManager.INSTANCE.getMessages(chatId);
-        if (messages.getType() == Messages.PERSONAL_CHAT){
+        if (messages.getType() == Messages.PERSONAL_CHAT) {
             Message message = Message.createPersonalMessage(Message.DIRECTION_TO, messages.getMembers().get(0), messageText);
             RecentChatsManager.INSTANCE.addMessage(message);
-        }else if (messages.getType() == Messages.GROUP_CHAT){
+        } else if (messages.getType() == Messages.GROUP_CHAT) {
             Message message = Message.createGroupMessage(
                     messages.getName(),
                     chatId,
@@ -117,7 +127,7 @@ public class ChattingWindowActivity extends Activity implements RecentChatsListe
     public void receivedMessage(Message message) {
         Log.d(getClass().getSimpleName(), "receivedMessage");
         Friend friend = message.getFriend().get(0);
-        if (chatId.equals(message.getChatID())){
+        if (chatId.equals(message.getChatID())) {
             Log.d(getClass().getSimpleName(), "Received a message from " + friend.getProfileName() + ":" + message);
             updateMessages();
         }
@@ -127,58 +137,58 @@ public class ChattingWindowActivity extends Activity implements RecentChatsListe
      * Get data for listView
      * @return
      */
-    private List<Message> getData(){
+    private List<Message> getData() {
         return RecentChatsManager.INSTANCE.getMessages(chatId).getMessages();
     }
 
-    public void onSearch(View v){
+    public void onSearch(View v) {
         onSearchRequested();
     }
 
     @Override
     public boolean onSearchRequested() {
-        Bundle searchData= new Bundle();
+        Bundle searchData = new Bundle();
         searchData.putString("Chat ID", chatId);
         startSearch(null, false, searchData, false);
         return true;
     }
 
-    public void onCreateNewTask(View v){
+    public void onCreateNewTask(View v) {
         final EditText text = new EditText(ChattingWindowActivity.this);
         new AlertDialog.Builder(ChattingWindowActivity.this)
-            .setTitle("Please input new task.")
-            .setIcon(android.R.drawable.ic_dialog_info)
-            .setView(text)
-            .setPositiveButton("Create",
-                    new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            String taskStr = text.getText().toString();
-                            System.out.println(taskStr);
-                            if (taskStr.equals("")){
-                                return;
-                            }
-                            TaskManager.INSTANCE.addTask(chatId, taskStr);
+                .setTitle("Please input new task.")
+                .setIcon(android.R.drawable.ic_dialog_info)
+                .setView(text)
+                .setPositiveButton("Create",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                String taskStr = text.getText().toString();
+                                System.out.println(taskStr);
+                                if (taskStr.equals("")) {
+                                    return;
+                                }
+                                TaskManager.INSTANCE.addTask(chatId, taskStr);
 
-                            Messages messages = RecentChatsManager.INSTANCE.getMessages(chatId);
-                            if (messages.getType() == Messages.GROUP_CHAT){
-                                Message message = Message.createGroupMessage(
-                                        messages.getName(),
-                                        chatId,
-                                        Message.COMMAND_CREATE_TASK,
-                                        Message.DIRECTION_TO,
-                                        messages.getMembers(),
-                                        new Date(),
-                                        "I created a task:" + taskStr,
-                                        taskStr);
-                                RecentChatsManager.INSTANCE.addMessage(message);
+                                Messages messages = RecentChatsManager.INSTANCE.getMessages(chatId);
+                                if (messages.getType() == Messages.GROUP_CHAT) {
+                                    Message message = Message.createGroupMessage(
+                                            messages.getName(),
+                                            chatId,
+                                            Message.COMMAND_CREATE_TASK,
+                                            Message.DIRECTION_TO,
+                                            messages.getMembers(),
+                                            new Date(),
+                                            "I created a task:" + taskStr,
+                                            taskStr);
+                                    RecentChatsManager.INSTANCE.addMessage(message);
+                                }
                             }
-                        }
-                    })
-            .setNegativeButton("Cancel", null).show();
+                        })
+                .setNegativeButton("Cancel", null).show();
     }
 
-    public void onCheckTask(View v){
+    public void onCheckTask(View v) {
         List<String> tasklist = TaskManager.INSTANCE.findTasks(chatId).getTaskList();
         if (tasklist.size() == 0)
             return;
@@ -193,7 +203,7 @@ public class ChattingWindowActivity extends Activity implements RecentChatsListe
                         String taskStr = TaskManager.INSTANCE.findTasks(chatId).getTaskList().get(which);
 
                         Messages messages = RecentChatsManager.INSTANCE.getMessages(chatId);
-                        if (messages.getType() == Messages.GROUP_CHAT){
+                        if (messages.getType() == Messages.GROUP_CHAT) {
                             Message message = Message.createGroupMessage(
                                     messages.getName(),
                                     chatId,
@@ -209,5 +219,149 @@ public class ChattingWindowActivity extends Activity implements RecentChatsListe
                     }
                 })
                 .setNegativeButton("Cancel", null).show();
+    }
+
+
+    public void onCreateNewEvent(View v) {
+        // get the current date
+        final Calendar c = Calendar.getInstance();
+        final int[] dateTimeArray = new int[5];
+        dateTimeArray[0] = c.get(Calendar.YEAR);
+        dateTimeArray[1] = c.get(Calendar.MONTH);
+        dateTimeArray[2] = c.get(Calendar.DAY_OF_MONTH);
+        dateTimeArray[3] = c.get(Calendar.HOUR_OF_DAY);
+        dateTimeArray[4] = c.get(Calendar.MINUTE);
+        View view = LayoutInflater.from(this).inflate(R.layout.new_event_creator, null);
+
+        final Button dateButton = (Button) view.findViewById(R.id.dateET);
+        dateButton.setText(dateTimeArray[0] + "-" + (dateTimeArray[1] + 1) + "-" + dateTimeArray[2]);
+
+        final DatePickerDialog.OnDateSetListener datelistener=new DatePickerDialog.OnDateSetListener() {
+            /**params：view：该事件关联的组件
+             * params：myyear：当前选择的年
+             * params：monthOfYear：当前选择的月
+             * params：dayOfMonth：当前选择的日
+             */
+            @Override
+            public void onDateSet(DatePicker view, int myyear, int monthOfYear,int dayOfMonth) {
+                //修改year、month、day的变量值，以便以后单击按钮时，DatePickerDialog上显示上一次修改后的值
+                dateTimeArray[0] = myyear;
+                dateTimeArray[1] = monthOfYear;
+                dateTimeArray[2] = dayOfMonth;
+                //更新日期
+                dateButton.setText(dateTimeArray[0] + "-" + (dateTimeArray[1] + 1) + "-" + dateTimeArray[2]);
+            }
+        };
+
+        dateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DatePickerDialog dpd = new DatePickerDialog(ChattingWindowActivity.this,
+                        datelistener,
+                        dateTimeArray[0], dateTimeArray[1], dateTimeArray[2]);
+                dpd.show();
+            }
+        });
+
+        final Button timeButton = (Button) view.findViewById(R.id.timeET);
+        timeButton.setText(dateTimeArray[3] + ":" + dateTimeArray[4]);
+
+        final TimePickerDialog.OnTimeSetListener timelistener=new TimePickerDialog.OnTimeSetListener() {
+            @Override
+            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                dateTimeArray[3] = hourOfDay;
+                dateTimeArray[4] = minute;
+
+                timeButton.setText(dateTimeArray[3] + ":" + dateTimeArray[4]);
+            }
+        };
+
+        timeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TimePickerDialog tpd = new TimePickerDialog(ChattingWindowActivity.this,
+                        timelistener,
+                        dateTimeArray[3], dateTimeArray[4], true);
+                tpd.show();
+            }
+        });
+
+
+
+        final TextView event = (TextView) view.findViewById(R.id.eventET);
+
+
+
+        new AlertDialog.Builder(this)
+                .setTitle("Create an event.")
+                .setView(view)
+                .setPositiveButton("Create", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        if (event.getText().toString().equals("")){
+                            return;
+                        }
+                        c.set(dateTimeArray[0], dateTimeArray[1], dateTimeArray[2], dateTimeArray[3], dateTimeArray[4]);
+
+                        long startTime = c.getTimeInMillis();
+                        long endTime = c.getTimeInMillis()+60*60*1000;
+
+                        Messages messages = RecentChatsManager.INSTANCE.getMessages(chatId);
+                        Message message = Message.createGroupMessage(
+                                messages.getName(),
+                                messages.getChatId(),
+                                Message.COMMAND_CREATE_EVENT,
+                                Message.DIRECTION_TO,
+                                messages.getMembers(),
+                                new Date(),
+                                "I create an event.",
+                                event.getText().toString() + "," + startTime + "," + endTime
+                        );
+                        RecentChatsManager.INSTANCE.addMessage(message);
+
+                        Intent intent = new Intent(Intent.ACTION_EDIT);
+                        intent.setType("vnd.android.cursor.item/event");
+                        intent.putExtra("beginTime", startTime);
+                        intent.putExtra("allDay", true);
+                        intent.putExtra("rrule", "FREQ=YEARLY");
+                        intent.putExtra("endTime", endTime);
+                        intent.putExtra("title", event.getText().toString());
+                        startActivity(intent);
+                    }
+                }).show();
+
+    }
+
+    /**
+     * Callback method to be invoked when an item in this AdapterView has
+     * been clicked.
+     * <p/>
+     * Implementers can call getItemAtPosition(position) if they need
+     * to access the data associated with the selected item.
+     *
+     * @param parent   The AdapterView where the click happened.
+     * @param view     The view within the AdapterView that was clicked (this
+     *                 will be a view provided by the adapter)
+     * @param position The position of the view in the adapter.
+     * @param id       The row id of the item that was clicked.
+     */
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Message message = messageLines.get(position);
+        if (message.getCommand() == Message.COMMAND_CREATE_EVENT){
+            String[] extra = message.getExtra().split(",");
+            String event = extra[0];
+            long startTime = Long.valueOf(extra[1]);
+            long endTime = Long.valueOf(extra[2]);
+            Intent intent = new Intent(Intent.ACTION_EDIT);
+            intent.setType("vnd.android.cursor.item/event");
+            intent.putExtra("beginTime", startTime);
+            intent.putExtra("allDay", true);
+            intent.putExtra("rrule", "FREQ=YEARLY");
+            intent.putExtra("endTime", endTime);
+            intent.putExtra("title", event);
+            startActivity(intent);
+        }
     }
 }

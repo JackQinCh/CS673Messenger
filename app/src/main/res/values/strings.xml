@@ -21,4 +21,5 @@
 
     <string name="search_label">Search chat content</string>
     <string name="search_hint">Search chat</string>
+    <string name="picked_date_format">yyyy-MMM-dd</string>
 </resources>

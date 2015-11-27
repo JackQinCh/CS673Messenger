@@ -49,6 +49,7 @@ public final class Message {
     public final static int COMMAND_CREATE_TASK = 3;
     public final static int COMMAND_REMOVE_TASK = 4;
     public final static int COMMAND_SHARE_LOCATION = 5;
+    public final static int COMMAND_CREATE_EVENT = 6;
 
     public final static String HEADER_TYPE = "<TYPE:";
     public final static String HEADER_NAME = "<NAME:";
@@ -285,6 +286,9 @@ public final class Message {
                 break;
             case COMMAND_SHARE_LOCATION:
                 commandStr = "Command: Share location";
+                break;
+            case COMMAND_CREATE_EVENT:
+                commandStr = "Command: Create event";
                 break;
             default:
                 commandStr = "null";
