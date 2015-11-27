@@ -38,6 +38,7 @@ import edu.njit.fall15.team1.cs673messenger.controllers.Adapters.ChattingAdapter
 import edu.njit.fall15.team1.cs673messenger.models.Friend;
 import edu.njit.fall15.team1.cs673messenger.models.Message;
 import edu.njit.fall15.team1.cs673messenger.models.Messages;
+import edu.njit.fall15.team1.cs673messenger.models.Tasks;
 
 /**
  * Created by jack on 10/25/15.
@@ -196,18 +197,23 @@ public class ChattingWindowActivity extends Activity implements RecentChatsListe
     }
 
     public void onCheckTask(View v) {
-        List<String> tasklist = TaskManager.INSTANCE.findTasks(chatId).getTaskList();
+        Tasks tasks = TaskManager.INSTANCE.findTasks(chatId);
+        if (tasks == null)
+            return;
+        List<String> tasklist = tasks.getTaskList();
         if (tasklist.size() == 0)
             return;
-        final String[] tasks = new String[tasklist.size()];
-        tasklist.toArray(tasks);
+        final String[] tasksString = new String[tasklist.size()];
+        tasklist.toArray(tasksString);
         new AlertDialog.Builder(this)
                 .setTitle("Touch to finish the task.")
-                .setItems(tasks, new DialogInterface.OnClickListener() {
+                .setItems(tasksString, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
                         String taskStr = TaskManager.INSTANCE.findTasks(chatId).getTaskList().get(which);
+                        if (taskStr.endsWith("(Finished)"))
+                            return;
 
                         Messages messages = RecentChatsManager.INSTANCE.getMessages(chatId);
                         if (messages.getType() == Messages.GROUP_CHAT) {
@@ -359,7 +365,7 @@ public class ChattingWindowActivity extends Activity implements RecentChatsListe
             longitude = location.getLongitude();
         }
 
-        Log.i(getClass().getSimpleName(), "GPS Latitude:"+latitude + ", Longitude"+longitude);
+        Log.i(getClass().getSimpleName(), "GPS Latitude:" + latitude + ", Longitude" + longitude);
 
         Messages messages = RecentChatsManager.INSTANCE.getMessages(chatId);
         Message message = Message.createGroupMessage(

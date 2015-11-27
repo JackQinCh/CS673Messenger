@@ -20,13 +20,18 @@ public class Tasks {
     }
 
     public void removeTask(int index){
-        if (taskList.size() != 0)
+        if (taskList.size() != 0){
+            String task = taskList.get(index);
             taskList.remove(index);
+            taskList.add(task+"(Finished)");
+        }
     }
 
     public void removeTask(String task){
-        if (taskList.size() != 0 && taskList.contains(task))
+        if (taskList.size() != 0 && taskList.contains(task)){
             taskList.remove(task);
+            taskList.add(task+"(Finished)");
+        }
     }
 
     public List<String> getTaskList() {
