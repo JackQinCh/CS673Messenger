@@ -43,7 +43,7 @@ import edu.njit.fall15.team1.cs673messenger.models.Tasks;
 /**
  * Created by jack on 10/25/15.
  */
-public class ChattingWindowActivity extends Activity implements RecentChatsListener, AdapterView.OnItemClickListener {
+public class ChattingWindowActivity extends Activity implements RecentChatsListener, AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener{
     private ListView chatHistoryLv;
     private EditText textEditor;
     private ChattingAdapter chatHistoryAdapter;
@@ -64,6 +64,7 @@ public class ChattingWindowActivity extends Activity implements RecentChatsListe
 
         chatHistoryLv = (ListView) findViewById(R.id.chatting_history_lv);
         chatHistoryLv.setOnItemClickListener(this);
+        chatHistoryLv.setOnItemLongClickListener(this);
         messageLines.clear();
         messageLines.addAll(getData());
         chatHistoryAdapter = new ChattingAdapter(this, messageLines);
@@ -107,12 +108,18 @@ public class ChattingWindowActivity extends Activity implements RecentChatsListe
             Message message = Message.createPersonalMessage(Message.DIRECTION_TO, messages.getMembers().get(0), messageText);
             RecentChatsManager.INSTANCE.addMessage(message);
         } else if (messages.getType() == Messages.GROUP_CHAT) {
+            List<Friend> members = new ArrayList<>();
+            if (isPrivateChat){
+                members.add(privateWith);
+            }else {
+                members = messages.getMembers();
+            }
             Message message = Message.createGroupMessage(
                     messages.getName(),
                     chatId,
                     Message.COMMAND_GROUP_CHAT,
                     Message.DIRECTION_TO,
-                    messages.getMembers(),
+                    members,
                     new Date(),
                     messageText,
                     "");
@@ -424,4 +431,36 @@ public class ChattingWindowActivity extends Activity implements RecentChatsListe
             startActivity(it);
         }
     }
+
+    /**
+     * Callback method to be invoked when an item in this view has been
+     * clicked and held.
+     * <p>
+     * Implementers can call getItemAtPosition(position) if they need to access
+     * the data associated with the selected item.
+     *
+     * @param parent   The AbsListView where the click happened
+     * @param view     The view within the AbsListView that was clicked
+     * @param position The position of the view in the list
+     * @param id       The row id of the item that was clicked
+     * @return true if the callback consumed the long click, false otherwise
+     */
+    @Override
+    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+        Log.d(getClass().getSimpleName(), "Long touch.");
+
+        Message message = messageLines.get(position);
+
+        if (message.getType() == Message.TYPE_CHAT && message.getDirection() != Message.DIRECTION_FROM){
+            return false;
+        }
+        textEditor.setText("@"+message.getFriend().get(0).getProfileName()+":");
+        isPrivateChat = true;
+        privateWith = message.getFriend().get(0);
+
+        return true;
+    }
+
+    private boolean isPrivateChat = false;
+    private Friend privateWith;
 }

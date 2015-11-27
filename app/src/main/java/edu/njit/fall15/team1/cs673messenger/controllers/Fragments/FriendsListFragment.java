@@ -35,7 +35,7 @@ public class FriendsListFragment extends ListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        friends = getFriendsData();
+        friends.addAll(getFriendsData());
     }
 
     @Override
@@ -66,7 +66,8 @@ public class FriendsListFragment extends ListFragment {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                friends = getFriendsData();
+                friends.clear();
+                friends.addAll(getFriendsData());
                 TextView numOfFriendLabel = (TextView) getActivity().findViewById(R.id.numberOfFriendLabel);
                 numOfFriendLabel.setText("Your friends(" + friends.size() + ")");
                 adapter.notifyDataSetChanged();
