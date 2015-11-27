@@ -1,12 +1,19 @@
 package edu.njit.fall15.team1.cs673messenger.controllers.Activities;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -236,14 +243,14 @@ public class ChattingWindowActivity extends Activity implements RecentChatsListe
         final Button dateButton = (Button) view.findViewById(R.id.dateET);
         dateButton.setText(dateTimeArray[0] + "-" + (dateTimeArray[1] + 1) + "-" + dateTimeArray[2]);
 
-        final DatePickerDialog.OnDateSetListener datelistener=new DatePickerDialog.OnDateSetListener() {
+        final DatePickerDialog.OnDateSetListener datelistener = new DatePickerDialog.OnDateSetListener() {
             /**params：view：该事件关联的组件
              * params：myyear：当前选择的年
              * params：monthOfYear：当前选择的月
              * params：dayOfMonth：当前选择的日
              */
             @Override
-            public void onDateSet(DatePicker view, int myyear, int monthOfYear,int dayOfMonth) {
+            public void onDateSet(DatePicker view, int myyear, int monthOfYear, int dayOfMonth) {
                 //修改year、month、day的变量值，以便以后单击按钮时，DatePickerDialog上显示上一次修改后的值
                 dateTimeArray[0] = myyear;
                 dateTimeArray[1] = monthOfYear;
@@ -266,7 +273,7 @@ public class ChattingWindowActivity extends Activity implements RecentChatsListe
         final Button timeButton = (Button) view.findViewById(R.id.timeET);
         timeButton.setText(dateTimeArray[3] + ":" + dateTimeArray[4]);
 
-        final TimePickerDialog.OnTimeSetListener timelistener=new TimePickerDialog.OnTimeSetListener() {
+        final TimePickerDialog.OnTimeSetListener timelistener = new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                 dateTimeArray[3] = hourOfDay;
@@ -287,9 +294,7 @@ public class ChattingWindowActivity extends Activity implements RecentChatsListe
         });
 
 
-
         final TextView event = (TextView) view.findViewById(R.id.eventET);
-
 
 
         new AlertDialog.Builder(this)
@@ -299,13 +304,13 @@ public class ChattingWindowActivity extends Activity implements RecentChatsListe
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
-                        if (event.getText().toString().equals("")){
+                        if (event.getText().toString().equals("")) {
                             return;
                         }
                         c.set(dateTimeArray[0], dateTimeArray[1], dateTimeArray[2], dateTimeArray[3], dateTimeArray[4]);
 
                         long startTime = c.getTimeInMillis();
-                        long endTime = c.getTimeInMillis()+60*60*1000;
+                        long endTime = c.getTimeInMillis() + 60 * 60 * 1000;
 
                         Messages messages = RecentChatsManager.INSTANCE.getMessages(chatId);
                         Message message = Message.createGroupMessage(
@@ -332,6 +337,47 @@ public class ChattingWindowActivity extends Activity implements RecentChatsListe
                 }).show();
 
     }
+
+    public void onShareLocation(View v) {
+        LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+
+        double latitude = 0.0;
+        double longitude = 0.0;
+        Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        if(location != null){
+            latitude = location.getLatitude();
+            longitude = location.getLongitude();
+        }
+
+        Log.i(getClass().getSimpleName(), "GPS Latitude:"+latitude + ", Longitude"+longitude);
+
+        Messages messages = RecentChatsManager.INSTANCE.getMessages(chatId);
+        Message message = Message.createGroupMessage(
+                messages.getName(),
+                messages.getChatId(),
+                Message.COMMAND_SHARE_LOCATION,
+                Message.DIRECTION_TO,
+                messages.getMembers(),
+                new Date(),
+                "I am sharing my location.",
+                latitude + "," + longitude
+        );
+        RecentChatsManager.INSTANCE.addMessage(message);
+
+    }
+
+
+
 
     /**
      * Callback method to be invoked when an item in this AdapterView has
@@ -362,6 +408,14 @@ public class ChattingWindowActivity extends Activity implements RecentChatsListe
             intent.putExtra("endTime", endTime);
             intent.putExtra("title", event);
             startActivity(intent);
+        }else if (message.getCommand() == Message.COMMAND_SHARE_LOCATION){
+            String[] extra = message.getExtra().split(",");
+            double latitude = Double.valueOf(extra[0]);
+            double longitude = Double.valueOf(extra[1]);
+
+            Uri uri = Uri.parse("geo:"+latitude+","+longitude);
+            Intent it = new Intent(Intent.ACTION_VIEW, uri);
+            startActivity(it);
         }
     }
 }
