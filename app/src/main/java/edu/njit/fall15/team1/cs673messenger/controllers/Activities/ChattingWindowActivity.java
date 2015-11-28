@@ -43,7 +43,7 @@ import edu.njit.fall15.team1.cs673messenger.models.Tasks;
 /**
  * Created by jack on 10/25/15.
  */
-public class ChattingWindowActivity extends Activity implements RecentChatsListener, AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener{
+public class ChattingWindowActivity extends Activity implements RecentChatsListener, AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
     private ListView chatHistoryLv;
     private EditText textEditor;
     private ChattingAdapter chatHistoryAdapter;
@@ -109,9 +109,9 @@ public class ChattingWindowActivity extends Activity implements RecentChatsListe
             RecentChatsManager.INSTANCE.addMessage(message);
         } else if (messages.getType() == Messages.GROUP_CHAT) {
             List<Friend> members = new ArrayList<>();
-            if (isPrivateChat){
+            if (isPrivateChat) {
                 members.add(privateWith);
-            }else {
+            } else {
                 members = messages.getMembers();
             }
             Message message = Message.createGroupMessage(
@@ -353,6 +353,10 @@ public class ChattingWindowActivity extends Activity implements RecentChatsListe
 
     public void onShareLocation(View v) {
         LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+
+        double latitude = 0.0;
+        double longitude = 0.0;
+
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
@@ -363,9 +367,6 @@ public class ChattingWindowActivity extends Activity implements RecentChatsListe
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
-
-        double latitude = 0.0;
-        double longitude = 0.0;
         Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
         if(location != null){
             latitude = location.getLatitude();
