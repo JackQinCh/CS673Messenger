@@ -29,10 +29,18 @@ import org.jivesoftware.smack.packet.Message;
 import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.util.StringUtils;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -135,6 +143,32 @@ public class XMPP {
                         Log.d("DENIS", "Connected as user  " + connection.getUser() + " " + connection.getChatManager());
                         Log.d("DENIS", "Connected as user  " + connection.getConnectionID() + " " + connection.getChatManager());
 
+                        Log.d("DENIS", "****************GET**LOGIN**PICTURE***********");
+                        try {
+                            String numericID = getFacebookID(trimUsername(connection.getUser(),false));
+
+                            if (numericID != null) {
+                                Log.i("Hack", "I got Your Facebook ID = "+ numericID + " to show user picture!");
+
+                                try {
+                                    Bitmap bitmap = getFacebookProfilePicture(numericID);
+
+                                    if (bitmap != null) {
+                                        Log.i("DENIS", "I got something to show logined user picture!");
+                                    }
+                                }
+                                catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+
+                            }
+                        }
+                        catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        Log.d("DENIS", "****************GET**LOGIN**PICTURE***********");
+
+
                         // Set the status to available
                         Presence presence = new Presence(Presence.Type.available);
                         // Set the status to unavailable
@@ -161,13 +195,13 @@ public class XMPP {
 
                             Log.d("DENIS", "****************GET**USER**PICTURE***********");
                             // trim value for user to paste it in URL for Graph API
-                            String usrid;
+                           /* String usrid;
                             usrid = user.substring(1);
                             String[] arr = usrid.split("@");
                             usrid = arr[0];
-                            Log.d("DENIS", usrid);
+                            Log.d("DENIS", usrid);*/
                             try {
-                                Bitmap bitmap = getFacebookProfilePicture(usrid);
+                                Bitmap bitmap = getFacebookProfilePicture(trimUsername(user, true));
 
                                 if (bitmap != null) {
                                     Log.i("DENIS", "I got something to show user picture!");
@@ -317,6 +351,21 @@ public class XMPP {
         connectionThread.execute();
     }
 
+    public static String trimUsername (String fullusername, Boolean trimleft)
+    {
+        String usrid;
+
+        if (trimleft == true) {
+            usrid = fullusername.substring(1);
+        } else {
+            usrid = fullusername;
+        }
+
+        String[] arr = usrid.split("@");
+        usrid = arr[0];
+        Log.d("DENIS", usrid);
+        return usrid;
+    }
     public static Bitmap getFacebookProfilePicture(String userID)
     throws MalformedURLException, IOException  {
         String imageURL;
@@ -327,10 +376,68 @@ public class XMPP {
             URL url1 = new URL(imageURL);
             HttpURLConnection ucon1 = (HttpURLConnection) url1.openConnection();
             ucon1.setInstanceFollowRedirects(false);
-            URL secondURL1 = new URL(ucon1.getHeaderField("Location"));
+            //URL secondURL1 = new URL(ucon1.getHeaderField("Location"));
             InputStream in = (InputStream) new URL(imageURL).getContent();
             bitmap = BitmapFactory.decodeStream(in);
         return bitmap;
+    }
+
+    public static String getFacebookID(String userName)
+            throws Exception {
+        String numericID = null;
+        HttpURLConnection connection = null;
+        //URL url = new URL("https://m.facebook.com/" + userName);
+        URL url = new URL("http://findmyfbid.com");
+
+
+        connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("POST");
+        connection.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
+        connection.setUseCaches(false);
+        connection.setDoInput(true);
+        connection.setDoOutput(true);
+        // Send request
+        DataOutputStream wr = new DataOutputStream(
+                connection.getOutputStream());
+        wr.writeBytes("url=https%3A%2F%2Fm.facebook.com%2F"+ userName);
+        wr.flush();
+        wr.close();
+        // Get Response
+        InputStream is = connection.getInputStream();
+        BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+        String line;
+        StringBuffer response = new StringBuffer();
+        while ((line = rd.readLine()) != null) {
+            response.append(line);
+        }
+        rd.close();
+        String responseStr = response.toString();
+        //Log.d("Hack Server response", responseStr);
+
+        //search value for tag code
+        String start = "code>";
+        String end = "</code";
+        String part = responseStr.substring(responseStr.indexOf(start) + start.length());
+        numericID = part.substring(0, part.indexOf(end));
+
+
+        /*//Document document = Jsoup.connect("https://www.facebook.com/" + userName).get();
+        Document document = Jsoup.parse(responseStr);
+        Elements meta = document.select("meta[property]");
+        if (!meta.isEmpty()) {
+
+            for (Element element : meta) {
+                final String s = element.attr("content");
+                if (s != null) numericID = s;
+            }
+
+            //numericID = meta.attr("content");
+        }
+        else {
+            numericID = "BAD RESULT ";
+        }*/
+        return numericID;
+
     }
 
     /**

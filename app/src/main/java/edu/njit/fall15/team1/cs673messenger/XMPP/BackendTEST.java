@@ -17,7 +17,7 @@ public class BackendTEST extends Application {
     public void onCreate() {
         super.onCreate();
         Log.d("DENIS", "START");
-        XMPP test = new XMPP("chat.facebook.com", "denis.infodba", "DUMMY");
+        XMPP test = new XMPP("chat.facebook.com", "denis.infodba", "empty");
         test.XMPPconnect();
         Log.d("DENIS", "GetContext starts");
         sContext = getApplicationContext();
