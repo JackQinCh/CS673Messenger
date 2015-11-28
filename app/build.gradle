@@ -26,6 +26,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.0.1'
     compile 'com.android.support:design:23.0.1'
     compile 'com.google.code.gson:gson:2.4'
+    compile 'org.jsoup:jsoup:1.8.3'
     compile files('libs/asmack-android-16-beem.jar')
 
 }
