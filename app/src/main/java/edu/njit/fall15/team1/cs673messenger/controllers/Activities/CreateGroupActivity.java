@@ -3,7 +3,6 @@ package edu.njit.fall15.team1.cs673messenger.controllers.Activities;
 import android.app.ListActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -16,6 +15,7 @@ import java.util.List;
 import edu.njit.fall15.team1.cs673messenger.APIs.FriendsManager;
 import edu.njit.fall15.team1.cs673messenger.APIs.RecentChatsManager;
 import edu.njit.fall15.team1.cs673messenger.R;
+import edu.njit.fall15.team1.cs673messenger.controllers.Adapters.FriendListItemAdapter;
 import edu.njit.fall15.team1.cs673messenger.models.Friend;
 import edu.njit.fall15.team1.cs673messenger.models.Message;
 
@@ -25,7 +25,6 @@ import edu.njit.fall15.team1.cs673messenger.models.Message;
 public class CreateGroupActivity extends ListActivity{
     private List<Friend> friends;
     private List<Friend> members = new LinkedList<>();
-    private List<String> stringList = new LinkedList<>();
     private TextView memberList;
     private EditText groupNameInput;
     @Override
@@ -34,13 +33,8 @@ public class CreateGroupActivity extends ListActivity{
         setContentView(R.layout.create_group);
 
         friends = FriendsManager.getFriends();
-        if (friends.size() != 0){
-            for (Friend f:friends){
-                stringList.add(f.getProfileName());
-            }
-        }
 
-        setListAdapter(new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, stringList));
+        setListAdapter(new FriendListItemAdapter(this, friends));
 
         memberList = (TextView) findViewById(R.id.membersDisplay);
         groupNameInput = (EditText) findViewById(R.id.groupNameET);
@@ -79,7 +73,7 @@ public class CreateGroupActivity extends ListActivity{
         if (groupName.equals("")){
             Toast.makeText(this, "Please input group name.", Toast.LENGTH_SHORT).show();
         }else{
-            if (members.size() < 3){
+            if (members.size() < 2){
                 Toast.makeText(this, "The number of members can not be less than 3.", Toast.LENGTH_SHORT).show();
             }else {//Create
                 Date time = new Date();
@@ -90,7 +84,7 @@ public class CreateGroupActivity extends ListActivity{
                         Message.DIRECTION_TO,
                         members,
                         time,
-                        "",
+                        "I created the group.",
                         "");
                 RecentChatsManager.INSTANCE.addMessage(message);
                 cancel(v);

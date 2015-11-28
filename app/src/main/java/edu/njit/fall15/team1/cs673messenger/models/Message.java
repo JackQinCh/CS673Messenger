@@ -46,8 +46,10 @@ public final class Message {
     public final static int COMMAND_NONE = 0;
     public final static int COMMAND_CREATE_GROUP = 1;
     public final static int COMMAND_GROUP_CHAT = 2;
-    public final static int COMMAND_GROUP_TASK = 3;
-    public final static int COMMAND_SHARE_LOCATION = 4;
+    public final static int COMMAND_CREATE_TASK = 3;
+    public final static int COMMAND_REMOVE_TASK = 4;
+    public final static int COMMAND_SHARE_LOCATION = 5;
+    public final static int COMMAND_CREATE_EVENT = 6;
 
     public final static String HEADER_TYPE = "<TYPE:";
     public final static String HEADER_NAME = "<NAME:";
@@ -118,11 +120,15 @@ public final class Message {
     }
 
 
+    public String getExtra() {
+        return extra;
+    }
+
     /**
      * Static Generation Factory with received message
-     * @param s
-     * @param friend
-     * @param time
+     * @param s String
+     * @param friend Friend
+     * @param time Date
      * @return Message
      */
     public static Message createWithReceivedMessage( String s, Friend friend, Date time ){
@@ -137,7 +143,6 @@ public final class Message {
         String messageText = "";
         int command = COMMAND_NONE;
         String extra = "";
-        List<Friend> members = new ArrayList<>();
         //Type
         if (packetStr.startsWith(HEADER_TYPE+TYPE_GROUP+HEADER_END)){//Type: group chat
             packetStr = packetStr.replace(HEADER_TYPE+TYPE_GROUP+HEADER_END, "");
@@ -146,7 +151,7 @@ public final class Message {
             messageText = packetStr;
             return createPersonalMessage(Message.DIRECTION_FROM, friend, messageText);
         }
-
+        //Name
         if (packetStr.startsWith(HEADER_NAME)){
             String nameStr = packetStr.substring(0, packetStr.indexOf(HEADER_END)+1);
             name = nameStr.substring(6, nameStr.length()-1);
@@ -154,7 +159,7 @@ public final class Message {
             packetStr = packetStr.replace(nameStr, "");
             Log.d(Message.class.getSimpleName(), packetStr);
         }
-
+        //Chat Id
         if (packetStr.startsWith(HEADER_ID)){
             String IDStr = packetStr.substring(0, packetStr.indexOf(HEADER_END)+1);
             ID = IDStr.substring(4, IDStr.length()-1);
@@ -162,7 +167,7 @@ public final class Message {
             packetStr = packetStr.replace(IDStr, "");
             Log.d(Message.class.getSimpleName(), packetStr);
         }
-
+        //Command
         if (packetStr.startsWith(HEADER_COMMAND)){
             String commandStr = packetStr.substring(0, packetStr.indexOf(HEADER_END)+1);
             command = Integer.parseInt(commandStr.substring(9, commandStr.length()-1));
@@ -170,37 +175,57 @@ public final class Message {
             packetStr = packetStr.replace(commandStr,"");
             Log.d(Message.class.getSimpleName(), packetStr);
         }
+        //Members in create group command.
         String memberStr = packetStr.substring(0, packetStr.indexOf(HEADER_END)+1);
         if (command == Message.COMMAND_CREATE_GROUP){
-            String[] membersStr = memberStr.substring(9, memberStr.length()-1).split(",");
+            String[] membersStr = memberStr.substring(9, memberStr.length()-2).split(",");
+            Friend f;
             for (String userID:membersStr){
-                Friend f = FriendsManager.checkFriend(userID);
-                if (f != null)
-                    members.add(f);
-                Log.d(Message.class.getSimpleName(),"Member:"+f.getProfileName());
-            }
-            if (members.size() != 0){
-                Log.d(Message.class.getSimpleName(), messageText);
-                return createGroupMessage(
-                        name,
-                        ID,
-                        command,
-                        Message.DIRECTION_FROM,
-                        members,
-                        time,
-                        messageText,
-                        extra);
+                Log.d(Message.class.getSimpleName(),"str:"+userID);
+                f = FriendsManager.checkFriend(userID);
+                if (f != null){
+                    friends.add(f);
+                    Log.d(Message.class.getSimpleName(),"Member:"+f.getProfileName());
+                }
             }
         }
+
         packetStr = packetStr.replace(memberStr,"");
+        //Extra
+        if (packetStr.startsWith(HEADER_EXTRA)){
+            String extraStr = packetStr.substring(0, packetStr.indexOf(HEADER_END)+1);
+            extra = extraStr.substring(7, extraStr.length()-1);
+            Log.d(Message.class.getSimpleName(),"Extra:"+extra);
+            packetStr = packetStr.replace(extraStr, "");
+            Log.d(Message.class.getSimpleName(), packetStr);
+        }
+        //Message Text
+        messageText = packetStr;
         Log.d(Message.class.getSimpleName(), packetStr);
-        return null;
+        return createGroupMessage(name, ID, command, DIRECTION_FROM, friends, time, messageText, extra);
     }
 
+    /**
+     * Static factory
+     * @param name String
+     * @param chatID String
+     * @param type int
+     * @param command int
+     * @param direction int
+     * @param friends List of Friend
+     * @param time Date
+     * @param message String
+     * @param extra String
+     * @return Message
+     */
     public static Message createMessage(String name,String chatID, int type, int command, int direction, List<Friend> friends, Date time, String message, String extra){
         return new Message(name, chatID, type, command, direction, friends, time, message, extra);
     }
 
+    /**
+     * get Friends
+     * @return List of Friend
+     */
     public List<Friend> getFriend() {
         List<Friend> list = new ArrayList<>();
         list.addAll(friends);
@@ -253,11 +278,17 @@ public final class Message {
             case COMMAND_GROUP_CHAT:
                 commandStr = "Command: Normal group chat";
                 break;
-            case COMMAND_GROUP_TASK:
+            case COMMAND_CREATE_TASK:
                 commandStr = "Command: Create group task";
+                break;
+            case COMMAND_REMOVE_TASK:
+                commandStr = "Command: Remove group task";
                 break;
             case COMMAND_SHARE_LOCATION:
                 commandStr = "Command: Share location";
+                break;
+            case COMMAND_CREATE_EVENT:
+                commandStr = "Command: Create event";
                 break;
             default:
                 commandStr = "null";

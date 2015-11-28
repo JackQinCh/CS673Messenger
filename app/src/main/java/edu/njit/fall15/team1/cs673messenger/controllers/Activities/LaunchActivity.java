@@ -54,7 +54,6 @@ public class LaunchActivity extends Activity implements FacebookServerListener{
 
     private void init() {
         FacebookServer.INSTANCE.addListeners(this);
-//        RecentChatsManager.INSTANCE;
         FacebookServer.INSTANCE.connect(getString(R.string.facebook_server));
     }
 

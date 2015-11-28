@@ -56,39 +56,18 @@ public enum  RecentChatsManager implements FacebookServerListener{
         }
     }
 
-//    /**
-//     * Add messages into recent chats.
-//     * @param messages
-//     */
-//    public void addMessages(Messages messages){
-//        recentChats.add(messages);
-//        Log.i(getClass().getSimpleName(), toString());
-//    }
     /**
      * Get Messgaes with chatId.
-     * @param type
      * @param chatId
-     * @return
+     * @return Messages
      */
-    public Messages getMessages(int type, String chatId){
+    public Messages getMessages(String chatId){
         if (recentChats.size() != 0) {
             for (Messages messages : recentChats) {
                 if (messages.checkId(chatId)) {
                     return messages;
                 }
             }
-        }
-        Log.d(getClass().getSimpleName(),"Didn't find the messages with "+chatId);
-        if (type == Messages.PERSONAL_CHAT){
-            Friend friend = FriendsManager.checkFriend(chatId);
-            if (friend != null){
-                Messages messages = Messages.newPersonalMessages(friend);
-                recentChats.add(messages);
-                return messages;//copy
-            }
-        }else if (type == Messages.GROUP_CHAT){
-            Log.d(getClass().getSimpleName(), "New Group_chat");
-            return null;
         }
         return null;
     }
@@ -111,6 +90,7 @@ public enum  RecentChatsManager implements FacebookServerListener{
                                 listener.updateGUI();
                         }
                     }else {
+                        doMessageCommond(message);
                         if (listeners.size() != 0) {
                             Log.d(getClass().getSimpleName(), "Notify GUI listeners.");
                             for (RecentChatsListener listener : listeners)
@@ -150,6 +130,14 @@ public enum  RecentChatsManager implements FacebookServerListener{
         Log.i(getClass().getSimpleName(),toString());
     }
 
+    private void doMessageCommond(Message message) {
+        if (message.getCommand() == Message.COMMAND_CREATE_TASK){
+            TaskManager.INSTANCE.addTask(message.getChatID(), message.getExtra());
+        }else if (message.getCommand() == Message.COMMAND_REMOVE_TASK){
+            TaskManager.INSTANCE.removeTask(message.getChatID(), message.getExtra());
+        }
+    }
+
     @Override
     public void facebookReceivedMessage(String from, String messageText, Date time) {
         Log.d(getClass().getSimpleName(), "Received a Message from FacebookServer.");
@@ -163,6 +151,8 @@ public enum  RecentChatsManager implements FacebookServerListener{
             Log.e(getClass().getSimpleName(), "Didn't find this friend.");
         }
     }
+
+
 
     @Override
     public String toString() {
@@ -192,5 +182,9 @@ public enum  RecentChatsManager implements FacebookServerListener{
     @Override
     public void facebookLogined(Boolean isLogin) {
 
+    }
+
+    public void addMessages(Messages messages) {
+        recentChats.add(messages);
     }
 }

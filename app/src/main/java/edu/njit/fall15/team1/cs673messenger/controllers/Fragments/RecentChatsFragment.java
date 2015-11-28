@@ -144,26 +144,24 @@ public class RecentChatsFragment extends ListFragment implements RecentChatsList
 
     /**
      * Receive message feedback
-     * @param message
+     * @param message Message
      */
     @Override
     public void receivedMessage(Message message) {
         Log.d(getClass().getSimpleName(), "receivedMessage: " + message.getMessage());
         updateData();
+        notifyMessage(message);
+    }
+    /**
+     * Notify receive message
+     * @param message Message
+     */
+    private void notifyMessage(Message message){
         //Check setting notify.
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         boolean notifySetting = sp.getBoolean("notifyMe", true);
         Log.d(getClass().getSimpleName(), String.valueOf(notifySetting));
 
-        notifyMessage(notifySetting, message.getMessage());
-    }
-
-    /**
-     * Notify receive message
-     * @param notifySetting boolean
-     * @param notifyMessage String
-     */
-    private void notifyMessage(boolean notifySetting, String notifyMessage){
         if (notifySetting) {
             //Ring
             try {
@@ -184,9 +182,9 @@ public class RecentChatsFragment extends ListFragment implements RecentChatsList
             //Notification.Builder builder = new NotificationCompat.Builder(context);
             builder.setContentIntent(contentIntent)
                     .setSmallIcon(R.drawable.stat_sys_download)
-                    .setLargeIcon(BitmapFactory.decodeResource(res, R.drawable.facebook_icon))
-                    .setContentTitle("CS673 App: You have new message!")
-                    .setContentText(notifyMessage); // Text from message
+                    .setLargeIcon(BitmapFactory.decodeResource(res, R.mipmap.ic_launcher))
+                    .setContentTitle("From:"+message.getName())
+                    .setContentText(message.getMessage()); // Text from message
 
             Notification notification = builder.build();
 
@@ -204,6 +202,7 @@ public class RecentChatsFragment extends ListFragment implements RecentChatsList
             notificationManager.notify(673, notification);
         }
     }
+
 
     /**
      * List view select action
