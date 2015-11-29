@@ -22,6 +22,7 @@ public class LoginActivity extends Activity implements FacebookServerListener{
 
         FacebookServer.INSTANCE.addListeners(this);
 
+
     }
 
     @Override
@@ -67,8 +68,9 @@ public class LoginActivity extends Activity implements FacebookServerListener{
         Log.d(getClass().getSimpleName(),"Login :"+isLogin);
 
         if (isLogin){
+
             Intent intent = new Intent();
-            intent.setClass(LoginActivity.this, MainActivity.class);
+            intent.setClass(LoginActivity.this, WelcomeActivity.class);
             startActivity(intent);
 
             this.finish();

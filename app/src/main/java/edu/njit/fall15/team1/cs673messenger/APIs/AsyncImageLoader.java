@@ -40,13 +40,16 @@ public class AsyncImageLoader extends AsyncTask<String, Void, Bitmap> {
     protected Bitmap doInBackground(String... params) {
         Bitmap bitmap = null;
         try {
-            bitmap = FacebookServer.INSTANCE.getFacebookProfilePicture(params[0]);
+            if (params[0].startsWith("-")){
+                bitmap = FacebookServer.INSTANCE.getFriendPhoto(params[0]);
+            }else {
+                bitmap = FacebookServer.INSTANCE.getUserPhoto();
+            }
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-//        bitmap = GetUserInfo.getBitmap(params[0]);
-//        if(width!=0&height!=0)
-//            bitmap=GetUserInfo.scaleImg(bitmap, width, height);
         addBitmapToMemoryCache(params[0], bitmap);
         return bitmap;
     }

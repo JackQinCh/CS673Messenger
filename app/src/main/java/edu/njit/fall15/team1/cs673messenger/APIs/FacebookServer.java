@@ -20,9 +20,12 @@ import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.util.StringUtils;
 
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -39,6 +42,7 @@ import edu.njit.fall15.team1.cs673messenger.models.Friend;
 public enum FacebookServer implements PacketListener, ConnectionCreationListener{
     INSTANCE;
 
+    private String userId;
     @Override
     public void connectionCreated(Connection connection) {
         if (this.connection == connection){
@@ -144,6 +148,7 @@ public enum FacebookServer implements PacketListener, ConnectionCreationListener
                 if (connection != null && connection.isConnected()){
                     try {
                         connection.login(username, password);
+                        userId = getFacebookID(trimUsername(connection.getUser(), false));
                     } catch (XMPPException e) {
                         e.printStackTrace();
                         return false;
@@ -294,8 +299,9 @@ public enum FacebookServer implements PacketListener, ConnectionCreationListener
      */
     public String getUserName(){
         if (connection != null && connection.isConnected()){
-            Log.d(getClass().getSimpleName(),connection.getUser());
-            return connection.getUser().replaceAll("@chat.facebook.com/Smack","");//Not true Username.
+            String userName = trimUsername(connection.getUser(), false);
+            Log.d(getClass().getSimpleName(), userName);
+            return userName;//Not true Username.
         }
         else
             return null;
@@ -308,24 +314,107 @@ public enum FacebookServer implements PacketListener, ConnectionCreationListener
      * @throws MalformedURLException
      * @throws IOException
      */
-    public Bitmap getFacebookProfilePicture(String userID)
-            throws MalformedURLException, IOException {
-        String usrid;
-        usrid = userID.substring(1);
-        String[] arr = usrid.split("@");
-        usrid = arr[0];
+    private Bitmap getFacebookProfilePicture(String userID) throws IOException {
+
         String imageURL;
-        Bitmap bitmap = null;
-        imageURL = "https://graph.facebook.com/" + usrid
+        Bitmap bitmap;
+        imageURL = "https://graph.facebook.com/" + userID
                 + "/picture?type=large";
 
         URL url1 = new URL(imageURL);
         HttpURLConnection ucon1 = (HttpURLConnection) url1.openConnection();
         ucon1.setInstanceFollowRedirects(false);
-        URL secondURL1 = new URL(ucon1.getHeaderField("Location"));
         InputStream in = (InputStream) new URL(imageURL).getContent();
         bitmap = BitmapFactory.decodeStream(in);
         return bitmap;
+    }
+
+    /**
+     * Get Friend's photo
+     * @param userID
+     * @return
+     * @throws IOException
+     */
+    public Bitmap getFriendPhoto(String userID) throws IOException {
+        String userId = trimUsername(userID, true);
+        return getFacebookProfilePicture(userId);
+    }
+
+    /**
+     * Get user's photo
+     * @return
+     * @throws Exception
+     */
+    public Bitmap getUserPhoto() throws Exception {
+        return getFacebookProfilePicture(getUserID());
+    }
+
+    public String getUserID() throws Exception {
+        Log.d(getClass().getSimpleName(), "User ID: "+userId);
+        return userId;
+    }
+
+    private static String trimUsername (String fullusername, Boolean trimleft)
+    {
+        String usrid;
+
+        if (trimleft == true) {
+            usrid = fullusername.substring(1);
+        } else {
+            usrid = fullusername;
+        }
+
+        int index = usrid.lastIndexOf("@");
+        usrid = usrid.substring(0, index);
+
+
+//        String[] arr = usrid.split("@");
+//        usrid = arr[0];
+        Log.d("DENIS", usrid);
+        return usrid;
+    }
+
+    private static String getFacebookID(String userName)
+            throws Exception {
+        String numericID = null;
+        HttpURLConnection connection = null;
+        //URL url = new URL("https://m.facebook.com/" + userName);
+        URL url = new URL("http://findmyfbid.com");
+
+
+        connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("POST");
+        connection.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
+        connection.setUseCaches(false);
+        connection.setDoInput(true);
+        connection.setDoOutput(true);
+        // Send request
+        DataOutputStream wr = new DataOutputStream(
+                connection.getOutputStream());
+        wr.writeBytes("url=https%3A%2F%2Fm.facebook.com%2F"+ userName);
+        wr.flush();
+        wr.close();
+        // Get Response
+        InputStream is = connection.getInputStream();
+        BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+        String line;
+        StringBuffer response = new StringBuffer();
+        while ((line = rd.readLine()) != null) {
+            response.append(line);
+        }
+        rd.close();
+        String responseStr = response.toString();
+        Log.d("FacebookServer Hack Server response", responseStr);
+
+        //search value for tag code
+        String start = "code>";
+        String end = "</code";
+        String part = responseStr.substring(responseStr.indexOf(start) + start.length());
+        numericID = part.substring(0, part.indexOf(end));
+
+
+        return numericID;
+
     }
 
     private final int maxMemory = (int) Runtime.getRuntime().maxMemory();//获取当前应用程序所分配的最大内存
