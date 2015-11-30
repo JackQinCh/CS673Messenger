@@ -98,11 +98,14 @@ public class FriendsListFragment extends ListFragment {
         //Bug dangers
         Friend friend = friends.get(position);
         if (friend != null){
-            Messages messages = Messages.newPersonalMessages(friend);
-            RecentChatsManager.INSTANCE.addMessages(messages);
+            Messages messages = RecentChatsManager.INSTANCE.getMessages(friend.getUser());
+            if (messages == null){
+                messages = Messages.newPersonalMessages(friend);
+                RecentChatsManager.INSTANCE.addMessages(messages);
+            }
             //Change to other page
             Intent intent = new Intent();
-            intent.putExtra(getActivity().getString(R.string.chat_id),friend.getUser());
+            intent.putExtra(getActivity().getString(R.string.chat_id), messages.getChatId());
             intent.setClass(this.getActivity(), ChattingWindowActivity.class);
             startActivity(intent);
         }else{
