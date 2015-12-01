@@ -1,6 +1,25 @@
 <resources>
-    <string name="app_name">CS673Messenger</string>
-
+    <string name="app_name">Team #1</string>
+    <string name="app_version">ver 1.0</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+
+    //Jack
+    <string name="chatlist">Recent</string>
+    <string name="friend">Friends</string>
+    <string name="groupchat">Groups</string>
+    <string name="setting">Setting</string>
+
+    <string name="action_signin">Sign In</string>
+    <string name="menuaction_signout">Sign Out</string>
+    <string name="status_active">Active</string>
+    <string name="status_inactive">Inactive</string>
+
+    <string name="facebook_server">chat.facebook.com</string>
+
+    <string name="chat_id">Chat Id</string>
+
+    <string name="search_label">Search chat content</string>
+    <string name="search_hint">Search chat</string>
+    <string name="picked_date_format">yyyy-MMM-dd</string>
 </resources>

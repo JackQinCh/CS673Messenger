@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <Preference
+        android:title="User Name "
+        android:summary="Account Information"
+        android:selectable="false"
+        android:key="usernameDisplay" />
+
+    <CheckBoxPreference
+        android:title="Notify Me"
+        android:defaultValue="true"
+        android:summary="This option if selected will allow the application to notify you about new messages."
+        android:key="notifyMe" />
+
+    <SwitchPreference
+        android:title="My Status"
+        android:key="changeStatusSetting"
+        android:summaryOn="I am online."
+        android:summaryOff="I am offline."
+        android:defaultValue="true"
+        />
+
+</PreferenceScreen>
