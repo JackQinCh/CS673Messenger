@@ -46,40 +46,63 @@ public class ChattingAdapter extends BaseAdapter {
 
     @Override                               //获取要展示的项目View对象
     public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder holder = null;
+        ImageView photo;
+        TextView text;
+        ImageView image;
+
         Message message = chatMessages.get(position);
-        if (convertView == null || (holder = (ViewHolder) convertView.getTag()).flag != message.getDirection()) {
 
-            holder = new ViewHolder();
+        if (message.getDirection() == Message.DIRECTION_FROM) {
+            convertView = LayoutInflater.from(context).inflate(R.layout.chatting_item_from, null);
+            photo = (ImageView) convertView.findViewById(R.id.fromPhoto);
+            image = (ImageView) convertView.findViewById(R.id.chatImageFrom);
+            FacebookServer.INSTANCE.loadBitmap(message.getFriend().get(0).getUser(), photo);
 
-            if (message.getDirection() == Message.DIRECTION_FROM) {
-                holder.flag = Message.DIRECTION_FROM;
-                convertView = LayoutInflater.from(context).inflate(R.layout.chatting_item_from, null);
-                holder.photo = (ImageView) convertView.findViewById(R.id.fromPhoto);
-                holder.image = (ImageView) convertView.findViewById(R.id.chatImageFrom);
-                FacebookServer.INSTANCE.loadBitmap(message.getFriend().get(0).getUser(), holder.photo);
-
-                if (!message.getExtra().equals("")){
-                    FacebookServer.INSTANCE.loadBitmap(message.getExtra(), holder.image);
-                }
-            } else {
-                holder.flag = Message.DIRECTION_TO;
-                convertView = LayoutInflater.from(context).inflate(R.layout.chatting_item_to, null);
+            if (!message.getExtra().equals("")){
+                FacebookServer.INSTANCE.loadBitmap(message.getExtra(), image);
             }
-
-            holder.text = (TextView) convertView.findViewById(R.id.chatting_content_itv);
-            convertView.setTag(holder);
+        } else {
+            convertView = LayoutInflater.from(context).inflate(R.layout.chatting_item_to, null);
         }
-        holder.text.setText(message.getMessage());
+
+        text = (TextView) convertView.findViewById(R.id.chatting_content_itv);
+        text.setText(message.getMessage());
+
+
+//        ViewHolder holder = null;
+//
+//        if (convertView == null || (holder = (ViewHolder) convertView.getTag()).flag != message.getDirection()) {
+//
+//            holder = new ViewHolder();
+//
+//            if (message.getDirection() == Message.DIRECTION_FROM) {
+////                holder.flag = Message.DIRECTION_FROM;
+//                convertView = LayoutInflater.from(context).inflate(R.layout.chatting_item_from, null);
+//                photo = (ImageView) convertView.findViewById(R.id.fromPhoto);
+//                image = (ImageView) convertView.findViewById(R.id.chatImageFrom);
+//                FacebookServer.INSTANCE.loadBitmap(message.getFriend().get(0).getUser(), holder.photo);
+//
+//                if (!message.getExtra().equals("")){
+//                    FacebookServer.INSTANCE.loadBitmap(message.getExtra(), holder.image);
+//                }
+//            } else {
+//                holder.flag = Message.DIRECTION_TO;
+//                convertView = LayoutInflater.from(context).inflate(R.layout.chatting_item_to, null);
+//            }
+//
+//            TextView text = (TextView) convertView.findViewById(R.id.chatting_content_itv);
+//            convertView.setTag(holder);
+//        }
+//        text.setText(message.getMessage());
 
         return convertView;
     }
-    //优化listview的Adapter
-    static class ViewHolder {
-        ImageView photo;
-        TextView text;
-        int flag;
-        ImageView image;
-    }
+//    //优化listview的Adapter
+//    static class ViewHolder {
+//        ImageView photo;
+//        TextView text;
+//        int flag;
+//        ImageView image;
+//    }
 
 }
