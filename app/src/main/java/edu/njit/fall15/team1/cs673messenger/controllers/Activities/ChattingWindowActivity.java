@@ -371,6 +371,12 @@ public class ChattingWindowActivity extends Activity implements RecentChatsListe
         if(location != null){
             latitude = location.getLatitude();
             longitude = location.getLongitude();
+        }else {
+            location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            if (location != null){
+                latitude = location.getLatitude();
+                longitude = location.getLongitude();
+            }
         }
 
         Log.i(getClass().getSimpleName(), "GPS Latitude:" + latitude + ", Longitude" + longitude);

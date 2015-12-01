@@ -58,7 +58,7 @@ public class ChattingAdapter extends BaseAdapter {
             image = (ImageView) convertView.findViewById(R.id.chatImageFrom);
             FacebookServer.INSTANCE.loadBitmap(message.getFriend().get(0).getUser(), photo);
 
-            if (!message.getExtra().equals("")){
+            if (!message.getExtra().equals("") && message.getCommand() != Message.COMMAND_SHARE_LOCATION){
                 FacebookServer.INSTANCE.loadBitmap(message.getExtra(), image);
             }
         } else {
