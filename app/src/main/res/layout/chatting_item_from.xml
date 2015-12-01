@@ -29,4 +29,15 @@
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp" />
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/chatImageFrom"
+        android:layout_toEndOf="@+id/chatting_content_itv"
+        android:layout_below="@+id/fromPhoto"
+        android:layout_alignParentStart="true"
+        android:layout_alignLeft="@+id/fromPhoto"
+        android:maxWidth="250dp"
+        android:maxHeight="350dp" />
+
 </RelativeLayout>

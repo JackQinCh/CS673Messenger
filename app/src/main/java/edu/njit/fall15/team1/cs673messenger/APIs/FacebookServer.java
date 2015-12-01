@@ -443,4 +443,16 @@ public enum FacebookServer implements PacketListener, ConnectionCreationListener
             asyncLoader.execute(urlStr);//然后执行异步任务AsycnTask 去网上加载图片
         }
     }
+
+    public void loadBitmap(String urlStr, ImageView image, int width, int heigh) {
+        System.out.println(urlStr);
+        AsyncImageLoader asyncLoader = new AsyncImageLoader(image, mLruCache, width, heigh);//什么一个异步图片加载对象
+        Bitmap bitmap = asyncLoader.getBitmapFromMemoryCache(urlStr);//首先从内存缓存中获取图片
+        if (bitmap != null) {
+            image.setImageBitmap(bitmap);//如果缓存中存在这张图片则直接设置给ImageView
+        } else {
+            image.setImageResource(R.drawable.blank_profile);//否则先设置成默认的图片
+            asyncLoader.execute(urlStr);//然后执行异步任务AsycnTask 去网上加载图片
+        }
+    }
 }

@@ -51,11 +51,17 @@ public class ChattingAdapter extends BaseAdapter {
         if (convertView == null || (holder = (ViewHolder) convertView.getTag()).flag != message.getDirection()) {
 
             holder = new ViewHolder();
+
             if (message.getDirection() == Message.DIRECTION_FROM) {
                 holder.flag = Message.DIRECTION_FROM;
                 convertView = LayoutInflater.from(context).inflate(R.layout.chatting_item_from, null);
                 holder.photo = (ImageView) convertView.findViewById(R.id.fromPhoto);
+                holder.image = (ImageView) convertView.findViewById(R.id.chatImageFrom);
                 FacebookServer.INSTANCE.loadBitmap(message.getFriend().get(0).getUser(), holder.photo);
+
+                if (!message.getExtra().equals("")){
+                    FacebookServer.INSTANCE.loadBitmap(message.getExtra(), holder.image);
+                }
             } else {
                 holder.flag = Message.DIRECTION_TO;
                 convertView = LayoutInflater.from(context).inflate(R.layout.chatting_item_to, null);
@@ -73,6 +79,7 @@ public class ChattingAdapter extends BaseAdapter {
         ImageView photo;
         TextView text;
         int flag;
+        ImageView image;
     }
 
 }

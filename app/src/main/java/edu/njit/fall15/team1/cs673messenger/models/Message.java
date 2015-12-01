@@ -90,6 +90,15 @@ public final class Message {
     public static Message createPersonalMessage(int direction, Friend friend, String messageContent){
         List<Friend> friends = new ArrayList<>();
         friends.add(friend);
+        String messageText = messageContent;
+        String extra = "";
+        if (messageContent.contains("https")) {
+            int index = messageContent.indexOf("https");
+            String imageURL = messageContent.substring(index, messageContent.length());
+            messageText = messageContent.substring(0, index);
+            extra = imageURL;
+        }
+
         Message message = new Message(
                 friend.getProfileName(),
                 friend.getUser(),
@@ -98,8 +107,8 @@ public final class Message {
                 direction,
                 friends,
                 new Date(),
-                messageContent,
-                "");
+                messageText,
+                extra);
         return message;
     }
 
