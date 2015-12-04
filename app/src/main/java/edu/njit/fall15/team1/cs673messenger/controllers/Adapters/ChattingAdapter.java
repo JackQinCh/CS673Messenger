@@ -58,7 +58,7 @@ public class ChattingAdapter extends BaseAdapter {
             image = (ImageView) convertView.findViewById(R.id.chatImageFrom);
             FacebookServer.INSTANCE.loadBitmap(message.getFriend().get(0).getUser(), photo);
 
-            if (!message.getExtra().equals("")){
+            if (!message.getExtra().equals("") && (message.getCommand() == Message.COMMAND_GROUP_CHAT || message.getCommand() == Message.COMMAND_NONE)){
                 FacebookServer.INSTANCE.loadBitmap(message.getExtra(), image);
             }
         } else {
@@ -69,40 +69,7 @@ public class ChattingAdapter extends BaseAdapter {
         text.setText(message.getMessage());
 
 
-//        ViewHolder holder = null;
-//
-//        if (convertView == null || (holder = (ViewHolder) convertView.getTag()).flag != message.getDirection()) {
-//
-//            holder = new ViewHolder();
-//
-//            if (message.getDirection() == Message.DIRECTION_FROM) {
-////                holder.flag = Message.DIRECTION_FROM;
-//                convertView = LayoutInflater.from(context).inflate(R.layout.chatting_item_from, null);
-//                photo = (ImageView) convertView.findViewById(R.id.fromPhoto);
-//                image = (ImageView) convertView.findViewById(R.id.chatImageFrom);
-//                FacebookServer.INSTANCE.loadBitmap(message.getFriend().get(0).getUser(), holder.photo);
-//
-//                if (!message.getExtra().equals("")){
-//                    FacebookServer.INSTANCE.loadBitmap(message.getExtra(), holder.image);
-//                }
-//            } else {
-//                holder.flag = Message.DIRECTION_TO;
-//                convertView = LayoutInflater.from(context).inflate(R.layout.chatting_item_to, null);
-//            }
-//
-//            TextView text = (TextView) convertView.findViewById(R.id.chatting_content_itv);
-//            convertView.setTag(holder);
-//        }
-//        text.setText(message.getMessage());
-
         return convertView;
     }
-//    //优化listview的Adapter
-//    static class ViewHolder {
-//        ImageView photo;
-//        TextView text;
-//        int flag;
-//        ImageView image;
-//    }
 
 }
