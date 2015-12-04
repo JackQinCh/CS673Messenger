@@ -12,6 +12,7 @@ import android.view.MenuItem;
 
 import android.view.View;
 import edu.njit.fall15.team1.cs673messenger.APIs.FacebookServer;
+import edu.njit.fall15.team1.cs673messenger.APIs.RecentChatsManager;
 import edu.njit.fall15.team1.cs673messenger.R;
 import edu.njit.fall15.team1.cs673messenger.controllers.Adapters.ViewPagerAdapter;
 
@@ -73,10 +74,10 @@ public class MainActivity extends AppCompatActivity{
         switch (id){
             case R.id.action_signout:
                 FacebookServer.INSTANCE.disConnect();
+                RecentChatsManager.INSTANCE.clearRecentChat();
                 Intent intentSignout = new Intent();
                 intentSignout.setClass(MainActivity.this, LoginActivity.class);
                 startActivity(intentSignout);
-                FacebookServer.INSTANCE.disConnect();
                 this.finish();
                 return true;
             case R.id.action_setting:
