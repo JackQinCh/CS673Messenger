@@ -354,8 +354,8 @@ public class ChattingWindowActivity extends Activity implements RecentChatsListe
     public void onShareLocation(View v) {
         LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 
-        double latitude = 0.0;
-        double longitude = 0.0;
+        double latitude = 40.7436556;
+        double longitude = -74.1780795;
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
