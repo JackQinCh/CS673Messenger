@@ -111,8 +111,17 @@ public enum FacebookServer implements PacketListener, ConnectionCreationListener
      * Set DisConnect
      */
     public void disConnect(){
-        if (connection != null)
-            connection.disconnect();
+        if (connection != null){
+            AsyncTask<Void, Void, Void> asyncTask = new AsyncTask<Void, Void, Void>() {
+                @Override
+                protected Void doInBackground(Void... params) {
+                    connection.disconnect();
+                    return null;
+                }
+            };
+            asyncTask.execute();
+        }
+
     }
 
     public void sendMessage(final edu.njit.fall15.team1.cs673messenger.models.Message message){

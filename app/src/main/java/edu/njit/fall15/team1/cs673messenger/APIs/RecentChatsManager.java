@@ -35,6 +35,9 @@ public enum  RecentChatsManager implements FacebookServerListener{
         return list;
     }
 
+    public void clearRecentChat(){
+        recentChats.clear();
+    }
     public List<Messages> getGroupChats(){
         List<Messages> list = new ArrayList<>();
         if (recentChats.size() != 0)

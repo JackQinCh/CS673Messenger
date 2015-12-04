@@ -22,7 +22,6 @@ public class LoginActivity extends Activity implements FacebookServerListener{
 
         FacebookServer.INSTANCE.addListeners(this);
 
-
     }
 
     @Override
@@ -42,6 +41,8 @@ public class LoginActivity extends Activity implements FacebookServerListener{
         if (!FacebookServer.INSTANCE.isConnected()){
             FacebookServer.INSTANCE.connect(getString(R.string.facebook_server));
             Log.d(this.getClass().getSimpleName(), "Login button: is not connected.");
+            FacebookServer.INSTANCE.login(userName, password);
+            Log.d(this.getClass().getSimpleName(), "Login button: login.");
         }else {
             FacebookServer.INSTANCE.login(userName, password);
             Log.d(this.getClass().getSimpleName(), "Login button: login.");
