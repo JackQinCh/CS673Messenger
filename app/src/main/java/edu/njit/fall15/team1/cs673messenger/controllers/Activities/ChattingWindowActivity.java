@@ -10,6 +10,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -49,6 +50,8 @@ public class ChattingWindowActivity extends Activity implements RecentChatsListe
     private ChattingAdapter chatHistoryAdapter;
     private ArrayList<Message> messageLines = new ArrayList<>();
     private String chatId;
+    private static final float MIN_DISTANCE_FOR_UPDATE = 10;
+    private static final long MIN_TIME_FOR_UPDATE = 1000 * 60 * 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -367,16 +370,73 @@ public class ChattingWindowActivity extends Activity implements RecentChatsListe
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
-        Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+
+        Location location = null;
+        if (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER.toString(), MIN_TIME_FOR_UPDATE, MIN_DISTANCE_FOR_UPDATE, new LocationListener() {
+                @Override
+                public void onLocationChanged(Location location) {
+
+                }
+
+                @Override
+                public void onStatusChanged(String provider, int status, Bundle extras) {
+
+                }
+
+                @Override
+                public void onProviderEnabled(String provider) {
+
+                }
+
+                @Override
+                public void onProviderDisabled(String provider) {
+
+                }
+            });
+            if (locationManager != null) {
+
+                location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            }
+        }
         if(location != null){
             latitude = location.getLatitude();
             longitude = location.getLongitude();
         }else {
-            location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            Log.d(getClass().getSimpleName(), "No NETWORK_PROVIDER.");
+            if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER.toString(), MIN_TIME_FOR_UPDATE, MIN_DISTANCE_FOR_UPDATE, new LocationListener() {
+                    @Override
+                    public void onLocationChanged(Location location) {
+
+                    }
+
+                    @Override
+                    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+                    }
+
+                    @Override
+                    public void onProviderEnabled(String provider) {
+
+                    }
+
+                    @Override
+                    public void onProviderDisabled(String provider) {
+
+                    }
+                });
+                if (locationManager != null) {
+
+                    location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                }
+            }
             if (location != null){
                 latitude = location.getLatitude();
                 longitude = location.getLongitude();
-            }
+            }else Log.d(getClass().getSimpleName(), "No GPS_PROVIDER.");
         }
 
         Log.i(getClass().getSimpleName(), "GPS Latitude:" + latitude + ", Longitude" + longitude);
