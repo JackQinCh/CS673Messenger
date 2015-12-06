@@ -325,6 +325,7 @@ public enum FacebookServer implements PacketListener, ConnectionCreationListener
      */
     private Bitmap getFacebookProfilePicture(String userID) throws IOException {
 
+        Log.d(getClass().getSimpleName(),"getFacebookProfilePicture:"+userID);
         String imageURL;
         Bitmap bitmap;
         imageURL = "https://graph.facebook.com/" + userID
@@ -355,7 +356,7 @@ public enum FacebookServer implements PacketListener, ConnectionCreationListener
      * @throws Exception
      */
     public Bitmap getUserPhoto() throws Exception {
-        return getFacebookProfilePicture(getUserID());
+        return getFacebookProfilePicture(trimUsername(getUserID(), false));
     }
 
     public String getUserID() throws Exception {
@@ -373,9 +374,11 @@ public enum FacebookServer implements PacketListener, ConnectionCreationListener
             usrid = fullusername;
         }
 
-        int index = usrid.lastIndexOf("@");
-        usrid = usrid.substring(0, index);
+//        int index = usrid.lastIndexOf("@");
+//        usrid = usrid.substring(0, index);
 
+        String[] arr = usrid.split("@");
+        usrid = arr[0];
 
 //        String[] arr = usrid.split("@");
 //        usrid = arr[0];
