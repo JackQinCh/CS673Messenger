@@ -63,9 +63,11 @@ public class AsyncImageLoader extends AsyncTask<String, Void, Bitmap> {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if(width != 0 && height != 0)
-            bitmap = scaleImg(bitmap, width, height);
-        addBitmapToMemoryCache(params[0], bitmap);
+        if (bitmap != null){
+            if(width != 0 && height != 0)
+                bitmap = scaleImg(bitmap, width, height);
+            addBitmapToMemoryCache(params[0], bitmap);
+        }
         return bitmap;
     }
 
@@ -83,6 +85,8 @@ public class AsyncImageLoader extends AsyncTask<String, Void, Bitmap> {
 
     @Override
     protected void onPostExecute(Bitmap bitmap) {
+        if (bitmap == null)
+            return;
         image.setImageBitmap(bitmap);
     }
     //调用LruCache的put 方法将图片加入内存缓存中，要给这个图片一个key 方便下次从缓存中取出来
